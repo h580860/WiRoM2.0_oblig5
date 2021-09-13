@@ -54,7 +54,7 @@ SolidBox {
   appearance PBRAppearance {
     baseColorMap ImageTexture {
       url [
-        "textures/metal.jpg"
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/metal.jpg"
       ]
     }
     roughness 0.5
@@ -69,7 +69,7 @@ SolidBox {
   appearance PBRAppearance {
     baseColorMap ImageTexture {
       url [
-        "textures/wood.jpg"
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
       ]
     }
     roughness 0.5
@@ -83,10 +83,10 @@ AdvertisingBoard {
   translation 402.109 -0.71 -374.23
   rotation 0 -1 0 -1.5708053071795867
   frontTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   backTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   displayWidth 1
   displayHeight 1
@@ -101,10 +101,10 @@ AdvertisingBoard {
   rotation 0 -1 0 -1.5708053071795867
   name "advertising board(2)"
   frontTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   backTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   displayWidth 1
   displayHeight 1
@@ -119,10 +119,10 @@ AdvertisingBoard {
   rotation 2.30815e-07 1 1.29029e-07 -3.141575307179586
   name "advertising board(1)"
   frontTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   backTexture [
-    "textures/carpet.jpg"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
   ]
   displayWidth 1
   displayHeight 1
@@ -174,7 +174,7 @@ SolidBox {
   appearance PBRAppearance {
     baseColorMap ImageTexture {
       url [
-        "textures/wood.jpg"
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
       ]
     }
     roughness 0.5
