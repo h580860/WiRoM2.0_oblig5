@@ -1,4 +1,13 @@
-# WiRoM: heterogeneous multi-robot mission planning
+# WiRoM: heterogeneous multi-robot mission planning - Further Work
+This is a fork of a previously created master thesis, made by Joakim Grutle
+
+[Original GitHub repository](https://github.com/joakimgrutle/WiRoM)
+
+I will be further expanding and improving the previous master thesis.
+For the time being, some of the previous explainations will not be up to date. 
+This README will be continously updated.
+
+Description from the developer of the system:  
 This project is a part of a master thesis. The purpose of this project is to create a system for planning missions for heterogeneous multi-robot setups, letting the user create missions directly from the browser and execute them in a simulated environment. 
 
 [Link to web interface instructions](https://youtu.be/Va9vNV0tj0c)
