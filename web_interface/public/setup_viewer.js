@@ -1,54 +1,55 @@
-/* global webots: false */
+let ipInput = null;
+let connectButton = null;
+let modeSelect = null;
+let broadcast = null;
 
-var view = null;
-var ipInput = null;
-var portInput = null;
-var connectButton = null;
-var mobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const mobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 if (mobileDevice) {
-  var head = document.getElementsByTagName('head')[0];
-  var jqueryTouch = document.createElement('script');
-  jqueryTouch.setAttribute('type', 'text/javascript');
-  jqueryTouch.setAttribute('src', 'https://www.cyberbotics.com/jquery-ui/1.11.4/jquery.ui.touch-punch.min.js');
-  head.appendChild(jqueryTouch);
+  let head = document.getElementsByTagName('head')[0];
 
-  var mobileCss = document.createElement('link');
+  let mobileCss = document.createElement('link');
   mobileCss.setAttribute('rel', 'stylesheet');
   mobileCss.setAttribute('type', 'text/css');
-  mobileCss.setAttribute('href', 'https://www.cyberbotics.com/wwi/R2019b/wwi_mobile.css');
+  mobileCss.setAttribute('href', 'https://www.cyberbotics.com/wwi/R2021b/css/wwi_mobile.css');
   head.appendChild(mobileCss);
 }
 
 function init() {
   ipInput = document.getElementById('IPInput');
-  portInput = document.getElementById('PortInput');
   connectButton = document.getElementById('ConnectButton');
-  $('body').layout({
-    center__maskContents: true,
-    south__size: 128,
-    north__resizable: false
-  });
+  modeSelect = document.getElementById('mode');
+  broadcast = document.getElementById('broadcast');
+
+  connectButton.onclick = connect;
 }
 
 function connect() {
-  var playerDiv = document.getElementById('playerDiv');
-  view = new webots.View(playerDiv, mobileDevice);
-  view.open('ws://' + ipInput.value + ':' + portInput.value);
+  const streamingMode = modeSelect.options[modeSelect.selectedIndex].value;
+  document.getElementsByTagName('webots-streaming')[0].connect(ipInput.value, streamingMode, broadcast.checked, mobileDevice, onConnect, onDisconnect);
+
+  ipInput.disabled = true;
+  modeSelect.disabled = true;
+  broadcast.disabled = true;
+  connectButton.disabled = true;
+}
+
+function onConnect() {
   connectButton.value = 'Disconnect';
   connectButton.onclick = disconnect;
-  ipInput.disabled = true;
-  portInput.disabled = true;
+  connectButton.disabled = false;
+}
+
+function onDisconnect() {
+  connectButton.value = 'Connect';
+  connectButton.onclick = connect;
+
+  ipInput.disabled = false;
+  modeSelect.disabled = false;
+  broadcast.disabled = false;
 }
 
 function disconnect() {
-  view.close();
-  view = null;
-  var playerDiv = document.getElementById('playerDiv');
-  playerDiv.innerHTML = null;
-  connectButton.value = 'Connect';
-  connectButton.onclick = connect;
-  ipInput.disabled = false;
-  portInput.disabled = false;
+  document.getElementsByTagName('webots-streaming')[0].disconnect();
 }
 
-window.addEventListener('load', init, false);
+init();

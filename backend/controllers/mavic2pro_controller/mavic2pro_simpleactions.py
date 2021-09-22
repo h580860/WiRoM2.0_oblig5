@@ -17,19 +17,19 @@ robot = Robot()
 timestep = int(robot.getBasicTimeStep())
 
 # get the motors for the robot
-front_left_motor = robot.getMotor('front left propeller')
-front_right_motor = robot.getMotor('front right propeller')
-rear_left_motor = robot.getMotor('rear left propeller')
-rear_right_motor = robot.getMotor('rear right propeller')
+front_left_motor = robot.getDevice('front left propeller')
+front_right_motor = robot.getDevice('front right propeller')
+rear_left_motor = robot.getDevice('rear left propeller')
+rear_right_motor = robot.getDevice('rear right propeller')
 motors = [front_left_motor, front_right_motor,
           rear_left_motor, rear_right_motor]
 
 # get and enable nodes used by the robot
-gyro = robot.getGyro('gyro')
-iu = robot.getInertialUnit('inertial unit')
-gps = robot.getGPS('gps')
-compass = robot.getCompass('compass')
-camera = robot.getCamera('camera')
+gyro = robot.getDevice('gyro')
+iu = robot.getDevice('inertial unit')
+gps = robot.getDevice('gps')
+compass = robot.getDevice('compass')
+camera = robot.getDevice('camera')
 
 gyro.enable(timestep)
 iu.enable(timestep)
