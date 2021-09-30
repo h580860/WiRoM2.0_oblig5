@@ -1,0 +1,185 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+  basicTimeStep 16
+  defaultDamping Damping {
+    linear 0.5
+    angular 0.5
+  }
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.06719821897046885 0.9868139332127398 0.14725033305361124 2.295325891510596
+  position 422.3200365648993 7.68239553325696 -413.0933728904763
+  follow "moose"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+UnevenTerrain {
+  translation 0 -4 0
+  size 1000 5 1000
+  appearance SandyGround {
+    textureTransform TextureTransform {
+    }
+  }
+  textureScale 4 4
+}
+SimpleTwoFloorsHouse {
+  translation 377.6 -0.68 -363.59
+}
+SimpleTwoFloorsHouse {
+  translation 403.75 -0.68 -363.59
+  name "simple two-storey house(1)"
+}
+SimpleTwoFloorsHouse {
+  translation 346.82 -0.68 -363.59
+  name "simple two-storey house(2)"
+  enableBoundingObject FALSE
+}
+SimpleTwoFloorsHouse {
+  translation 317.3 -0.68 -395.09
+  rotation 0 1 0 1.5708
+  name "simple two-storey house(3)"
+}
+SimpleTwoFloorsHouse {
+  translation 317.54 -0.68 -422.74
+  rotation 0 1 0 1.5708
+  name "simple two-storey house(4)"
+}
+SolidBox {
+  translation 407.852 -0.38 -401.327
+  name "box(2)"
+  size 2 0.8 2
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/metal.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+SolidBox {
+  translation 408.223 0.32117 -398.768
+  name "box(1)"
+  size 1 0.5 1
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+  physics Physics {
+    mass 1
+  }
+}
+AdvertisingBoard {
+  translation 402.109 -0.71 -374.23
+  rotation 0 -1 0 -1.5708053071795867
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 377 -0.71 -374.23
+  rotation 0 -1 0 -1.5708053071795867
+  name "advertising board(2)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 330 -0.709994 -421.25
+  rotation 2.30815e-07 1 1.29029e-07 -3.141575307179586
+  name "advertising board(1)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+Mavic2Pro {
+  translation 407.939 0.127252 -401.225
+  rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
+  controller "mavic2pro_controller"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+  ]
+  cameraSlot [
+    Camera {
+      rotation 1 0 0 -0.13090030610042527
+      rotationStep 0.261812
+      recognitionColors [
+        0 0 0
+      ]
+      width 400
+      height 240
+      recognition Recognition {
+        maxRange 5
+      }
+    }
+  ]
+}
+Moose {
+  translation 408.503 -0.37 -398.745
+  rotation 0 1 0 3.14
+  controller "moose_controller"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
+}
+SolidBox {
+  size 1 0.5 1
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+Pedestrian {
+  translation 387.56 0.59 -364.59
+}
