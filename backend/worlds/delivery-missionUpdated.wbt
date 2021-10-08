@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.06719821897046885 0.9868139332127398 0.14725033305361124 2.295325891510596
-  position 422.3200365648993 7.68239553325696 -413.0933728904763
+  orientation 0.0019865265642188593 0.9573437083598219 0.2889447659606829 3.154756146895517
+  position 409.0984512861121 8.525910033090874 -410.68769407807525
   follow "moose"
 }
 TexturedBackground {
@@ -62,7 +62,7 @@ SolidBox {
   }
 }
 SolidBox {
-  translation 408.223 0.32117 -398.768
+  translation 408.973 0.32117 -398.768
   name "box(1)"
   size 1 0.5 1
   appearance PBRAppearance {
@@ -75,7 +75,8 @@ SolidBox {
     metalness 0
   }
   physics Physics {
-    mass 1
+    density -1
+    mass 2
   }
 }
 AdvertisingBoard {
@@ -167,18 +168,6 @@ Moose {
       rotation 1 0 0 1.5708
     }
   ]
-}
-SolidBox {
-  size 1 0.5 1
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
 }
 Pedestrian {
   translation 387.56 0.59 -364.59

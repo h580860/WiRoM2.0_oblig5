@@ -117,4 +117,4 @@ def ping():
 
 
 if __name__ == '__main__':
-    app.run(processes='5')
+    app.run(processes='5', debug=True)

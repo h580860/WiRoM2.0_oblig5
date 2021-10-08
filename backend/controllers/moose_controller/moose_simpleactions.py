@@ -50,6 +50,7 @@ def go_forward(duration):
     left_speed = 7.0
     right_speed = 7.0
     if duration is not 0:
+        print(f"Moose sleeping for {duration} seconds")
         time.sleep(duration)
         left_speed = 0
         right_speed = 0
