@@ -3,9 +3,18 @@ from flask_cors import CORS
 import requests
 import json
 import time
+import logging
+from wirom_logger import Wirom_logger
+# from Logs.wirom_logger import Wirom_logger
 
 app = Flask(__name__)
+app.debug = True
 CORS(app)
+
+# configure logging
+# this file uses the custom logging class, because it is currently only working with this class
+# TODO use custom logging class for the other logging parts of the system as well
+wirom_logger = Wirom_logger("app.log")
 
 
 with open('config.json') as json_data_file:
@@ -15,11 +24,12 @@ with open('config.json') as json_data_file:
 
 @app.route('/mission', methods=['POST'])
 def receive_mission():
+    wirom_logger.info("receive_mission")
     mission = request.get_json()
     for robot in mission:
         sequence = []
         for simpleaction in mission[robot]['simpleactions']:
-            if simpleaction['args'] is "":
+            if simpleaction['args'] == "":
                 sequence.append(simpleaction['name'] + "()")
             else:
                 if simpleaction['name'] == 'set_message_target':
@@ -31,7 +41,7 @@ def receive_mission():
 
         success = False
         retries = 0
-        while not success or retries is 60:
+        while not success or retries == 60:
             try:
                 requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
                 success = True
@@ -46,6 +56,7 @@ def receive_mission():
 
 @app.route('/allocate', methods=['POST'])
 def receive_tasks_for_allocation():
+    wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
     tasks = task_allocation(tasks, robots)
     return jsonify(tasks)
@@ -53,6 +64,7 @@ def receive_tasks_for_allocation():
 # automatic task allocation algorithm, auction-based solution
 # allocates tasks to robots based on highest bid
 def task_allocation(tasks, robots):
+    wirom_logger.info("task_allocation")
     bids = {}
     for task in tasks:
         bids[task["name"]] = {}
@@ -117,4 +129,6 @@ def ping():
 
 
 if __name__ == '__main__':
+    wirom_logger.info("initiated main")
     app.run(processes='5', debug=True)
+    # app.run(threaded=True)

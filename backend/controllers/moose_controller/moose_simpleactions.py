@@ -5,9 +5,21 @@ import math
 import threading
 import time
 import json
+import logging
+import os
+
+# from backend.wirom_logger import Wirom_logger
+logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
+logging.info("-" * 50)
+
 
 # create flask instance
 app = Flask(__name__)
+app.debug = True
+
+# configure logging
+# wirom_logger = Wirom_logger("moose.log")
+
 
 # create the Robot instance.
 robot = Robot()
@@ -37,11 +49,12 @@ simpleactions = []
 
 # Initialize which sets the target altitude as well as start the main loop
 def init(port):
+    logging.info("init")
     main = threading.Thread(target=moose_main)
     execute = threading.Thread(target=execute_simpleactions)
     main.start()
     execute.start()
-    app.run(port=port)
+    # app.run(port=port)
 
 
 def go_forward(duration):
@@ -49,7 +62,7 @@ def go_forward(duration):
     global right_speed
     left_speed = 7.0
     right_speed = 7.0
-    if duration is not 0:
+    if duration != 0:
         print(f"Moose sleeping for {duration} seconds")
         time.sleep(duration)
         left_speed = 0
@@ -61,7 +74,7 @@ def go_backward(duration):
     global right_speed
     left_speed = -2.0
     right_speed = -2.0
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         left_speed = 0
         right_speed = 0
@@ -72,7 +85,7 @@ def turn_left(duration):
     global right_speed
     left_speed = 1.0
     right_speed = 4.0
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         left_speed = 0
         right_speed = 0
@@ -83,7 +96,7 @@ def turn_right(duration):
     global right_speed
     left_speed = 4.0
     right_speed = 1.0
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         left_speed = 0
         right_speed = 0
@@ -156,6 +169,8 @@ def setLocationConfig():
 
 
 def moose_main():
+    logging.info("moose_main")
+    step_count = 0
     for motor in left_motors:
         motor.setPosition(float('inf'))
     for motor in right_motors:
@@ -168,11 +183,14 @@ def moose_main():
             motor.setVelocity(left_speed)
         for motor in right_motors:
             motor.setVelocity(right_speed)
+        print(f'(moose) step number {step_count}')
+        step_count += 1
 
 # Function for receiving messages from other robots
 @app.route('/location', methods=['POST'])
 def receive_location():
     global location
+    logging.info("receive_location")
     msg = request.get_json()
     location.append(msg['location'])
     return "Received location", 200
@@ -182,6 +200,7 @@ def receive_location():
 @app.route('/simpleactions', methods=['POST'])
 def receive_simpleactions():
     global simpleactions
+    logging.info("receive_simpleactions")
     simpleactions = request.get_json()
     return "Updated simple actions", 200
 
@@ -189,6 +208,8 @@ def receive_simpleactions():
 # Function for executing simpleactions in the queue
 def execute_simpleactions():
     global simpleactions
+
+    logging.info("execute_simple_actions")
     while robot.step(timestep) != -1:
         if simpleactions:
             simpleaction = simpleactions.pop(0)

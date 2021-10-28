@@ -6,9 +6,23 @@ import math
 import threading
 import time
 import json
+# from ... import Wirom_logger
+# from Logs.wirom_logger import Wirom_logger
+import sys
+import os
+# sys.path.insert(0, os.path.join(os.getcwd(), os.pardir, os.pardir))
+# from backend.wirom_logger import Wirom_logge
+import logging
+
 
 # create flask instance
 app = Flask(__name__)
+app.debug = True
+
+# configure logging
+# wirom_logger = Wirom_logger("mavic2pro.log")
+logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "mavic2pro.log"), encoding='utf-8', level=logging.DEBUG)
+logging.info("-" * 50)
 
 # create the Robot instance.
 robot = Robot()
@@ -64,11 +78,12 @@ amount_of_objects = 0
 
 # Initialize which sets the target altitude as well as start the main loop
 def init(port):
+    logging.info("init")
     main = threading.Thread(target=mavic2pro_main)
     execute = threading.Thread(target=execute_simpleactions)
     main.start()
     execute.start()
-    app.run(port=port)
+    # app.run(port=port)
 
 
 def set_altitude(target):
@@ -82,7 +97,7 @@ def go_forward(duration):
     global yaw_disturbance
     pitch_disturbance = 3
     yaw_disturbance = 0
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         pitch_disturbance = 0
 
@@ -90,7 +105,7 @@ def go_forward(duration):
 def go_backward(duration):
     global pitch_disturbance
     pitch_disturbance = -2
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         pitch_disturbance = 0
 
@@ -98,7 +113,7 @@ def go_backward(duration):
 def turn_right(duration):
     global yaw_disturbance
     yaw_disturbance = 0.5
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         yaw_disturbance = 0
 
@@ -106,7 +121,7 @@ def turn_right(duration):
 def turn_left(duration):
     global yaw_disturbance
     yaw_disturbance = -0.5
-    if duration is not 0:
+    if duration != 0:
         time.sleep(duration)
         yaw_disturbance = 0
 
@@ -247,6 +262,9 @@ def mavic2pro_main():
     global rec_obj_arr
     global location
 
+    logging.info("maciv2pro_main")
+    step_count = 0
+
     for motor in motors:
         motor.setPosition(float('inf'))
 
@@ -263,18 +281,23 @@ def mavic2pro_main():
                     rec_obj_arr.append(rec_obj.id)
                     navigate = False
                     stop_movement()
+        print(f'(mavic) step number {step_count}')
+        step_count += 1
 
 
 # Function for receiving simpleactions from server
 @app.route('/simpleactions', methods=['POST'])
 def receive_simpleactions():
     global simpleactions
+    logging.info("receive_location")
     simpleactions = request.get_json()
     return "Updated simple actions", 200
 
 # Function for executing simpleactions in the queue
 def execute_simpleactions():
     global simpleactions
+    logging.info("receive_simpleactions")
+
     while robot.step(timestep) != -1:
         if simpleactions:
             simpleaction = simpleactions.pop(0)
