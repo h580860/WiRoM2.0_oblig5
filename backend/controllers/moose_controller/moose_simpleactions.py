@@ -1,12 +1,14 @@
 """moose_controller simpleactions."""
 from controller import Robot, Motor, PositionSensor, GPS, Compass
-from flask import Flask, request
+# from flask import Flask, request
 import math
 import threading
 import time
 import json
 import logging
 import os
+import pika
+
 
 # from backend.wirom_logger import Wirom_logger
 logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
@@ -14,8 +16,8 @@ logging.info("-" * 50)
 
 
 # create flask instance
-app = Flask(__name__)
-app.debug = True
+# app = Flask(__name__)
+# app.debug = True
 
 # configure logging
 # wirom_logger = Wirom_logger("moose.log")
@@ -45,15 +47,21 @@ compass.enable(timestep)
 target_reached = False
 navigate = False
 location = []
+# simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
 simpleactions = []
 
 # Initialize which sets the target altitude as well as start the main loop
 def init(port):
     logging.info("init")
+    print("before")
     main = threading.Thread(target=moose_main)
-    execute = threading.Thread(target=execute_simpleactions)
+    # execute = threading.Thread(target=execute_simpleactions)
+    communication = threading.Thread(target=test_communcation_receive)
+
+    print("after")
     main.start()
-    execute.start()
+    # execute.start()
+    communication.start()
     # app.run(port=port)
 
 
@@ -183,35 +191,101 @@ def moose_main():
             motor.setVelocity(left_speed)
         for motor in right_motors:
             motor.setVelocity(right_speed)
-        print(f'(moose) step number {step_count}')
+        # print(f'(moose) step number {step_count}')
         step_count += 1
-
-# Function for receiving messages from other robots
-@app.route('/location', methods=['POST'])
-def receive_location():
-    global location
-    logging.info("receive_location")
-    msg = request.get_json()
-    location.append(msg['location'])
-    return "Received location", 200
+        # logging.info(step_count)
+        # print("main iteration")
 
 
-# Function for receiving simpleactions from server
-@app.route('/simpleactions', methods=['POST'])
-def receive_simpleactions():
-    global simpleactions
-    logging.info("receive_simpleactions")
-    simpleactions = request.get_json()
-    return "Updated simple actions", 200
+
+# # Function for receiving messages from other robots
+# @app.route('/location', methods=['POST'])
+# def receive_location():
+#     global location
+#     logging.info("receive_location")
+#     msg = request.get_json()
+#     location.append(msg['location'])
+#     return "Received location", 200
+
+
+# # Function for receiving simpleactions from server
+# @app.route('/simpleactions', methods=['POST'])
+# def receive_simpleactions():
+#     global simpleactions
+#     logging.info("receive_simpleactions")
+#     simpleactions = request.get_json()
+#     return "Updated simple actions", 200
 
 
 # Function for executing simpleactions in the queue
+# def execute_simpleactions():
+#     global simpleactions
+#     try:
+#         while robot.step(timestep) != -1:
+#             if simpleactions:
+#                 simpleaction = simpleactions.pop(0)
+#                 print('Executing simpleaction: ' + simpleaction)
+#                 eval(simpleaction)
+#             # else:
+#                 # logging.info("No more simpleactions")
+#                 # print("No more simpleactions")
+#     except Exception as e:
+#             print(e)
+#     print(f'robot step = {robot.step(timestep)}')
+
+
 def execute_simpleactions():
     global simpleactions
+    try:
+        while True:
+            if simpleactions:
+                    simpleaction = simpleactions.pop(0)
+                    print("Executing simpleaction " + simpleaction)
+                    eval(simpleaction)
+            else:
+                print("No available simpleaction")
+    except Exception as e:
+        print(e)
 
-    logging.info("execute_simple_actions")
-    while robot.step(timestep) != -1:
-        if simpleactions:
-            simpleaction = simpleactions.pop(0)
-            print('Executing simpleaction: ' + simpleaction)
-            eval(simpleaction)
+
+
+def test_communcation_receive():
+     # initiate messaging communication
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='test_exchange', queue=queue_name)
+
+    print("Moose ready to receive messages")
+
+    channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
+    channel.start_consuming()
+
+
+def execute_simpleactions_callback(ch, method, properties, body):
+    global simpleactions
+    print("(moose) callback: %r" % body)
+    # TODO as for now, the incoming messages are functions calls, separated by ","
+    simpleactions.extend(body.decode('utf-8').split(","))
+    
+
+    # Now execute the simpleactions
+    # for i in range(len(simpleactions)):
+    while simpleactions:
+        sim_act = simpleactions.pop(0)
+        print("Executing simpleaction " + sim_act)
+        eval(sim_act)
+    print("finished callback function")
+
+    
+
+
+def callback(ch, method, properties, body):
+    print("(moose) %r" % body)
+    # logging.info("(moose) %r" % body)
+    print("(moose print)" + str(body))
+    print(body.decode('UTF-8'))

@@ -6,6 +6,7 @@ import time
 import logging
 from wirom_logger import Wirom_logger
 # from Logs.wirom_logger import Wirom_logger
+import pika
 
 app = Flask(__name__)
 app.debug = True
@@ -43,7 +44,10 @@ def receive_mission():
         retries = 0
         while not success or retries == 60:
             try:
-                requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
+                # TODO this should normally be uncommented
+                # requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
+                # TODO this will send one sequence per task defined in "Tasks" in a mission
+                test_sending_one_message(sequence)
                 success = True
             except Exception as e:
                 print(e)
@@ -128,7 +132,50 @@ def ping():
     return 'Pong!'
 
 
+
+def test_communication_messages(msg):
+    # Test. Send 10 messages, with a time interval of 3 seconds between each message
+
+    # inititate message communication
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+
+    count = 0
+    while count < 10:
+        msg = "Test message number " + str(count)
+        # message = "This is a test message"
+        channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
+        wirom_logger.info("(app) sent message %r" % msg)
+        print("(app) sent message %r" % msg)
+
+        time.sleep(3)
+        count += 1
+    connection.close()
+
+
+
+def test_sending_one_message(sequence):
+    # Test. Send 10 messages, with a time interval of 3 seconds between each message
+
+    # inititate message communication
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+    print(f'sequence: {sequence}')
+    msg = "go_backward(2),turn_left(3)"
+    channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
+    connection.close()
+
+
+
 if __name__ == '__main__':
     wirom_logger.info("initiated main")
-    app.run(processes='5', debug=True)
+    print("initiated main")
+    #app.run(processes='5', debug=True)
     # app.run(threaded=True)
+
+    test_message = "Hello this message is from app.py"
+    test_communication_messages(test_message)

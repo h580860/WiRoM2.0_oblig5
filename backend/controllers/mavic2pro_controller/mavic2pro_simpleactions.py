@@ -1,6 +1,6 @@
 """mavic2pro_controller simpleactions."""
 from controller import Robot, Motor, PositionSensor, Gyro, Camera, InertialUnit, GPS, Compass, CameraRecognitionObject
-from flask import Flask, request
+# from flask import Flask, request
 import requests
 import math
 import threading
@@ -13,11 +13,12 @@ import os
 # sys.path.insert(0, os.path.join(os.getcwd(), os.pardir, os.pardir))
 # from backend.wirom_logger import Wirom_logge
 import logging
+import pika
 
 
 # create flask instance
-app = Flask(__name__)
-app.debug = True
+# app = Flask(__name__)
+# app.debug = True
 
 # configure logging
 # wirom_logger = Wirom_logger("mavic2pro.log")
@@ -81,9 +82,14 @@ def init(port):
     logging.info("init")
     main = threading.Thread(target=mavic2pro_main)
     execute = threading.Thread(target=execute_simpleactions)
+    # communication = threading.Thread(target=test_communcation_receive)
+
     main.start()
     execute.start()
-    # app.run(port=port)
+    # communication.start()
+    # app.run(port=port)'
+
+
 
 
 def set_altitude(target):
@@ -167,10 +173,10 @@ def send_location():
         print("No recognised object at location")
 
 
-def sync_send_location():
-    global location
-    location_json = {"location": [location[0], location[1] - 2]}
-    requests.post("http://localhost:5002/location", json=location_json)
+# def sync_send_location():
+#     global location
+#     location_json = {"location": [location[0], location[1] - 2]}
+#     requests.post("http://localhost:5002/location", json=location_json)
 
 # Function that finds the angle and distance to a location and moves the vehicle accordingly
 def navigate_to_location():
@@ -281,17 +287,17 @@ def mavic2pro_main():
                     rec_obj_arr.append(rec_obj.id)
                     navigate = False
                     stop_movement()
-        print(f'(mavic) step number {step_count}')
+        # print(f'(mavic) step number {step_count}')
         step_count += 1
 
 
 # Function for receiving simpleactions from server
-@app.route('/simpleactions', methods=['POST'])
-def receive_simpleactions():
-    global simpleactions
-    logging.info("receive_location")
-    simpleactions = request.get_json()
-    return "Updated simple actions", 200
+# @app.route('/simpleactions', methods=['POST'])
+# def receive_simpleactions():
+#     global simpleactions
+#     logging.info("receive_location")
+#     simpleactions = request.get_json()
+#     return "Updated simple actions", 200
 
 # Function for executing simpleactions in the queue
 def execute_simpleactions():
@@ -303,3 +309,26 @@ def execute_simpleactions():
             simpleaction = simpleactions.pop(0)
             print('Executing simpleaction: ' + simpleaction)
             eval(simpleaction)
+
+
+def test_communcation_receive():
+     # initiate messaging communication
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='test_exchange', queue=queue_name)
+
+    print("Mavic2Pro ready to receive messages")
+
+    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.start_consuming()
+
+
+
+def callback(ch, method, properties, body):
+    print("(mavic2pro) %r" % body)
+    logging.info("(mavic2pro) %r" % body)
