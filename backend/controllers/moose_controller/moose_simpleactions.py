@@ -56,7 +56,8 @@ def init(port):
     print("before")
     main = threading.Thread(target=moose_main)
     # execute = threading.Thread(target=execute_simpleactions)
-    communication = threading.Thread(target=test_communcation_receive)
+    # communication = threading.Thread(target=test_communcation_receive)
+    communication = threading.Thread(target=test_receive_routing_message)
 
     print("after")
     main.start()
@@ -266,11 +267,41 @@ def test_communcation_receive():
     channel.start_consuming()
 
 
+def test_receive_routing_message():
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(
+        exchange='routing_exchange', exchange_type='direct')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose_queue")
+
+    print("Moose ready to receive routed messages")
+    channel.basic_consume(
+        queue=queue_name,
+        on_message_callback=execute_simpleactions_callback,
+        auto_ack=True
+        )
+    
+    channel.start_consuming()
+
+
+
 def execute_simpleactions_callback(ch, method, properties, body):
     global simpleactions
     print("(moose) callback: %r" % body)
     # TODO as for now, the incoming messages are functions calls, separated by ","
-    simpleactions.extend(body.decode('utf-8').split(","))
+    # simpleactions.extend(body.decode('utf-8').split(","))
+
+    # Decode the JSON back to a list
+    new_simpleactions = json.loads(body.decode('utf-8'))
+    simpleactions.extend(new_simpleactions)
+    print(f'(moose) Simpleactions = {simpleactions}, type={type(simpleactions)}')
+
+
     
 
     # Now execute the simpleactions
@@ -281,7 +312,6 @@ def execute_simpleactions_callback(ch, method, properties, body):
         eval(sim_act)
     print("finished callback function")
 
-    
 
 
 def callback(ch, method, properties, body):

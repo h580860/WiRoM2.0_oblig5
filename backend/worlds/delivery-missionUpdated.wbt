@@ -135,7 +135,7 @@ AdvertisingBoard {
 Mavic2Pro {
   translation 407.939 0.127252 -401.225
   rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
-  controller "void"
+  controller "mavic2pro_controller"
   bodySlot [
     Compass {
       rotation 1 0 0 1.5708

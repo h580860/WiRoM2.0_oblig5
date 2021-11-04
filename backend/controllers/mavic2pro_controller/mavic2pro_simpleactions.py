@@ -22,7 +22,8 @@ import pika
 
 # configure logging
 # wirom_logger = Wirom_logger("mavic2pro.log")
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "mavic2pro.log"), encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(
+    os.pardir, os.pardir, "mavic2pro.log"), encoding='utf-8', level=logging.DEBUG)
 logging.info("-" * 50)
 
 # create the Robot instance.
@@ -78,18 +79,18 @@ simpleactions = []
 amount_of_objects = 0
 
 # Initialize which sets the target altitude as well as start the main loop
+
+
 def init(port):
     logging.info("init")
     main = threading.Thread(target=mavic2pro_main)
-    execute = threading.Thread(target=execute_simpleactions)
+    # execute = threading.Thread(target=execute_simpleactions)
     # communication = threading.Thread(target=test_communcation_receive)
-
+    communication = threading.Thread(target=test_receive_routing_message)
     main.start()
-    execute.start()
-    # communication.start()
+    # execute.start()
+    communication.start()
     # app.run(port=port)'
-
-
 
 
 def set_altitude(target):
@@ -251,6 +252,8 @@ def stabilize_and_control_movement():
     rear_right_motor.setVelocity(rear_right_motor_input)
 
 # write the location of this robot to the config file
+
+
 def setLocationConfig():
     with open('../config.json') as json_data_file:
         data = json.load(json_data_file)
@@ -313,7 +316,8 @@ def execute_simpleactions():
 
 def test_communcation_receive():
      # initiate messaging communication
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
 
@@ -324,8 +328,55 @@ def test_communcation_receive():
 
     print("Mavic2Pro ready to receive messages")
 
-    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(
+        queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
     channel.start_consuming()
+
+
+
+def test_receive_routing_message():
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(
+        exchange='routing_exchange', exchange_type='direct')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="mavic_queue")
+
+    print("Mavic ready to receive routed messages")
+    channel.basic_consume(
+        queue=queue_name,
+        on_message_callback=execute_simpleactions_callback,
+        auto_ack=True
+        )
+    
+    channel.start_consuming()
+
+
+
+def execute_simpleactions_callback(ch, method, properties, body):
+    global simpleactions
+    print("(mavic2pro) callback: %r" % body)
+    # TODO as for now, the incoming messages are functions calls, separated by ","
+    # simpleactions.extend(body.decode('utf-8').split(","))
+    # simpleactions.extend(body.decode('utf-8'))
+
+
+    new_simpleactions = json.loads(body.decode('utf-8'))
+    simpleactions.extend(new_simpleactions)
+    print(f'(mavic) Simpleactions = {simpleactions}, type={type(simpleactions)}')
+
+
+    # Now execute the simpleactions
+    # for i in range(len(simpleactions)):
+    while simpleactions:
+        sim_act = simpleactions.pop(0)
+        print("Executing simpleaction " + sim_act)
+        eval(sim_act)
+    print("finished callback function")
 
 
 

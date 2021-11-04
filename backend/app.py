@@ -17,6 +17,12 @@ CORS(app)
 # TODO use custom logging class for the other logging parts of the system as well
 wirom_logger = Wirom_logger("app.log")
 
+# routing_key lookup
+routing_key_lookup = {
+   "5001": "mavic_queue",
+   "5002": "moose_queue" 
+}
+
 
 with open('config.json') as json_data_file:
     data = json.load(json_data_file)
@@ -47,7 +53,11 @@ def receive_mission():
                 # TODO this should normally be uncommented
                 # requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
                 # TODO this will send one sequence per task defined in "Tasks" in a mission
-                test_sending_one_message(sequence)
+                # test_sending_one_message(sequence)
+
+                # test_send_routing_messages(json.dumps(sequence), "moose_queue")
+                print("Sending sequence to " + mission[robot]['port'])
+                test_send_routing_messages(json.dumps(sequence), routing_key_lookup[mission[robot]['port']])
                 success = True
             except Exception as e:
                 print(e)
@@ -133,26 +143,26 @@ def ping():
 
 
 
-def test_communication_messages(msg):
-    # Test. Send 10 messages, with a time interval of 3 seconds between each message
+# def test_communication_messages(msg):
+#     # Test. Send 10 messages, with a time interval of 3 seconds between each message
 
-    # inititate message communication
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
+#     # inititate message communication
+#     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+#     channel = connection.channel()
 
-    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+#     channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
 
-    count = 0
-    while count < 10:
-        msg = "Test message number " + str(count)
-        # message = "This is a test message"
-        channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
-        wirom_logger.info("(app) sent message %r" % msg)
-        print("(app) sent message %r" % msg)
+#     count = 0
+#     while count < 10:
+#         msg = "Test message number " + str(count)
+#         # message = "This is a test message"
+#         channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
+#         wirom_logger.info("(app) sent message %r" % msg)
+#         print("(app) sent message %r" % msg)
 
-        time.sleep(3)
-        count += 1
-    connection.close()
+#         time.sleep(3)
+#         count += 1
+#     connection.close()
 
 
 
@@ -171,6 +181,20 @@ def test_sending_one_message(sequence):
 
 
 
+def test_send_routing_messages(message_as_json, routing_key):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
+
+    channel.basic_publish(exchange='routing_exchange', routing_key=routing_key, body=message_as_json)
+    print("[send_routing_message] published to moose")
+
+    connection.close()
+    
+
+
+
+
 if __name__ == '__main__':
     wirom_logger.info("initiated main")
     print("initiated main")
@@ -178,4 +202,4 @@ if __name__ == '__main__':
     # app.run(threaded=True)
 
     test_message = "Hello this message is from app.py"
-    test_communication_messages(test_message)
+    # test_communication_messages(test_message)
