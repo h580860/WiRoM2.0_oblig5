@@ -58,11 +58,13 @@ def init(port):
     # execute = threading.Thread(target=execute_simpleactions)
     # communication = threading.Thread(target=test_communcation_receive)
     communication = threading.Thread(target=test_receive_routing_message)
+    location_communication = threading.Thread(target=test_receive_location)
 
     print("after")
     main.start()
     # execute.start()
     communication.start()
+    location_communication.start()
     # app.run(port=port)
 
 
@@ -268,11 +270,9 @@ def test_communcation_receive():
 
 
 def test_receive_routing_message():
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
-    channel.exchange_declare(
-        exchange='routing_exchange', exchange_type='direct')
+    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
 
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
@@ -280,12 +280,23 @@ def test_receive_routing_message():
     channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose_queue")
 
     print("Moose ready to receive routed messages")
-    channel.basic_consume(
-        queue=queue_name,
-        on_message_callback=execute_simpleactions_callback,
-        auto_ack=True
-        )
+    channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
     
+    channel.start_consuming()
+
+
+def test_receive_location():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose_location_queue")
+
+    print("Moose ready to receive locations")
+    channel.basic_consume(queue=queue_name, on_message_callback=receive_location_callback, auto_ack=True)
     channel.start_consuming()
 
 
@@ -300,17 +311,23 @@ def execute_simpleactions_callback(ch, method, properties, body):
     new_simpleactions = json.loads(body.decode('utf-8'))
     simpleactions.extend(new_simpleactions)
     print(f'(moose) Simpleactions = {simpleactions}, type={type(simpleactions)}')
-
-
     
-
     # Now execute the simpleactions
     # for i in range(len(simpleactions)):
     while simpleactions:
         sim_act = simpleactions.pop(0)
-        print("Executing simpleaction " + sim_act)
+        print("(moose) Executing simpleaction " + sim_act)
         eval(sim_act)
     print("finished callback function")
+
+
+def receive_location_callback(ch, method, properties, body):
+    global location
+    print("(moose) received locations")
+
+    new_location = json.loads(body.decode('utf-8'))
+    # print(f"new location={new_location}, type = {type(new_location)}")
+    location.append(new_location['location'])
 
 
 

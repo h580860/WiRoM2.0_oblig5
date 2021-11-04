@@ -179,6 +179,20 @@ def send_location():
 #     location_json = {"location": [location[0], location[1] - 2]}
 #     requests.post("http://localhost:5002/location", json=location_json)
 
+def sync_send_location():
+    global location
+    location_json = json.dumps({"location": [location[0], location[1] - 2]})
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+
+    # publish the moose message
+    channel.basic_publish(exchange='location_exchange', routing_key='moose_location_queue', body=location_json)
+    print("[mavic sync_send_location] sent location to moose")
+    connection.close()
+
+
 # Function that finds the angle and distance to a location and moves the vehicle accordingly
 def navigate_to_location():
     global navigate

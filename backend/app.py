@@ -201,5 +201,5 @@ if __name__ == '__main__':
     #app.run(processes='5', debug=True)
     # app.run(threaded=True)
 
-    test_message = "Hello this message is from app.py"
+    # test_message = "Hello this message is from app.py"
     # test_communication_messages(test_message)
