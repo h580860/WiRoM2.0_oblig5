@@ -5,14 +5,13 @@ import math
 import threading
 import time
 import json
-import logging
 import os
 import pika
 
 
 # from backend.wirom_logger import Wirom_logger
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
-logging.info("-" * 50)
+# logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
+# logging.info("-" * 50)
 
 
 # create flask instance
@@ -52,7 +51,7 @@ simpleactions = []
 
 # Initialize which sets the target altitude as well as start the main loop
 def init(port):
-    logging.info("init")
+    # logging.info("init")
     main = threading.Thread(target=moose_main)
     # execute = threading.Thread(target=execute_simpleactions)
     # communication = threading.Thread(target=test_communcation_receive)
@@ -178,7 +177,7 @@ def setLocationConfig():
 
 
 def moose_main():
-    logging.info("moose_main")
+    # logging.info("moose_main")
     step_count = 0
     for motor in left_motors:
         motor.setPosition(float('inf'))
@@ -192,47 +191,10 @@ def moose_main():
             motor.setVelocity(left_speed)
         for motor in right_motors:
             motor.setVelocity(right_speed)
-        # print(f'(moose) step number {step_count}')
+        # print(f'(moose2) step number {step_count}')
         step_count += 1
         # logging.info(step_count)
         # print("main iteration")
-
-
-
-# # Function for receiving messages from other robots
-# @app.route('/location', methods=['POST'])
-# def receive_location():
-#     global location
-#     logging.info("receive_location")
-#     msg = request.get_json()
-#     location.append(msg['location'])
-#     return "Received location", 200
-
-
-# # Function for receiving simpleactions from server
-# @app.route('/simpleactions', methods=['POST'])
-# def receive_simpleactions():
-#     global simpleactions
-#     logging.info("receive_simpleactions")
-#     simpleactions = request.get_json()
-#     return "Updated simple actions", 200
-
-
-# Function for executing simpleactions in the queue
-# def execute_simpleactions():
-#     global simpleactions
-#     try:
-#         while robot.step(timestep) != -1:
-#             if simpleactions:
-#                 simpleaction = simpleactions.pop(0)
-#                 print('Executing simpleaction: ' + simpleaction)
-#                 eval(simpleaction)
-#             # else:
-#                 # logging.info("No more simpleactions")
-#                 # print("No more simpleactions")
-#     except Exception as e:
-#             print(e)
-#     print(f'robot step = {robot.step(timestep)}')
 
 
 def execute_simpleactions():
@@ -250,23 +212,6 @@ def execute_simpleactions():
 
 
 
-def test_communcation_receive():
-     # initiate messaging communication
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
-
-    result = channel.queue_declare(queue='', exclusive=True)
-    queue_name = result.method.queue
-
-    channel.queue_bind(exchange='test_exchange', queue=queue_name)
-
-    print("Moose ready to receive messages")
-
-    channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
-    channel.start_consuming()
-
-
 def test_receive_routing_message():
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
@@ -275,9 +220,9 @@ def test_receive_routing_message():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose_queue")
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose2_queue")
 
-    print("Moose ready to receive routed messages")
+    print("Moose2 ready to receive routed messages")
     channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
     
     channel.start_consuming()
@@ -291,9 +236,9 @@ def test_receive_location():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose_location_queue")
+    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose2_location_queue")
 
-    print("Moose ready to receive locations")
+    print("Moose2 ready to receive locations")
     channel.basic_consume(queue=queue_name, on_message_callback=receive_location_callback, auto_ack=True)
     channel.start_consuming()
 
@@ -301,36 +246,28 @@ def test_receive_location():
 
 def execute_simpleactions_callback(ch, method, properties, body):
     global simpleactions
-    print("(moose) callback: %r" % body)
+    print("(moose2) callback: %r" % body)
     # TODO as for now, the incoming messages are functions calls, separated by ","
     # simpleactions.extend(body.decode('utf-8').split(","))
 
     # Decode the JSON back to a list
     new_simpleactions = json.loads(body.decode('utf-8'))
     simpleactions.extend(new_simpleactions)
-    print(f'(moose) Simpleactions = {simpleactions}, type={type(simpleactions)}')
+    print(f'(moose2) Simpleactions = {simpleactions}, type={type(simpleactions)}')
     
     # Now execute the simpleactions
     # for i in range(len(simpleactions)):
     while simpleactions:
         sim_act = simpleactions.pop(0)
-        print("(moose) Executing simpleaction " + sim_act)
+        print("(moose2) Executing simpleaction " + sim_act)
         eval(sim_act)
     print("finished callback function")
 
 
 def receive_location_callback(ch, method, properties, body):
     global location
-    print("(moose) received locations")
+    print("(moose2) received locations")
 
     new_location = json.loads(body.decode('utf-8'))
     # print(f"new location={new_location}, type = {type(new_location)}")
     location.append(new_location['location'])
-
-
-
-def callback(ch, method, properties, body):
-    print("(moose) %r" % body)
-    # logging.info("(moose) %r" % body)
-    print("(moose print)" + str(body))
-    print(body.decode('UTF-8'))

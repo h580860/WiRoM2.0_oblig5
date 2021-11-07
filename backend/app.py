@@ -20,7 +20,9 @@ wirom_logger = Wirom_logger("app.log")
 # routing_key lookup
 routing_key_lookup = {
    "5001": "mavic_queue",
-   "5002": "moose_queue" 
+   "5002": "moose_queue",
+   "5003": "moose2_queue",
+   "5004": "moose3_queue",
 }
 
 

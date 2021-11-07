@@ -188,8 +188,8 @@ def sync_send_location():
     channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
 
     # publish the moose message
-    channel.basic_publish(exchange='location_exchange', routing_key='moose_location_queue', body=location_json)
-    print("[mavic sync_send_location] sent location to moose")
+    channel.basic_publish(exchange='location_exchange', routing_key= message_recipient+'_location_queue', body=location_json)
+    print("[mavic sync_send_location] sent location to " + message_recipient)
     connection.close()
 
 
@@ -388,7 +388,7 @@ def execute_simpleactions_callback(ch, method, properties, body):
     # for i in range(len(simpleactions)):
     while simpleactions:
         sim_act = simpleactions.pop(0)
-        print("Executing simpleaction " + sim_act)
+        print("(mavic) Executing simpleaction " + sim_act)
         eval(sim_act)
     print("finished callback function")
 
