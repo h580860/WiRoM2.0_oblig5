@@ -116,6 +116,124 @@
           "quality": 0.9,
           "cost": 0.05
         },
+          {
+            "name": "go_to_location",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.25
+        },
+        {
+          "name": "stop_movement",
+          "numArgs": 0,
+          "type": "move",
+          "quality": 1,
+          "cost": 0
+        },
+        {
+          "name": "receive_location_from_robot",
+          "numArgs": 0,
+          "type": "wait",
+          "quality": 1,
+          "cost": 0
+        }
+      ]
+    },
+    "moose2": {
+      "language": "python",
+      "location": {
+        "x": 408.271,
+        "y": -0.37
+      },
+      "port": "5003",
+      "simpleactions": [
+        {
+          "name": "go_forward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "go_backward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_right",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.90,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_left",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "go_to_location",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.25
+        },
+        {
+          "name": "stop_movement",
+          "numArgs": 0,
+          "type": "move",
+          "quality": 1,
+          "cost": 0
+        },
+        {
+          "name": "receive_location_from_robot",
+          "numArgs": 0,
+          "type": "wait",
+          "quality": 1,
+          "cost": 0
+        }
+      ]
+    },
+    "moose3": {
+      "language": "python",
+      "location": {
+        "x": 408.271,
+        "y": -0.37
+      },
+      "port": "5004",
+      "simpleactions": [
+        {
+          "name": "go_forward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "go_backward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_right",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.90,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_left",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
         {
           "name": "go_to_location",
           "numArgs": 1,

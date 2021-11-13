@@ -179,4 +179,6 @@ def execute_simpleactions():
 
 # TODO remove this
 simpleactions.append("go_forward(10)")
+simpleactions.append("turn_right(10)")
+simpleactions.append("go_forward(10)")
 init()
