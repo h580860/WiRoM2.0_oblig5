@@ -15,14 +15,13 @@ CORS(app)
 # configure logging
 # this file uses the custom logging class, because it is currently only working with this class
 # TODO use custom logging class for the other logging parts of the system as well
-wirom_logger = Wirom_logger("app.log")
+# wirom_logger = Wirom_logger("app.log")
 
 # routing_key lookup
 routing_key_lookup = {
    "5001": "mavic_queue",
    "5002": "moose_queue",
    "5003": "moose2_queue",
-   "5004": "moose3_queue",
 }
 
 
@@ -33,7 +32,7 @@ with open('config.json') as json_data_file:
 
 @app.route('/mission', methods=['POST'])
 def receive_mission():
-    wirom_logger.info("receive_mission")
+    # wirom_logger.info("receive_mission")
     mission = request.get_json()
     for robot in mission:
         sequence = []
@@ -72,7 +71,7 @@ def receive_mission():
 
 @app.route('/allocate', methods=['POST'])
 def receive_tasks_for_allocation():
-    wirom_logger.info("receive_tasks_for_allocation")
+    # wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
     tasks = task_allocation(tasks, robots)
     return jsonify(tasks)
@@ -80,7 +79,7 @@ def receive_tasks_for_allocation():
 # automatic task allocation algorithm, auction-based solution
 # allocates tasks to robots based on highest bid
 def task_allocation(tasks, robots):
-    wirom_logger.info("task_allocation")
+    # wirom_logger.info("task_allocation")
     bids = {}
     for task in tasks:
         bids[task["name"]] = {}
@@ -198,7 +197,7 @@ def test_send_routing_messages(message_as_json, routing_key):
 
 
 if __name__ == '__main__':
-    wirom_logger.info("initiated main")
+    # wirom_logger.info("initiated main")
     print("initiated main")
     #app.run(processes='5', debug=True)
     # app.run(threaded=True)

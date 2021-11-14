@@ -108,24 +108,6 @@ SolidBox {
     mass 2
   }
 }
-SolidBox {
-  translation 408.683 0.32117 -407.418
-  name "CarryBox3"
-  size 1 0.5 1
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 2
-  }
-}
 AdvertisingBoard {
   translation 402.109 -0.71 -374.23
   rotation 0 -1 0 -1.5708053071795867
@@ -275,20 +257,6 @@ Moose {
   rotation 0 1 0 3.14
   name "moose2"
   controller "moose_controller2"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-    GPS {
-      rotation 1 0 0 1.5708
-    }
-  ]
-}
-Moose {
-  translation 408.233 -0.37 -407.345
-  rotation 0 1 0 3.14
-  name "moose3"
-  controller "moose_controller3"
   bodySlot [
     Compass {
       rotation 1 0 0 1.5708

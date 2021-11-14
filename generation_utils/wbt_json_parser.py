@@ -1,0 +1,247 @@
+import json
+from os import path, truncate
+import pathlib
+import pprint
+
+class wbt_json_parser():
+    '''
+    This class reads the .wbt files and processes them as json documents, allowing for an 
+    adapter between the .wbt files which Webots use and regular json. 
+    The idea is to simplify interaction with the world files, and make them easier to read/write to.
+    '''
+    def __init__(self, filepath='backend\worlds\delivery-missionUpdated.wbt', is_test=False):
+        # self.filepath = filepath
+        if is_test:
+            self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'test_parse_world.wbt'
+        else:
+            self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'delivery-missionUpdated.wbt'
+
+        self.key_name_count = {}
+        self.file_content = {}
+        self.subsection_types = ['normal', 'node', 'list']
+
+
+    def read_file(self):
+        '''
+        Reads the original file and parses it to a more easy to handle json format
+        '''
+        with open(self.filepath, 'r') as reader:
+            self.raw_file_content = reader.read().split('\n')
+            # print(self.raw_file_content)
+            # print(type(self.raw_file_content))
+            # print(reader.read())
+        
+        # for x in self.raw_file_content:
+        #     print(x)
+        # print(self.raw_file_content)
+
+
+        # Now we need to parse the input from the file
+        header_line = self.raw_file_content[0]
+        line_pointer = 1
+
+        file_content = {}
+        file_content["header_line"] = header_line
+
+
+        pp = pprint.PrettyPrinter(indent=4)
+
+        count = 0
+        while line_pointer < len(self.raw_file_content) - 1:
+            # For each iteration in the loop, we want to parse one section at the time
+
+            # The node name (which will be a key in the json file) will always be the first 
+            # string of a section
+            section_name = self.raw_file_content[line_pointer].split()[0]
+            if section_name in file_content.keys():
+                self.key_name_count[section_name] += 1
+                section_name += str(self.key_name_count[section_name])
+            else:
+                self.key_name_count[section_name] = 1
+
+            section_beginning = line_pointer + 1
+            # print(f'section beginning at {section_beginning}')
+            # Find section end. It ends if the first character on a line is an '}'
+            while self.raw_file_content[line_pointer][0] != '}':
+                line_pointer += 1
+
+            section_end = line_pointer
+            print(f'section end at {section_end}. Line: {self.raw_file_content[section_end]}')
+
+            
+            
+            section = self.raw_file_content[section_beginning:section_end]
+            # print(f'SECTION {section}')
+
+            count += 1
+            # if count > 2:
+            #     return
+            # Recursively in case there are more subsections
+            file_content[section_name] = self.handle_section(section_name, section, 1, "node")
+            # print(f'filecontent: {json.dumps(file_content)}')
+            # print("filecontent:")
+            # pp.pprint(file_content)
+            print("Current File content")
+            print(file_content)
+
+            line_pointer += 1
+        print("-" * 20 + " final file content " + "-" * 20)
+        # print(file_content)
+        for key, value in file_content.items():
+            print(f'{key}: {value}')
+
+        self.file_content = file_content
+
+        
+
+
+    def handle_section(self, name, section, indent_level, section_type):
+        print(f'Working with name: {name}, indlvl: {indent_level}, section: {section}')
+        
+
+        if section_type == "list" and len(section) == 1:
+            print("Returning list")
+            return section
+
+        # print(f'Working on section named {name}')
+        if section_type == "list":
+            current_section = []
+        else:
+            current_section = {}
+        # current_section = {}
+        ignore_sub_levels = False
+        # for idx in range(len(section)):
+        idx = 0
+        while idx < len(section):
+            # Remove the first whitespaces (indent level). One indent leven is 2 whitespaces
+            # line = section[idx][indent_level * 2:].split()
+            line = section[idx].strip().split()
+            print(f'working on line: {line}')
+
+            
+            if line[-1] == '{':
+                print("node")
+                subsection_name = ' '.join(line[:-1])
+                print(f'subsection_name = {subsection_name}')
+                subsection = []
+                # while section[idx][indent_level * 2:].split() != '}':
+                idx += 1
+                # print(f'section[idx] out: {section[idx]}')
+                # while not '}' in section[idx]:
+                while section[idx][indent_level * 2] != '}':
+                # while section[idx].strip() != '}':
+                    next_line = section[idx]
+                    print(f'section[idx] in: {section[idx]}. indlvl={indent_level}')
+                    subsection.append(next_line)
+                    idx += 1
+                print(f'Going in to subsection {subsection}')
+                # TODO this was "before". Perhaps it should be somehow like "after", on line 281-284
+                # current_section[subsection_name] = self.handle_section(subsection_name, subsection, indent_level, 'node')
+                if section_type == "list":
+                    current_section.append({subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, 'node')})
+                else:
+                    current_section[subsection_name] = self.handle_section(subsection_name, subsection, indent_level + 1, 'node')
+
+                idx += 1
+                continue
+
+            if line[-1] == "[":
+                print("list")
+                subsection_name = line[0]
+                print(f'subLIST name = {subsection_name}')
+                subsection = []
+                idx += 1
+                while section[idx][indent_level * 2] != ']':
+                # while section[idx].strip() != ']':
+                    # next_line = section[idx].strip()
+                    next_line = section[idx]
+                    # print(f'LISTsection[idx] in: {section[idx]}')
+                    subsection.append(next_line)
+                    idx += 1
+                print(f'Going in to subLISTsection {subsection}')
+                if section_type == "list":
+                    current_section.append({subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, "list")})
+                else:
+                    current_section[subsection_name] = self.handle_section(subsection_name, subsection, indent_level + 1, "list")
+                # print(f'created list: {subsection}')
+                # current_section[subsection_name] = subsection
+                idx += 1
+                continue
+
+            key = line[0]
+            values = []
+            string_value = ""
+            building_string_value = False
+            # for i in range(1, len(line[1:])):
+            i = 1
+            while i <= len(line[1:]):
+                # print(f'investigating {line[i]}')
+                if line[i] == "FALSE":
+                    values.append(False)
+                elif line[i] == "TRUE":
+                    values.append(True)
+                elif line[i][0] == "\"":
+                    string_value += line[i]
+                    # Check if there was only one word in the "" 
+                    if line[i][-1] == "\"":
+                        i += 1
+                    else:
+                        while line[i][-1] != "\"":
+                            i += 1
+                            string_value += " "
+                            string_value += line[i]
+                    print('append normally 1')
+                    values.append(string_value)
+                    string_value = ""
+                    
+                else:   # If none of the above, it's just a regular float value
+                    # print(f"appending {line[i]}")
+                    print(f'append normally 2')
+                    values.append(float(line[i]))
+                i += 1
+
+            if section_type == "list":
+                print("welp")
+            else:
+                current_section[key] = values
+            idx += 1
+            # print(f'Updated current_section: {current_section}')
+        # print(f"Done with section: {current_section}")
+        print(f'RETURNING. Current section: {current_section}')
+        return current_section
+    
+
+
+
+    def write_node_to_file(self, node):
+        '''
+        Takes in a python dictionary, converts it to json and appends it at the end of the world file
+        '''
+        pass
+
+    def read_position_of_node(self, node_name):
+        '''
+        Reads the "translation" field of a given node, and returns them as [x, y, z] positions
+        '''
+        pass
+
+
+    def test_write_json_file(self):
+        '''
+        Write the content to a json file, just for manually testing to see if it works
+        '''
+        pass
+
+    def write_file_to_json(self):
+        with open('test.json', 'w', encoding='utf-8') as write_file:
+            json.dump(self.file_content, write_file, ensure_ascii=False, indent=4)
+
+
+
+if __name__ == "__main__":
+    # parser = wbt_json_parser(is_test=True)
+    parser = wbt_json_parser()
+    # print(pathlib.Path.cwd().parent / 'backend' / 'worlds')
+
+    parser.read_file()
+    parser.write_file_to_json()
