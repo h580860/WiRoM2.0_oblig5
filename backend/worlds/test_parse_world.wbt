@@ -1,25 +1,14 @@
 #VRML_SIM R2021b utf8
-Mavic2Pro {
-  translation 407.939 0.127252 -401.225
-  rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
-  controller "mavic2pro_controller"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-  ]
-  cameraSlot [
-    Camera {
-      rotation 1 0 0 -0.13090030610042527
-      rotationStep 0.261812
-      recognitionColors [
-        0 0 0
-      ]
-      width 400
-      height 240
-      recognition Recognition {
-        maxRange 5
-      }
-    }
-  ]
+WorldInfo {
+  basicTimeStep 16
+  defaultDamping Damping {
+    linear 0.5
+    angular 0.5
+  }
+  coordinateSystem "NUE"
+}
+SimpleTwoFloorsHouse {
+  translation 346.82 -0.68 -363.59
+  name "simple two-storey house(2)"
+  enableBoundingObject FALSE
 }
