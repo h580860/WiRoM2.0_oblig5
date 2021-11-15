@@ -1,14 +1,15 @@
 #VRML_SIM R2021b utf8
-WorldInfo {
-  basicTimeStep 16
-  defaultDamping Damping {
-    linear 0.5
-    angular 0.5
-  }
-  coordinateSystem "NUE"
-}
-SimpleTwoFloorsHouse {
-  translation 346.82 -0.68 -363.59
-  name "simple two-storey house(2)"
-  enableBoundingObject FALSE
+Moose {
+  translation 408.271 -0.37 -404.715
+  rotation 0 1 0 3.14
+  name "moose2"
+  controller "moose_controller2"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
 }

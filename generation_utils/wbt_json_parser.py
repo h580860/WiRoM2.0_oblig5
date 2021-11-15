@@ -19,7 +19,7 @@ class wbt_json_parser():
         self.key_name_count = {}
         self.file_content = {}
         self.subsection_types = ['normal', 'node', 'list']
-        self.output_filename = "test_world_output.txt"
+        self.output_filename = "test_world_output.wbt"
 
 
     def read_file(self):
@@ -244,16 +244,36 @@ class wbt_json_parser():
         return self.file_content
 
 
-    def add_moose(self):
+    def add_moose_to_world(self):
         pass
 
+    
+    def get_all_moose(self):
+        """
+        Returns a list of all the Moose nodes (objects) in the world file
+        """
+        if not self.file_content:
+            print(f'Error, read the file first!')
+            return []
 
-    def transform_from_json_to_world(self, content):
+        result = []
+        for key, value in self.file_content.items():
+            if key[:5] == "Moose":
+                result.append(value)
+        return result
+        
+
+
+    def transform_from_json_to_world(self, content, has_header=False):
+        '''
+        @param content: json object with the content to be written 
+        '''
         new_file = []
-        # Add the header file
-        new_file.append(self.file_header_line)
+        if has_header:
+            new_file.append(self.file_header_line)
 
         digits = [str(x) for x in range(10)]
+        print(f'Content: {content}')
         # print(f'New file:\n{new_file}')
         for key, value in content.items():
             if key[-1] in digits:
@@ -262,12 +282,7 @@ class wbt_json_parser():
             self.transform_section(new_file, value, 1)
             new_file.append("}")
         
-        with open(self.output_filename, "w", encoding='utf-8') as write_file:
-            for i in range(len(new_file) - 1):
-                write_file.write(new_file[i] + "\n")
-                
-            # Write the last line without appending a newline at the end
-            write_file.write(new_file[-1])
+        return new_file
         
     
     def transform_section(self, new_file, object, indent_lvl):
@@ -295,13 +310,28 @@ class wbt_json_parser():
                     self.transform_section(new_file, x, indent_lvl+1)
                 new_file.append(spaces(indent_lvl) + "]")
                 
+    
 
-
+    def write_to_world_file(self, new_file, output_file):
+         with open(output_file, "w", encoding='utf-8') as write_file:
+            for i in range(len(new_file) - 1):
+                write_file.write(new_file[i] + "\n")
+                
+            # Write the last line without appending a newline at the end
+            write_file.write(new_file[-1])
 
     
     def append_to_world_file(self, node):
-        # with open('test_world.wbt', 'a', encoding='utf-8') as write_file:
-        pass
+        #   new_part = self.transform_from_json_to_world(node)
+          with open(self.filepath, "a", encoding='utf-8') as write_file:
+            write_file.write("\n")
+            for i in range(len(node) - 1):
+                write_file.write(node[i] + "\n")
+                
+            # Write the last line without appending a newline at the end
+            write_file.write(node[-1])
+
+        
 
 
     def test_compare_infile_outfile(self):
@@ -321,13 +351,15 @@ class wbt_json_parser():
 
 
 if __name__ == "__main__":
-    # parser = wbt_json_parser(is_test=True)
-    parser = wbt_json_parser()
+    parser = wbt_json_parser(is_test=True)
+    # parser = wbt_json_parser()
     # print(pathlib.Path.cwd().parent / 'backend' / 'worlds')
 
     parser.read_file()
     # parser.write_file_to_json()
-    parser.transform_from_json_to_world(parser.file_content)
+    new_file = parser.transform_from_json_to_world(parser.file_content, has_header=True)
+    parser.write_to_world_file(new_file, parser.output_filename)
+
 
     if parser.test_compare_infile_outfile(): 
         print("All good when comparing the input and output file!")

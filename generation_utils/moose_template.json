@@ -2,47 +2,24 @@
     "webots_world": {
         "filename": "delivery-missionUpdated.wbt",
         "Moose": {
-            "translation": [
-                408.503,
-                -0.37,
-                -398.745
-            ],
-            "rotation": [
-                0.0,
-                1.0,
-                0.0,
-                3.14
-            ],
-            "controller": [
-                "void"
-            ],
-            "bodySlot": [
-                {
-                    "Compass": {
-                        "rotation": [
-                            1.0,
-                            0.0,
-                            0.0,
-                            1.5708
-                        ]
-                    }
-                },
-                {
-                    "GPS": {
-                        "rotation": [
-                            1.0,
-                            0.0,
-                            0.0,
-                            1.5708
-                        ]
-                    }
-                }
-            ]
+          "translation": "408.503 -0.37 -398.745",
+          "rotation": "0 1 0 3.14",
+          "controller": "\"void\"",
+          "bodySlot": [
+              {
+                  "Compass": {
+                      "rotation": "1 0 0 1.5708"
+                  }
+              },
+              {
+                  "GPS": {
+                      "rotation": "1 0 0 1.5708"
+                  }
+              }
+          ]
         }
-
-    },
+      },
     "config": {
-        "filename": "config.json",
         "moose": {
             "language": "python",
             "location": {
@@ -104,7 +81,6 @@
           }
     },
     "data": {
-        "filename": "data.json",
         "moose": {
             "language" : "python",
             "port" : "",
@@ -119,5 +95,4 @@
             ]
         }
     }
-
 }

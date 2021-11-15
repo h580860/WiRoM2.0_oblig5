@@ -278,3 +278,17 @@ SwingCouch {
   rotation 0 -1 0 1.5708
   name "swing couch(1)"
 }
+Moose {
+  translation 408.271 -0.37 -409.715
+  rotation 0 1 0 3.14
+  controller "void"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
+  name "testmoose"
+}
