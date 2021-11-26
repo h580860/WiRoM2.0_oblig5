@@ -3,7 +3,8 @@ from wbt_json_parser import wbt_json_parser
 from json_reader_writer import json_reader_writer
 import pathlib
 
-class generate_moose():
+
+class GenerateMoose():
     def __init__(self):
         self.map_reader = wbt_json_parser()
         self.json_reader_writer = json_reader_writer()
@@ -11,7 +12,6 @@ class generate_moose():
         self.configpath = pathlib.Path.cwd().parent / 'backend' / 'config.json'
         self.datapath = pathlib.Path.cwd().parent / 'web_interface' / 'src' / 'data.json'
         self.new_positions = []
-        
 
     def read_template(self):
         template = self.json_reader_writer.read_json("moose_template.json")
@@ -22,7 +22,7 @@ class generate_moose():
 
         self.map_reader.read_file()
         all_moose = self.map_reader.get_all_moose()
-        
+
         all_translations = []
 
         # The "lowest transformation will be the one with the lowest z value"
@@ -52,12 +52,10 @@ class generate_moose():
         new_file_content = self.map_reader.transform_from_json_to_world(new_moose_node)
         self.map_reader.append_to_world_file(new_file_content)
 
-
     def get_translation(self, node):
         translation = [float(x) for x in node["translation"].split()]
         return translation
 
-    
     def test_adding_moose_to_config(self):
         config_content = self.json_reader_writer.read_json(self.configpath)
         # print(f'Config content: {config_content}')
@@ -89,21 +87,18 @@ class generate_moose():
         # Print it to output file
         # self.json_reader_writer.write_json("test_config.json", json.dumps(config_content, indent=2))
         self.json_reader_writer.write_json(self.configpath, json.dumps(config_content, indent=2))
-        
-
-
 
     def test_adding_moose_to_data(self):
         data_content = self.json_reader_writer.read_json(self.datapath)
-        
+
         moose_data_from_template = self.moose_template["data"]["moose"]
-        
+
         # Add the port
         new_port_number = self.find_next_port_number(data_content["robots"])
         print(f'New port number: {new_port_number}')
         moose_data_from_template["port"] = str(new_port_number)
 
-         # The count of moose robots will determine the key name (which needs to be unique)
+        # The count of moose robots will determine the key name (which needs to be unique)
         moose_count = self.count_moose(data_content["robots"])
         key_name = "moose" + str(moose_count + 1)
 
@@ -111,12 +106,8 @@ class generate_moose():
         # self.json_reader_writer.write_json("test_data.json", json.dumps(data_content, indent=4))
         self.json_reader_writer.write_json(self.datapath, json.dumps(data_content, indent=4))
 
-
-
-
     def test_adding_moose_controller(self):
         pass
-
 
     def find_next_port_number(self, content):
         '''
@@ -127,12 +118,11 @@ class generate_moose():
         for value in content.values():
             # print(f'key: {key}, val: {value}')
             port = int(value["port"])
-            if port > largest_port_number: 
+            if port > largest_port_number:
                 largest_port_number = port
-        
-        return largest_port_number + 1  
 
-    
+        return largest_port_number + 1
+
     def count_moose(self, content):
         count = 0
         for key in content.keys():
@@ -141,14 +131,9 @@ class generate_moose():
         return count
 
 
-
-
 if __name__ == "__main__":
-    generate_moose = generate_moose()
+    generate_moose = GenerateMoose()
     generate_moose.test_adding_moose_to_world()
     generate_moose.test_adding_moose_to_config()
     generate_moose.test_adding_moose_to_data()
     # generate_moose.test_adding_moose_controller()
-
-
-
