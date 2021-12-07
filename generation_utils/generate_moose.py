@@ -152,10 +152,38 @@ class GenerateMoose():
         routing_keys[self.next_port_number] = f'moose{self.new_moose_number}_queue'
         self.json_reader_writer.write_json(self.routing_key_lookup_filepath, json.dumps(routing_keys, indent=4))
 
+        # Save the configurations
+        with open('configurations_savefile.txt', 'a') as file_appender:
+            file_appender.write(f'moose_controller{self.new_moose_number}\n')
+
+    def reset_to_default(self):
+        '''
+        Reset the configurations to the default templates. This action deletes all the added configurations, using the
+        default templates found in generation_utils/default_templates
+        '''
+
+        # Reset the world file
+        # reset_map_reader = wbt_json_parser(filepath='default_templates/delivery-missionUpdatedTemplate.wbt')
+        reset_world_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
+        reset_world_destination_filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'delivery-missionUpdated.wbt'
+        shutil.copy(reset_world_source_filepath, reset_world_destination_filepath)
+        print("world reset finished")
+
+        reset_config_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_config.json'
+        reset_config_destination_filepath = self.configpath
+        shutil.copy(reset_config_source_filepath, reset_config_destination_filepath)
+        print("config reset finished")
+
+        reset_data_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_data.json'
+        reset_data_destination_filepath = self.datapath
+        shutil.copy(reset_data_source_filepath, reset_data_destination_filepath)
+        print("config reset finished")
+
 
 if __name__ == "__main__":
     generate_moose = GenerateMoose()
-    generate_moose.test_adding_moose_to_world()
-    generate_moose.test_adding_moose_to_config()
-    generate_moose.test_adding_moose_to_data()
-    generate_moose.test_adding_moose_controller()
+    # generate_moose.test_adding_moose_to_world()
+    # generate_moose.test_adding_moose_to_config()
+    # generate_moose.test_adding_moose_to_data()
+    # generate_moose.test_adding_moose_controller()
+    generate_moose.reset_to_default()

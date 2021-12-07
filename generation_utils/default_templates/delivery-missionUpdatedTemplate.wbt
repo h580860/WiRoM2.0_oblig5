@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.08556080808669726 -0.9893898521198614 -0.11741834882926193 4.390891959856735
-  position 450.76417574276303 13.164371825276865 -420.8462824786496
+  orientation 0.07325039638953136 -0.9920151780998353 -0.10266579687670363 4.373458355814488
+  position 443.3105566046916 11.104878590501144 -419.4425010151024
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -75,42 +75,6 @@ SolidBox {
 SolidBox {
   translation 408.973 0.32117 -398.768
   name "CarryBox1"
-  size 1 0.5 1
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 2
-  }
-}
-SolidBox {
-  translation 408.713 0.32117 -404.738
-  name "CarryBox2"
-  size 1 0.5 1
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 2
-  }
-}
-SolidBox {
-  translation 408.683 0.32117 -407.418
-  name "CarryBox3"
   size 1 0.5 1
   appearance PBRAppearance {
     baseColorMap ImageTexture {
@@ -233,6 +197,18 @@ AdvertisingBoard {
   poleHeight 3
   poleThickness 0.2
 }
+Pedestrian {
+  translation 387.56 0.59 -364.59
+}
+SwingCouch {
+  translation 323.02 -0.9 -411.23
+  rotation 0 1 0 3.14159
+}
+SwingCouch {
+  translation 383.84 -0.9 -369.03
+  rotation 0 -1 0 1.5708
+  name "swing couch(1)"
+}
 Mavic2Pro {
   translation 407.939 0.127252 -401.225
   rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
@@ -269,44 +245,4 @@ Moose {
       rotation 1 0 0 1.5708
     }
   ]
-}
-Moose {
-  translation 408.271 -0.37 -404.715
-  rotation 0 1 0 3.14
-  name "moose2"
-  controller "moose_controller2"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-    GPS {
-      rotation 1 0 0 1.5708
-    }
-  ]
-}
-Moose {
-  translation 408.233 -0.37 -407.345
-  rotation 0 1 0 3.14
-  name "moose3"
-  controller "moose_controller3"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-    GPS {
-      rotation 1 0 0 1.5708
-    }
-  ]
-}
-Pedestrian {
-  translation 387.56 0.59 -364.59
-}
-SwingCouch {
-  translation 323.02 -0.9 -411.23
-  rotation 0 1 0 3.14159
-}
-SwingCouch {
-  translation 383.84 -0.9 -369.03
-  rotation 0 -1 0 1.5708
-  name "swing couch(1)"
 }

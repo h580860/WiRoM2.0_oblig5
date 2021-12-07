@@ -3,25 +3,27 @@ from os import path, truncate
 import pathlib
 import pprint
 
+
 class wbt_json_parser():
     '''
     This class reads the .wbt files and processes them as json documents, allowing for an 
-    adapter between the .wbt files which Webots use and regular j
-    son.
+    adapter between the .wbt files which Webots use and regular json.
     The idea is to simplify interaction with the world files, and make them easier to read/write to.
     '''
-    def __init__(self, filepath='backend\worlds\delivery-missionUpdated.wbt', is_test=False):
+
+    def __init__(self, filepath=None, is_test=False):
         # self.filepath = filepath
         if is_test:
             self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'test_parse_world.wbt'
-        else:
+        elif not filepath:
             self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'delivery-missionUpdated.wbt'
+        else:
+            self.filepath = filepath
 
         self.key_name_count = {}
         self.file_content = {}
         self.subsection_types = ['normal', 'node', 'list']
         self.output_filename = "test_world_output.wbt"
-
 
     def read_file(self):
         '''
@@ -32,11 +34,10 @@ class wbt_json_parser():
             # print(self.raw_file_content)
             # print(type(self.raw_file_content))
             # print(reader.read())
-        
+
         # for x in self.raw_file_content:
         #     print(x)
         # print(self.raw_file_content)
-
 
         # Now we need to parse the input from the file
         self.file_header_line = self.raw_file_content[0]
@@ -44,7 +45,6 @@ class wbt_json_parser():
 
         file_content = {}
         # file_content["header_line"] = header_line
-
 
         pp = pprint.PrettyPrinter(indent=4)
 
@@ -70,8 +70,6 @@ class wbt_json_parser():
             section_end = line_pointer
             # print(f'section end at {section_end}. Line: {self.raw_file_content[section_end]}')
 
-            
-            
             section = self.raw_file_content[section_beginning:section_end]
             # print(f'SECTION {section}')
 
@@ -94,12 +92,8 @@ class wbt_json_parser():
 
         self.file_content = file_content
 
-        
-
-
     def handle_section(self, name, section, indent_level, section_type):
         # print(f'Working with name: {name}, indlvl: {indent_level}, section: {section}')
-        
 
         if section_type == "list" and len(section) == 1:
             # print("Returning list")
@@ -120,7 +114,6 @@ class wbt_json_parser():
             line = section[idx].strip().split()
             # print(f'working on line: {line}')
 
-            
             if line[-1] == '{':
                 # print("node")
                 subsection_name = ' '.join(line[:-1])
@@ -131,16 +124,18 @@ class wbt_json_parser():
                 # print(f'section[idx] out: {section[idx]}')
                 # while not '}' in section[idx]:
                 while section[idx][indent_level * 2] != '}':
-                # while section[idx].strip() != '}':
+                    # while section[idx].strip() != '}':
                     next_line = section[idx]
                     # print(f'section[idx] in: {section[idx]}. indlvl={indent_level}')
                     subsection.append(next_line)
                     idx += 1
                 # print(f'Going in to subsection {subsection}')
                 if section_type == "list":
-                    current_section.append({subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, 'node')})
+                    current_section.append(
+                        {subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, 'node')})
                 else:
-                    current_section[subsection_name] = self.handle_section(subsection_name, subsection, indent_level + 1, 'node')
+                    current_section[subsection_name] = self.handle_section(subsection_name, subsection,
+                                                                           indent_level + 1, 'node')
 
                 idx += 1
                 continue
@@ -152,7 +147,7 @@ class wbt_json_parser():
                 subsection = []
                 idx += 1
                 while section[idx][indent_level * 2] != ']':
-                # while section[idx].strip() != ']':
+                    # while section[idx].strip() != ']':
                     # next_line = section[idx].strip()
                     next_line = section[idx]
                     # print(f'LISTsection[idx] in: {section[idx]}')
@@ -160,9 +155,11 @@ class wbt_json_parser():
                     idx += 1
                 # print(f'Going in to subLISTsection {subsection}')
                 if section_type == "list":
-                    current_section.append({subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, "list")})
+                    current_section.append(
+                        {subsection_name: self.handle_section(subsection_name, subsection, indent_level + 1, "list")})
                 else:
-                    current_section[subsection_name] = self.handle_section(subsection_name, subsection, indent_level + 1, "list")
+                    current_section[subsection_name] = self.handle_section(subsection_name, subsection,
+                                                                           indent_level + 1, "list")
                 # print(f'created list: {subsection}')
                 # current_section[subsection_name] = subsection
                 idx += 1
@@ -196,12 +193,12 @@ class wbt_json_parser():
                     # print('append normally 1')
                     values.append(string_value)
                     string_value = ""
-                    
-                else:   # If none of the above, it's just a regular float value
+
+                else:  # If none of the above, it's just a regular float value
                     # print(f"appending {line[i]}")
                     # print(f'append normally 2')
                     # values.append(float(line[i]))
-                    values.append(line[i]   )
+                    values.append(line[i])
                 i += 1
 
             # if section_type == "list":
@@ -213,8 +210,6 @@ class wbt_json_parser():
         # print(f"Done with section: {current_section}")
         # print(f'RETURNING. Current section: {current_section}')
         return current_section
-    
-
 
     def write_node_to_file(self, node):
         '''
@@ -222,20 +217,17 @@ class wbt_json_parser():
         '''
         pass
 
-
     def read_position_of_node(self, node_name):
         '''
         Reads the "translation" field of a given node, and returns them as [x, y, z] positions
         '''
         pass
 
-
     def test_write_json_file(self):
         '''
         Write the content to a json file, just for manually testing to see if it works
         '''
         pass
-
 
     def write_file_to_json(self):
         with open('test.json', 'w', encoding='utf-8') as write_file:
@@ -244,11 +236,9 @@ class wbt_json_parser():
     def get_file(self):
         return self.file_content
 
-
     def add_moose_to_world(self):
         pass
 
-    
     def get_all_moose(self):
         """
         Returns a list of all the Moose nodes (objects) in the world file
@@ -262,8 +252,6 @@ class wbt_json_parser():
             if key[:5] == "Moose":
                 result.append(value)
         return result
-        
-
 
     def transform_from_json_to_world(self, content, has_header=False):
         '''
@@ -282,14 +270,12 @@ class wbt_json_parser():
             new_file.append(key + " {")
             self.transform_section(new_file, value, 1)
             new_file.append("}")
-        
+
         return new_file
-        
-    
+
     def transform_section(self, new_file, object, indent_lvl):
 
-        spaces = lambda x : x * 2 * " " 
-
+        spaces = lambda x: x * 2 * " "
 
         # print(f"value={object}")
         if isinstance(object, str):
@@ -302,53 +288,46 @@ class wbt_json_parser():
             elif isinstance(value, dict):
                 # print(f'isinstance dict: {value}')
                 new_file.append(spaces(indent_lvl) + key + " {")
-                self.transform_section(new_file, value, indent_lvl+1)
+                self.transform_section(new_file, value, indent_lvl + 1)
                 new_file.append(spaces(indent_lvl) + "}")
             elif isinstance(value, list):
                 # print(f'isinstance list: {value}')
                 new_file.append(spaces(indent_lvl) + key + " [")
                 for x in value:
-                    self.transform_section(new_file, x, indent_lvl+1)
+                    self.transform_section(new_file, x, indent_lvl + 1)
                 new_file.append(spaces(indent_lvl) + "]")
-                
-    
 
     def write_to_world_file(self, new_file, output_file):
-         with open(output_file, "w", encoding='utf-8') as write_file:
+        with open(output_file, "w", encoding='utf-8') as write_file:
             for i in range(len(new_file) - 1):
                 write_file.write(new_file[i] + "\n")
-                
+
             # Write the last line without appending a newline at the end
             write_file.write(new_file[-1])
 
-    
     def append_to_world_file(self, node):
         #   new_part = self.transform_from_json_to_world(node)
-          with open(self.filepath, "a", encoding='utf-8') as write_file:
+        with open(self.filepath, "a", encoding='utf-8') as write_file:
             write_file.write("\n")
             for i in range(len(node) - 1):
                 write_file.write(node[i] + "\n")
-                
+
             # Write the last line without appending a newline at the end
             write_file.write(node[-1])
-
-        
-
 
     def test_compare_infile_outfile(self):
         # Just for good measure, read the output file, and compare it to the first file we read
         with open(self.output_filename, 'r') as reader:
             output_file = reader.read().split('\n')
-        
+
         # Compare the output file to the first read input file
         for i in range(len(output_file)):
             if not self.raw_file_content[i] == output_file[i]:
-                print(f'ERROR: raw_input_file not matching output file:\n{self.raw_file_content[i]} != {output_file[i]}')
+                print(
+                    f'ERROR: raw_input_file not matching output file:\n{self.raw_file_content[i]} != {output_file[i]}')
                 return False
 
         return True
-
-
 
 
 if __name__ == "__main__":
@@ -361,8 +340,7 @@ if __name__ == "__main__":
     new_file = parser.transform_from_json_to_world(parser.file_content, has_header=True)
     parser.write_to_world_file(new_file, parser.output_filename)
 
-
-    if parser.test_compare_infile_outfile(): 
+    if parser.test_compare_infile_outfile():
         print("All good when comparing the input and output file!")
     else:
         print("Something went wrong when comparing the files")
