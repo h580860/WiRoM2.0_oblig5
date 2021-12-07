@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.10213756640235441 -0.9868320309273478 -0.1254211316533641 4.212911120646288
-  position 441.1725539029975 11.35720668416147 -426.3684328074905
+  orientation 0.08088497800053016 -0.9918559454834328 -0.09838396080164412 4.39460553384823
+  position 445.4578531313805 9.164351501395682 -418.07613209698286
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -256,7 +256,7 @@ Moose {
   translation 408.271 -0.37 -404.715
   rotation 0 1 0 3.14
   name "moose2"
-  controller "void"
+  controller "moose_controller2"
   bodySlot [
     Compass {
       rotation 1 0 0 1.5708
@@ -277,4 +277,18 @@ SwingCouch {
   translation 383.84 -0.9 -369.03
   rotation 0 -1 0 1.5708
   name "swing couch(1)"
+}
+Moose {
+  translation 408.271 -0.37 -409.715
+  rotation 0 1 0 3.14
+  controller "moose_controller3"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
+  name "moose3"
 }

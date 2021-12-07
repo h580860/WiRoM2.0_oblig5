@@ -6,7 +6,8 @@ import pprint
 class wbt_json_parser():
     '''
     This class reads the .wbt files and processes them as json documents, allowing for an 
-    adapter between the .wbt files which Webots use and regular json. 
+    adapter between the .wbt files which Webots use and regular j
+    son.
     The idea is to simplify interaction with the world files, and make them easier to read/write to.
     '''
     def __init__(self, filepath='backend\worlds\delivery-missionUpdated.wbt', is_test=False):

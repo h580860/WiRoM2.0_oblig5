@@ -49,8 +49,12 @@ location = []
 # simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
 simpleactions = []
 
+moose_name = ""
+
 # Initialize which sets the target altitude as well as start the main loop
-def init(port):
+def init(port, name):
+    global moose_name
+    moose_name = name
     # logging.info("init")
     main = threading.Thread(target=moose_main)
     # execute = threading.Thread(target=execute_simpleactions)
@@ -213,6 +217,7 @@ def execute_simpleactions():
 
 
 def test_receive_routing_message():
+    global moose_name
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
@@ -220,7 +225,7 @@ def test_receive_routing_message():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose2_queue")
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{moose_name}_queue")
 
     print("Moose2 ready to receive routed messages")
     channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
@@ -229,6 +234,7 @@ def test_receive_routing_message():
 
 
 def test_receive_location():
+    global moose_name
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
@@ -236,7 +242,7 @@ def test_receive_location():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose2_location_queue")
+    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key=f"{moose_name}_location_queue")
 
     print("Moose2 ready to receive locations")
     channel.basic_consume(queue=queue_name, on_message_callback=receive_location_callback, auto_ack=True)

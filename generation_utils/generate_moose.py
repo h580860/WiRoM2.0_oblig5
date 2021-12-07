@@ -2,6 +2,8 @@ import json
 from wbt_json_parser import wbt_json_parser
 from json_reader_writer import json_reader_writer
 import pathlib
+import shutil
+import os
 
 
 class GenerateMoose():
@@ -12,6 +14,13 @@ class GenerateMoose():
         self.configpath = pathlib.Path.cwd().parent / 'backend' / 'config.json'
         self.datapath = pathlib.Path.cwd().parent / 'web_interface' / 'src' / 'data.json'
         self.new_positions = []
+        self.config_content = self.json_reader_writer.read_json(self.configpath)
+        self.moose_count = self.count_moose(self.config_content["robots"])
+        self.new_moose_number = self.moose_count + 1
+        self.new_port_number = self.find_next_port_number(self.config_content["robots"])
+        self.new_dir_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / f'moose_controller{self.new_moose_number}'
+        self.next_port_number = self.find_next_port_number(self.config_content["robots"])
+        self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / 'backend' / 'routing_keys_lookup.json'
 
     def read_template(self):
         template = self.json_reader_writer.read_json("moose_template.json")
@@ -25,7 +34,7 @@ class GenerateMoose():
 
         all_translations = []
 
-        # The "lowest transformation will be the one with the lowest z value"
+        # The "lowest transformation" will be the one with the lowest z value
         lowest_transformation = [0, 0, float('inf')]
         for x in all_moose:
             translation = self.get_translation(x)
@@ -43,10 +52,9 @@ class GenerateMoose():
         new_moose_node["translation"] = new_transformation
         # print(f'Updated moose node: {new_moose_node}')
 
-        # Set name TODO should be dynamic
-        new_moose_node["name"] = "\"testmoose\""
+        new_moose_node["name"] = f"\"moose{self.new_moose_number}\""
         # Set the controller
-        new_moose_node["controller"] = "\"void\""
+        new_moose_node["controller"] = f"\"moose_controller{self.new_moose_number}\""
         new_moose_node = {"Moose": new_moose_node}
 
         new_file_content = self.map_reader.transform_from_json_to_world(new_moose_node)
@@ -57,7 +65,7 @@ class GenerateMoose():
         return translation
 
     def test_adding_moose_to_config(self):
-        config_content = self.json_reader_writer.read_json(self.configpath)
+        # config_content = self.json_reader_writer.read_json(self.configpath)
         # print(f'Config content: {config_content}')
 
         moose_config_from_template = self.moose_template["config"]["moose"]
@@ -75,18 +83,18 @@ class GenerateMoose():
             "y": new_y
         }
         # Set the port
-        new_port_number = self.find_next_port_number(config_content["robots"])
-        moose_config_from_template["port"] = str(new_port_number)
+        # self.new_port_number = self.find_next_port_number(self.config_content["robots"])
+        moose_config_from_template["port"] = str(self.new_port_number)
 
         # The count of moose robots will determine the key name (which needs to be unique)
-        moose_count = self.count_moose(config_content["robots"])
-        key_name = "moose" + str(moose_count + 1)
+
+        key_name = "moose" + str(self.moose_count + 1)
 
         # Now append the created moose data to the "robots" sections in config
-        config_content["robots"][key_name] = moose_config_from_template
+        self.config_content["robots"][key_name] = moose_config_from_template
         # Print it to output file
         # self.json_reader_writer.write_json("test_config.json", json.dumps(config_content, indent=2))
-        self.json_reader_writer.write_json(self.configpath, json.dumps(config_content, indent=2))
+        self.json_reader_writer.write_json(self.configpath, json.dumps(self.config_content, indent=2))
 
     def test_adding_moose_to_data(self):
         data_content = self.json_reader_writer.read_json(self.datapath)
@@ -94,20 +102,16 @@ class GenerateMoose():
         moose_data_from_template = self.moose_template["data"]["moose"]
 
         # Add the port
-        new_port_number = self.find_next_port_number(data_content["robots"])
-        print(f'New port number: {new_port_number}')
-        moose_data_from_template["port"] = str(new_port_number)
+        # self.new_port_number = self.find_next_port_number(data_content["robots"])
+        print(f'New port number: {self.new_port_number}')
+        moose_data_from_template["port"] = str(self.new_port_number)
 
         # The count of moose robots will determine the key name (which needs to be unique)
-        moose_count = self.count_moose(data_content["robots"])
-        key_name = "moose" + str(moose_count + 1)
+        key_name = "moose" + str(self.moose_count + 1)
 
         data_content["robots"][key_name] = moose_data_from_template
         # self.json_reader_writer.write_json("test_data.json", json.dumps(data_content, indent=4))
         self.json_reader_writer.write_json(self.datapath, json.dumps(data_content, indent=4))
-
-    def test_adding_moose_controller(self):
-        pass
 
     def find_next_port_number(self, content):
         '''
@@ -130,10 +134,28 @@ class GenerateMoose():
                 count += 1
         return count
 
+    def test_adding_moose_controller(self):
+        print(f'Creating new dir at {self.new_dir_filepath}')
+        os.mkdir(self.new_dir_filepath)
+
+        source_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / 'moose_controller' / 'moose_simpleactions.py '
+
+        destination_filepath = self.new_dir_filepath / f'moose_simpleactions{self.new_moose_number}.py'
+        shutil.copy(source_filepath, destination_filepath)
+
+        with open(self.new_dir_filepath / f'moose_controller{self.new_moose_number}.py', 'w') as writer:
+            writer.write(f"from moose_simpleactions{self.new_moose_number} import *\n")
+            writer.write(f"init({self.next_port_number}, \"moose{self.new_moose_number}\")\n")
+
+        # Update the routing key lookup table
+        routing_keys = self.json_reader_writer.read_json(self.routing_key_lookup_filepath)
+        routing_keys[self.next_port_number] = f'moose{self.new_moose_number}_queue'
+        self.json_reader_writer.write_json(self.routing_key_lookup_filepath, json.dumps(routing_keys, indent=4))
+
 
 if __name__ == "__main__":
     generate_moose = GenerateMoose()
     generate_moose.test_adding_moose_to_world()
     generate_moose.test_adding_moose_to_config()
     generate_moose.test_adding_moose_to_data()
-    # generate_moose.test_adding_moose_controller()
+    generate_moose.test_adding_moose_controller()
