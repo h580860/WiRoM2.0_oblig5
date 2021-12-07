@@ -4,9 +4,10 @@ from json_reader_writer import json_reader_writer
 import pathlib
 import shutil
 import os
+import sys
 
 
-class GenerateMoose():
+class GenerateMoose:
     def __init__(self):
         self.map_reader = wbt_json_parser()
         self.json_reader_writer = json_reader_writer()
@@ -21,6 +22,7 @@ class GenerateMoose():
         self.new_dir_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / f'moose_controller{self.new_moose_number}'
         self.next_port_number = self.find_next_port_number(self.config_content["robots"])
         self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / 'backend' / 'routing_keys_lookup.json'
+        self.save_file = 'configurations_savefile.txt'
 
     def read_template(self):
         template = self.json_reader_writer.read_json("moose_template.json")
@@ -153,7 +155,7 @@ class GenerateMoose():
         self.json_reader_writer.write_json(self.routing_key_lookup_filepath, json.dumps(routing_keys, indent=4))
 
         # Save the configurations
-        with open('configurations_savefile.txt', 'a') as file_appender:
+        with open(self.save_file, 'a') as file_appender:
             file_appender.write(f'moose_controller{self.new_moose_number}\n')
 
     def reset_to_default(self):
@@ -169,21 +171,58 @@ class GenerateMoose():
         shutil.copy(reset_world_source_filepath, reset_world_destination_filepath)
         print("world reset finished")
 
+        # Reset the config file
         reset_config_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_config.json'
         reset_config_destination_filepath = self.configpath
         shutil.copy(reset_config_source_filepath, reset_config_destination_filepath)
         print("config reset finished")
 
+        # Reset the data file
         reset_data_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_data.json'
         reset_data_destination_filepath = self.datapath
         shutil.copy(reset_data_source_filepath, reset_data_destination_filepath)
         print("config reset finished")
 
+        # Reset the routing_keys_lookup file
+        reset_routing_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_routing_keys_lookup.json'
+        reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'backend' / 'routing_keys_lookup.json'
+        shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
+        print("routing_key_lookup reset finished")
+
+        # Access the save file to see how many controllers have been created
+        # TODO better exception handling
+        if pathlib.Path(self.save_file).exists():
+            with open(self.save_file, 'r') as reader:
+                save_file_content = reader.readlines()
+            # Delete the controllers
+            for controller in save_file_content:
+                current_controller_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / controller.strip()
+                if current_controller_filepath.is_dir():
+                    shutil.rmtree(current_controller_filepath)
+                    print(f'Deleted directory: {current_controller_filepath}')
+                else:
+                    print(f"No controller in: {current_controller_filepath}")
+
+            # Delete the configuration savefile
+            os.remove(self.save_file)
+        print(f'Finished reset')
+
 
 if __name__ == "__main__":
+    try:
+        arg = sys.argv[1]
+    except IndexError:
+        raise SystemExit(f"Error, no argument provided. Either <generate> or <reset>, omitting \"<>\"")
+
+    if arg != "generate" and arg != "reset":
+        print(f'Invalid argument: {arg}')
+        sys.exit(0)
+
     generate_moose = GenerateMoose()
-    # generate_moose.test_adding_moose_to_world()
-    # generate_moose.test_adding_moose_to_config()
-    # generate_moose.test_adding_moose_to_data()
-    # generate_moose.test_adding_moose_controller()
-    generate_moose.reset_to_default()
+    if arg == "generate":
+        generate_moose.test_adding_moose_to_world()
+        generate_moose.test_adding_moose_to_config()
+        generate_moose.test_adding_moose_to_data()
+        generate_moose.test_adding_moose_controller()
+    else:
+        generate_moose.reset_to_default()
