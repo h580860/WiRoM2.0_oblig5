@@ -4,19 +4,19 @@ import pathlib
 import pprint
 
 
-class wbt_json_parser():
-    '''
-    This class reads the .wbt files and processes them as json documents, allowing for an 
+class WbtJsonParser:
+    """
+    This class reads the .wbt files and processes them as json documents, allowing for an
     adapter between the .wbt files which Webots use and regular json.
     The idea is to simplify interaction with the world files, and make them easier to read/write to.
-    '''
+    """
 
     def __init__(self, filepath=None, is_test=False):
         # self.filepath = filepath
         if is_test:
-            self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'test_parse_world.wbt'
+            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'test_parse_world.wbt'
         elif not filepath:
-            self.filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'delivery-missionUpdated.wbt'
+            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
         else:
             self.filepath = filepath
 
@@ -262,7 +262,7 @@ class wbt_json_parser():
             new_file.append(self.file_header_line)
 
         digits = [str(x) for x in range(10)]
-        print(f'Content: {content}')
+        # print(f'Content: {content}')
         # print(f'New file:\n{new_file}')
         for key, value in content.items():
             if key[-1] in digits:
@@ -331,8 +331,8 @@ class wbt_json_parser():
 
 
 if __name__ == "__main__":
-    parser = wbt_json_parser(is_test=True)
-    # parser = wbt_json_parser()
+    parser = WbtJsonParser(is_test=True)
+    # parser = WbtJsonParser()
     # print(pathlib.Path.cwd().parent / 'backend' / 'worlds')
 
     parser.read_file()

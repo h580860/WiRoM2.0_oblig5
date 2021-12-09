@@ -1,31 +1,36 @@
 import json
-from wbt_json_parser import wbt_json_parser
-from json_reader_writer import json_reader_writer
+import sys
 import pathlib
+# TODO is this the best fix?
+sys.path.insert(0, pathlib.Path.cwd().parent.parent.__str__())
+# print(sys.path)
+from backend.generation_utils.wbt_json_parser import WbtJsonParser
+from backend.generation_utils.json_reader_writer import json_reader_writer
+# import backend.generation_utils.wbt_json_parser
+# import backend.generation_utils.json_reader_writer
 import shutil
 import os
-import sys
 
 
 class GenerateMoose:
     def __init__(self):
-        self.map_reader = wbt_json_parser()
+        self.map_reader = WbtJsonParser()
         self.json_reader_writer = json_reader_writer()
         self.moose_template = self.read_template()
-        self.configpath = pathlib.Path.cwd().parent / 'backend' / 'config.json'
-        self.datapath = pathlib.Path.cwd().parent / 'web_interface' / 'src' / 'data.json'
+        self.configpath = pathlib.Path.cwd().parent / 'config.json'
+        self.datapath = pathlib.Path.cwd().parent.parent / 'web_interface' / 'src' / 'data.json'
         self.new_positions = []
         self.config_content = self.json_reader_writer.read_json(self.configpath)
         self.moose_count = self.count_moose(self.config_content["robots"])
         self.new_moose_number = self.moose_count + 1
         self.new_port_number = self.find_next_port_number(self.config_content["robots"])
-        self.new_dir_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / f'moose_controller{self.new_moose_number}'
+        self.new_dir_filepath = pathlib.Path.cwd().parent / 'controllers' / f'moose_controller{self.new_moose_number}'
         self.next_port_number = self.find_next_port_number(self.config_content["robots"])
-        self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / 'backend' / 'routing_keys_lookup.json'
-        self.save_file = 'configurations_savefile.txt'
+        self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
+        self.save_file = pathlib.Path.cwd().parent / 'generation_utils' / 'configurations_savefile.txt'
 
     def read_template(self):
-        template = self.json_reader_writer.read_json("moose_template.json")
+        template = self.json_reader_writer.read_json(pathlib.Path.cwd().parent / 'generation_utils' / "moose_template.json")
         return template
 
     def test_adding_moose_to_world(self):
@@ -112,6 +117,22 @@ class GenerateMoose:
         key_name = "moose" + str(self.moose_count + 1)
 
         data_content["robots"][key_name] = moose_data_from_template
+
+        # Update the testmission
+        new_mission = {
+            "name": f"Test: move forward moose{self.new_moose_number}",
+            "id": 0,
+            "robot": f"moose{self.new_moose_number}",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "args": "10",
+                    "id": 0
+                }
+            ]
+        }
+        data_content["missions"]["Testmission"]["tasks"].append(new_mission)
+
         # self.json_reader_writer.write_json("test_data.json", json.dumps(data_content, indent=4))
         self.json_reader_writer.write_json(self.datapath, json.dumps(data_content, indent=4))
 
@@ -140,7 +161,7 @@ class GenerateMoose:
         print(f'Creating new dir at {self.new_dir_filepath}')
         os.mkdir(self.new_dir_filepath)
 
-        source_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / 'moose_controller' / 'moose_simpleactions.py '
+        source_filepath = pathlib.Path.cwd().parent / 'controllers' / 'moose_controller' / 'moose_simpleactions.py '
 
         destination_filepath = self.new_dir_filepath / f'moose_simpleactions{self.new_moose_number}.py'
         shutil.copy(source_filepath, destination_filepath)
@@ -158,6 +179,8 @@ class GenerateMoose:
         with open(self.save_file, 'a') as file_appender:
             file_appender.write(f'moose_controller{self.new_moose_number}\n')
 
+        return f"moose_controller{self.new_moose_number}"
+
     def reset_to_default(self):
         '''
         Reset the configurations to the default templates. This action deletes all the added configurations, using the
@@ -165,9 +188,9 @@ class GenerateMoose:
         '''
 
         # Reset the world file
-        # reset_map_reader = wbt_json_parser(filepath='default_templates/delivery-missionUpdatedTemplate.wbt')
+        # reset_map_reader = WbtJsonParser(filepath='default_templates/delivery-missionUpdatedTemplate.wbt')
         reset_world_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
-        reset_world_destination_filepath = pathlib.Path.cwd().parent / 'backend' / 'worlds' / 'delivery-missionUpdated.wbt'
+        reset_world_destination_filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
         shutil.copy(reset_world_source_filepath, reset_world_destination_filepath)
         print("world reset finished")
 
@@ -185,7 +208,7 @@ class GenerateMoose:
 
         # Reset the routing_keys_lookup file
         reset_routing_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_routing_keys_lookup.json'
-        reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'backend' / 'routing_keys_lookup.json'
+        reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
         shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
         print("routing_key_lookup reset finished")
 
@@ -196,7 +219,7 @@ class GenerateMoose:
                 save_file_content = reader.readlines()
             # Delete the controllers
             for controller in save_file_content:
-                current_controller_filepath = pathlib.Path.cwd().parent / 'backend' / 'controllers' / controller.strip()
+                current_controller_filepath = pathlib.Path.cwd().parent / 'controllers' / controller.strip()
                 if current_controller_filepath.is_dir():
                     shutil.rmtree(current_controller_filepath)
                     print(f'Deleted directory: {current_controller_filepath}')
@@ -220,6 +243,7 @@ if __name__ == "__main__":
 
     generate_moose = GenerateMoose()
     if arg == "generate":
+        # TODO rename these functions, remove "test" from the function names
         generate_moose.test_adding_moose_to_world()
         generate_moose.test_adding_moose_to_config()
         generate_moose.test_adding_moose_to_data()
