@@ -11,6 +11,7 @@ class WbtJsonParser:
     The idea is to simplify interaction with the world files, and make them easier to read/write to.
     """
 
+    # def __init__(self,  robot_type, robot_type_capital, filepath=None, is_test=False):
     def __init__(self, filepath=None, is_test=False):
         # self.filepath = filepath
         if is_test:
@@ -24,6 +25,8 @@ class WbtJsonParser:
         self.file_content = {}
         self.subsection_types = ['normal', 'node', 'list']
         self.output_filename = "test_world_output.wbt"
+        # self.robot_type = robot_type
+        # self.robot_type_capital = robot_type_capital
 
     def read_file(self):
         '''
@@ -251,6 +254,21 @@ class WbtJsonParser:
         for key, value in self.file_content.items():
             if key[:5] == "Moose":
                 result.append(value)
+        return result
+
+    def get_all_of_robot_type(self, robot_type_capital_first):
+        """
+        Returns a list of all the nodes (objects) of a given robot type in the world file
+        """
+        if not self.file_content:
+            print(f'Error, read the file first!')
+            return []
+
+        result = []
+        for key, value in self.file_content.items():
+            if key[:len(robot_type_capital_first)] == robot_type_capital_first:
+                result.append(value)
+        print(f"Found {len(result)} of robot type {robot_type_capital_first}")
         return result
 
     def transform_from_json_to_world(self, content, has_header=False):

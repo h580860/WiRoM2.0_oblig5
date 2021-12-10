@@ -11,8 +11,8 @@ import pika
 
 
 # from backend.wirom_logger import Wirom_logger
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
-logging.info("-" * 50)
+# logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
+# logging.info("-" * 50)
 
 
 # create flask instance
