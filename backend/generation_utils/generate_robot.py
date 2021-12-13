@@ -229,25 +229,25 @@ class GenerateRobot:
 
         # Reset the world file
         # reset_map_reader = WbtJsonParser(filepath='default_templates/delivery-missionUpdatedTemplate.wbt')
-        reset_world_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
+        reset_world_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
         reset_world_destination_filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
         shutil.copy(reset_world_source_filepath, reset_world_destination_filepath)
         print("world reset finished")
 
         # Reset the config file
-        reset_config_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_config.json'
+        reset_config_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_config.json'
         reset_config_destination_filepath = self.configpath
         shutil.copy(reset_config_source_filepath, reset_config_destination_filepath)
         print("config reset finished")
 
         # Reset the data file
-        reset_data_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_data.json'
+        reset_data_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_data.json'
         reset_data_destination_filepath = self.datapath
         shutil.copy(reset_data_source_filepath, reset_data_destination_filepath)
         print("config reset finished")
 
         # Reset the routing_keys_lookup file
-        reset_routing_source_filepath = pathlib.Path.cwd() / 'default_templates' / 'default_routing_keys_lookup.json'
+        reset_routing_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_routing_keys_lookup.json'
         reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
         shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
         print("routing_key_lookup reset finished")
