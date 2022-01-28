@@ -11,8 +11,8 @@ import pika
 
 
 # from backend.wirom_logger import Wirom_logger
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
-logging.info("-" * 50)
+# logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"), encoding='utf-8', level=logging.DEBUG)
+# logging.info("-" * 50)
 
 
 # create flask instance
@@ -50,9 +50,13 @@ location = []
 # simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
 simpleactions = []
 
+moose_name = ""
+
 # Initialize which sets the target altitude as well as start the main loop
-def init(port):
+def init(port, name):
+    global moose_name
     logging.info("init")
+    moose_name = name
     main = threading.Thread(target=moose_main)
     # execute = threading.Thread(target=execute_simpleactions)
     # communication = threading.Thread(target=test_communcation_receive)
@@ -268,6 +272,7 @@ def test_communcation_receive():
 
 
 def test_receive_routing_message():
+    global moose_name
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
@@ -275,7 +280,7 @@ def test_receive_routing_message():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose_queue")
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{moose_name}_queue")
 
     print("Moose ready to receive routed messages")
     channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
@@ -284,6 +289,7 @@ def test_receive_routing_message():
 
 
 def test_receive_location():
+    global moose_name
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
@@ -291,7 +297,7 @@ def test_receive_location():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose_location_queue")
+    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key=f"{moose_name}_location_queue")
 
     print("Moose ready to receive locations")
     channel.basic_consume(queue=queue_name, on_message_callback=receive_location_callback, auto_ack=True)

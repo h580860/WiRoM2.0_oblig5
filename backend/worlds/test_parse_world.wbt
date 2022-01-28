@@ -1,0 +1,15 @@
+#VRML_SIM R2021b utf8
+Moose {
+  translation 408.271 -0.37 -404.715
+  rotation 0 1 0 3.14
+  name "moose2"
+  controller "moose_controller2"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
+}

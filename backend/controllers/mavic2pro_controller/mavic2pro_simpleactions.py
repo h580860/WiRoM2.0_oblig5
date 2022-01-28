@@ -22,9 +22,9 @@ import pika
 
 # configure logging
 # wirom_logger = Wirom_logger("mavic2pro.log")
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(
-    os.pardir, os.pardir, "mavic2pro.log"), encoding='utf-8', level=logging.DEBUG)
-logging.info("-" * 50)
+# logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(
+#     os.pardir, os.pardir, "mavic2pro.log"), encoding='utf-8', level=logging.DEBUG)
+# logging.info("-" * 50)
 
 # create the Robot instance.
 robot = Robot()
@@ -78,11 +78,13 @@ target_loc = []
 simpleactions = []
 amount_of_objects = 0
 
+mavic_name = ""
+
 # Initialize which sets the target altitude as well as start the main loop
-
-
-def init(port):
+def init(port, name):
+    global mavic_name
     logging.info("init")
+    mavic_name = name
     main = threading.Thread(target=mavic2pro_main)
     # execute = threading.Thread(target=execute_simpleactions)
     # communication = threading.Thread(target=test_communcation_receive)
@@ -349,6 +351,7 @@ def test_communcation_receive():
 
 
 def test_receive_routing_message():
+    global mavic_name
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
@@ -358,7 +361,7 @@ def test_receive_routing_message():
     result = channel.queue_declare(queue='', exclusive=True)
     queue_name = result.method.queue
 
-    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="mavic_queue")
+    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{mavic_name}_queue")
 
     print("Mavic ready to receive routed messages")
     channel.basic_consume(

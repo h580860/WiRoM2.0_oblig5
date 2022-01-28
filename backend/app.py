@@ -15,16 +15,11 @@ CORS(app)
 # configure logging
 # this file uses the custom logging class, because it is currently only working with this class
 # TODO use custom logging class for the other logging parts of the system as well
-wirom_logger = Wirom_logger("app.log")
+# wirom_logger = Wirom_logger("app.log")
 
 # routing_key lookup
-routing_key_lookup = {
-   "5001": "mavic_queue",
-   "5002": "moose_queue",
-   "5003": "moose2_queue",
-   "5004": "moose3_queue",
-}
-
+with open('routing_keys_lookup.json') as reader_file:
+    routing_key_lookup = json.load(reader_file)
 
 with open('config.json') as json_data_file:
     data = json.load(json_data_file)
@@ -33,7 +28,7 @@ with open('config.json') as json_data_file:
 
 @app.route('/mission', methods=['POST'])
 def receive_mission():
-    wirom_logger.info("receive_mission")
+    # wirom_logger.info("receive_mission")
     mission = request.get_json()
     for robot in mission:
         sequence = []
@@ -43,8 +38,8 @@ def receive_mission():
             else:
                 if simpleaction['name'] == 'set_message_target':
                     sequence.append(
-                        simpleaction['name'] + "(" + "'"+ simpleaction['args'] + "'" + ")")
-                else : 
+                        simpleaction['name'] + "(" + "'" + simpleaction['args'] + "'" + ")")
+                else:
                     sequence.append(
                         simpleaction['name'] + "(" + simpleaction['args'] + ")")
 
@@ -72,15 +67,16 @@ def receive_mission():
 
 @app.route('/allocate', methods=['POST'])
 def receive_tasks_for_allocation():
-    wirom_logger.info("receive_tasks_for_allocation")
+    # wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
     tasks = task_allocation(tasks, robots)
     return jsonify(tasks)
 
+
 # automatic task allocation algorithm, auction-based solution
 # allocates tasks to robots based on highest bid
 def task_allocation(tasks, robots):
-    wirom_logger.info("task_allocation")
+    # wirom_logger.info("task_allocation")
     bids = {}
     for task in tasks:
         bids[task["name"]] = {}
@@ -89,19 +85,21 @@ def task_allocation(tasks, robots):
             bid = 1
             for simpleaction in task["simpleactions"]:
                 robot_simpleaction = list(filter(
-                    lambda robot_simpleaction: robot_simpleaction["name"] == simpleaction["name"], robots[robot]["simpleactions"]))
+                    lambda robot_simpleaction: robot_simpleaction["name"] == simpleaction["name"],
+                    robots[robot]["simpleactions"]))
                 if robot_simpleaction != []:
                     robot_simpleaction[0].update({"args": simpleaction["args"]})
                     robot_simpleaction[0].update({"location": robots[robot]["location"]})
 
                     utility = calculate_utility(robot_simpleaction[0])
-                    bid = bid*utility
+                    bid = bid * utility
                 else:
                     bid = 0
             bids[task["name"]][robot] = bid
 
     tasks = allocate_tasks_to_highest_bidder(tasks, bids)
     return tasks
+
 
 # Calculate the utility a robot has for a simpleaction (quality - cost)
 def calculate_utility(robot_simpleaction):
@@ -114,13 +112,14 @@ def calculate_utility(robot_simpleaction):
         distance = abs(robot_loc["x"] - target["x"] +
                        robot_loc["y"] - target["y"])
         # find distance from target location and normalize before adding to utility
-        distNorm = (1 - distance/100)
+        distNorm = (1 - distance / 100)
         if distNorm > 0.1:
             utility = utility * distNorm
         else:
             utility = utility * 0.1
 
     return utility
+
 
 # Sorting bids and allocates tasks to robots based on highest bid
 def allocate_tasks_to_highest_bidder(tasks, bids):
@@ -142,7 +141,6 @@ def allocate_tasks_to_highest_bidder(tasks, bids):
 @app.route('/ping')
 def ping():
     return 'Pong!'
-
 
 
 # def test_communication_messages(msg):
@@ -167,7 +165,6 @@ def ping():
 #     connection.close()
 
 
-
 def test_sending_one_message(sequence):
     # Test. Send 10 messages, with a time interval of 3 seconds between each message
 
@@ -182,7 +179,6 @@ def test_sending_one_message(sequence):
     connection.close()
 
 
-
 def test_send_routing_messages(message_as_json, routing_key):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
@@ -192,15 +188,12 @@ def test_send_routing_messages(message_as_json, routing_key):
     print("[send_routing_message] published to moose")
 
     connection.close()
-    
-
-
 
 
 if __name__ == '__main__':
-    wirom_logger.info("initiated main")
+    # wirom_logger.info("initiated main")
     print("initiated main")
-    #app.run(processes='5', debug=True)
+    # app.run(processes='5', debug=True)
     # app.run(threaded=True)
 
     # test_message = "Hello this message is from app.py"
