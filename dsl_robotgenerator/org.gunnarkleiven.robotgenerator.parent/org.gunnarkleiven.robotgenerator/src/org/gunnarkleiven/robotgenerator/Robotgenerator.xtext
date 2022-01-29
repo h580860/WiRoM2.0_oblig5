@@ -1,0 +1,33 @@
+grammar org.gunnarkleiven.robotgenerator.Robotgenerator with org.eclipse.xtext.common.Terminals
+
+generate robotgenerator "http://www.gunnarkleiven.org/robotgenerator/Robotgenerator"
+
+Model:
+	commands+=Command*;
+	
+Command:
+//	{Command} commandType=CommandType '(' (robotType=RobotType(',' parameters+=Parameter)*)? ')' ';' 
+	commandType=CommandType '(' robotType=RobotType ',' robotName=RobotName? ',' xValue=PositionValue? ',' yValue=PositionValue? ')' ';'
+;
+
+RobotName:
+	{RobotName} value=STRING
+;
+
+// TODO bad practice to name it like this? 
+PositionValue:
+	{PositionValue} value=INT
+;
+
+CommandType:
+	{AddRobot} value="addRobot" |
+	{RemoveRobot} value="removeRobot"
+;
+
+enum RobotType:
+	MOOSE="moose" | MAVIC2PRO="mavic2pro"
+;
+
+Parameter:
+	STRING | INT
+;

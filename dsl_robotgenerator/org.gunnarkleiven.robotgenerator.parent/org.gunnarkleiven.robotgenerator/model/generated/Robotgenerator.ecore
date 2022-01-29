@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="robotgenerator" nsURI="http://www.gunnarkleiven.org/robotgenerator/Robotgenerator"
+    nsPrefix="robotgenerator">
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="commands" upperBound="-1"
+        eType="#//Command" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Command">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="commandType" eType="#//CommandType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="robotType" eType="#//RobotType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="robotName" eType="#//RobotName"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="xValue" eType="#//PositionValue"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="yValue" eType="#//PositionValue"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RobotName">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PositionValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CommandType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RobotType">
+    <eLiterals name="MOOSE" literal="moose"/>
+    <eLiterals name="MAVIC2PRO" value="1" literal="mavic2pro"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AddRobot" eSuperTypes="#//CommandType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RemoveRobot" eSuperTypes="#//CommandType"/>
+</ecore:EPackage>
