@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.gunnarkleiven.robotgenerator.robotgenerator.Command
 
 /**
  * Generates code from your model files on save.
@@ -21,5 +22,23 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 //				.filter(Greeting)
 //				.map[name]
 //				.join(', '))
+
+		for (e : resource.allContents.toIterable.filter(Command)) {
+			fsa.generateFile('''robotgenerator/«e.robotName.value».py''', e.compile)
+		}
 	}
+	
+	def compile(Command command) {
+		'''
+		# package robotgenerator;
+		
+		import «command.capitalizeType»SimpleactionsGenerator
+		«command.capitalizeType»SimpleactionsGenerator(port_number_placeholder, '«command.robotName.value»')
+		'''	
+	}
+	
+	def capitalizeType(Command command) {
+		return command.robotType.toString.toFirstUpper
+	}
+	
 }

@@ -4,41 +4,90 @@
 package org.gunnarkleiven.robotgenerator.tests;
 
 import com.google.inject.Inject;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.testing.InjectWith;
-import org.eclipse.xtext.testing.extensions.InjectionExtension;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.Extension;
+import org.gunnarkleiven.robotgenerator.robotgenerator.Command;
 import org.gunnarkleiven.robotgenerator.robotgenerator.Model;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@ExtendWith(InjectionExtension.class)
+@RunWith(XtextRunner.class)
 @InjectWith(RobotgeneratorInjectorProvider.class)
 @SuppressWarnings("all")
 public class RobotgeneratorParsingTest {
   @Inject
-  private ParseHelper<Model> parseHelper;
+  @Extension
+  private ParseHelper<Model> _parseHelper;
+  
+  @Inject
+  @Extension
+  private ValidationTestHelper _validationTestHelper;
   
   @Test
-  public void loadModel() {
+  public void testCorrectParsing1() {
     try {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("Hello Xtext!");
+      _builder.append("addRobot(moose,,,);");
       _builder.newLine();
-      final Model result = this.parseHelper.parse(_builder);
-      Assertions.assertNotNull(result);
-      final EList<Resource.Diagnostic> errors = result.eResource().getErrors();
-      boolean _isEmpty = errors.isEmpty();
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append("Unexpected errors: ");
-      String _join = IterableExtensions.join(errors, ", ");
-      _builder_1.append(_join);
-      Assertions.assertTrue(_isEmpty, _builder_1.toString());
+      this._validationTestHelper.assertNoErrors(this._parseHelper.parse(_builder));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testCorrectParsing2() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("addRobot(mavic2pro,,2,);");
+      _builder.newLine();
+      this._validationTestHelper.assertNoErrors(this._parseHelper.parse(_builder));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testCorrectParsing3() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("addRobot(mavic2pro, \"test\", , 2);");
+      _builder.newLine();
+      this._validationTestHelper.assertNoErrors(this._parseHelper.parse(_builder));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testCorrectParsingMultipleParameters() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("addRobot(moose, \"test\", 3, 1);");
+      _builder.newLine();
+      this._validationTestHelper.assertNoErrors(this._parseHelper.parse(_builder));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testParsing() {
+    try {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("addRobot(moose, \"test\", 5);");
+      _builder.newLine();
+      final Model model = this._parseHelper.parse(_builder);
+      final Command command = model.getCommands().get(0);
+      Assert.assertEquals("addRobot", command.getCommandType().getValue());
+      Assert.assertEquals("moose", command.getRobotType().toString());
+      Assert.assertEquals("test", command.getRobotName().getValue());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }

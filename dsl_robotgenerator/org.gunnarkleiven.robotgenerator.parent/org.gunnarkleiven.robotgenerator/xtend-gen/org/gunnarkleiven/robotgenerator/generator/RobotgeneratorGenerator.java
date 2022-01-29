@@ -3,10 +3,16 @@
  */
 package org.gunnarkleiven.robotgenerator.generator;
 
+import com.google.common.collect.Iterables;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
+import org.eclipse.xtext.xbase.lib.IteratorExtensions;
+import org.eclipse.xtext.xbase.lib.StringExtensions;
+import org.gunnarkleiven.robotgenerator.robotgenerator.Command;
 
 /**
  * Generates code from your model files on save.
@@ -17,5 +23,38 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 public class RobotgeneratorGenerator extends AbstractGenerator {
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+    Iterable<Command> _filter = Iterables.<Command>filter(IteratorExtensions.<EObject>toIterable(resource.getAllContents()), Command.class);
+    for (final Command e : _filter) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("robotgenerator/");
+      String _value = e.getRobotName().getValue();
+      _builder.append(_value);
+      _builder.append(".py");
+      fsa.generateFile(_builder.toString(), this.compile(e));
+    }
+  }
+  
+  public CharSequence compile(final Command command) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("# package robotgenerator;");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("import ");
+    String _capitalizeType = this.capitalizeType(command);
+    _builder.append(_capitalizeType);
+    _builder.append("SimpleactionsGenerator");
+    _builder.newLineIfNotEmpty();
+    String _capitalizeType_1 = this.capitalizeType(command);
+    _builder.append(_capitalizeType_1);
+    _builder.append("SimpleactionsGenerator(port_number_placeholder, \'");
+    String _value = command.getRobotName().getValue();
+    _builder.append(_value);
+    _builder.append("\')");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public String capitalizeType(final Command command) {
+    return StringExtensions.toFirstUpper(command.getRobotType().toString());
   }
 }
