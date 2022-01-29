@@ -13,6 +13,9 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.gunnarkleiven.robotgenerator.robotgenerator.Command;
+import org.gunnarkleiven.robotgenerator.robotgenerator.PositionValue;
+import org.gunnarkleiven.robotgenerator.robotgenerator.RobotName;
+import org.gunnarkleiven.robotgenerator.robotgenerator.RobotType;
 
 /**
  * Generates code from your model files on save.
@@ -25,16 +28,30 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     Iterable<Command> _filter = Iterables.<Command>filter(IteratorExtensions.<EObject>toIterable(resource.getAllContents()), Command.class);
     for (final Command e : _filter) {
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("robotgenerator/");
-      String _value = e.getRobotName().getValue();
-      _builder.append(_value);
-      _builder.append(".py");
-      fsa.generateFile(_builder.toString(), this.compile(e));
+      {
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("robotgenerator/");
+        String _value = e.getRobotName().getValue();
+        _builder.append(_value);
+        _builder.append("/");
+        String _value_1 = e.getRobotName().getValue();
+        _builder.append(_value_1);
+        _builder.append(".py");
+        fsa.generateFile(_builder.toString(), this.compile_python(e));
+        StringConcatenation _builder_1 = new StringConcatenation();
+        _builder_1.append("robotgenerator/");
+        String _value_2 = e.getRobotName().getValue();
+        _builder_1.append(_value_2);
+        _builder_1.append("/");
+        String _value_3 = e.getRobotName().getValue();
+        _builder_1.append(_value_3);
+        _builder_1.append(".json");
+        fsa.generateFile(_builder_1.toString(), this.compile_json(e));
+      }
     }
   }
   
-  public CharSequence compile(final Command command) {
+  public CharSequence compile_python(final Command command) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("# package robotgenerator;");
     _builder.newLine();
@@ -51,6 +68,65 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
     _builder.append(_value);
     _builder.append("\')");
     _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence compile_json(final Command command) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("\"");
+    RobotType _robotType = command.getRobotType();
+    _builder.append(_robotType);
+    _builder.append("\"\": {");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("\"name\": \"");
+    {
+      RobotName _robotName = command.getRobotName();
+      boolean _tripleNotEquals = (_robotName != null);
+      if (_tripleNotEquals) {
+        String _value = command.getRobotName().getValue();
+        _builder.append(_value, "\t");
+      } else {
+        _builder.append("undefined");
+      }
+    }
+    _builder.append(",");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("\"location\": {");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("\"x\": ");
+    {
+      PositionValue _xValue = command.getXValue();
+      boolean _tripleNotEquals_1 = (_xValue != null);
+      if (_tripleNotEquals_1) {
+        int _value_1 = command.getXValue().getValue();
+        _builder.append(_value_1, "\t\t");
+      } else {
+        _builder.append("\"undefined\"");
+      }
+    }
+    _builder.append(",");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    _builder.append("\"y\": ");
+    {
+      PositionValue _xValue_1 = command.getXValue();
+      boolean _tripleNotEquals_2 = (_xValue_1 != null);
+      if (_tripleNotEquals_2) {
+        int _value_2 = command.getYValue().getValue();
+        _builder.append(_value_2, "\t\t");
+      } else {
+        _builder.append("\"undefined\"");
+      }
+    }
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("}");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
     return _builder;
   }
   

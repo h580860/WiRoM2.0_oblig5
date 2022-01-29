@@ -24,11 +24,12 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 //				.join(', '))
 
 		for (e : resource.allContents.toIterable.filter(Command)) {
-			fsa.generateFile('''robotgenerator/«e.robotName.value».py''', e.compile)
+			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».py''', e.compile_python)
+			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».json''', e.compile_json)
 		}
 	}
 	
-	def compile(Command command) {
+	def compile_python(Command command) {
 		'''
 		# package robotgenerator;
 		
@@ -36,6 +37,20 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 		«command.capitalizeType»SimpleactionsGenerator(port_number_placeholder, '«command.robotName.value»')
 		'''	
 	}
+
+	
+	def compile_json(Command command) {
+		'''
+		"«command.robotType»"": {
+			"name": "«IF command.robotName !== null»«command.robotName.value»«ELSE»undefined«ENDIF»,
+			"location": {
+				"x": «IF command.XValue !== null»«command.XValue.value»«ELSE»"undefined"«ENDIF»,
+				"y": «IF command.XValue !== null»«command.YValue.value»«ELSE»"undefined"«ENDIF»
+			}
+		}
+		'''
+	}
+	
 	
 	def capitalizeType(Command command) {
 		return command.robotType.toString.toFirstUpper
