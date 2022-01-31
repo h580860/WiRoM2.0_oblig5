@@ -288,7 +288,6 @@ if __name__ == '__main__':
 
     if args[1] == "generate":
         generate_moose = GenerateRobot(args[2])
-        # TODO rename these functions, remove "test" from the function names
         generate_moose.add_robot_to_world()
         generate_moose.add_robot_to_config()
         generate_moose.add_robot_to_data()
