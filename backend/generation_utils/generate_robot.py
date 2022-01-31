@@ -200,7 +200,7 @@ class GenerateRobot:
         os.mkdir(self.new_dir_filepath)
 
         new_simpleactions_filename = f'{self.robot_type}_simpleactions{self.new_robot_number}.py'
-        source_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller' / f'{self.robot_type}_simpleactions.py '
+        source_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller' / f'{self.robot_type}_simpleactions.py'
 
         destination_filepath = self.new_dir_filepath / new_simpleactions_filename
         shutil.copy(source_filepath, destination_filepath)
