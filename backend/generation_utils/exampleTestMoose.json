@@ -1,0 +1,10 @@
+{
+  "addRobot": {
+    "type": "moose",
+    "name": "exampleTestMoose",
+    "location": {
+      "x": "undefined",
+      "y": "undefined"
+    }
+  }
+}

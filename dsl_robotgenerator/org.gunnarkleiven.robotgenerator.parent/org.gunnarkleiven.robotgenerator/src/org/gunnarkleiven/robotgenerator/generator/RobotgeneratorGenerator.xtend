@@ -41,11 +41,14 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 	
 	def compile_json(Command command) {
 		'''
-		"«command.robotType»"": {
-			"name": "«IF command.robotName !== null»«command.robotName.value»«ELSE»undefined«ENDIF»,
-			"location": {
-				"x": «IF command.XValue !== null»«command.XValue.value»«ELSE»"undefined"«ENDIF»,
-				"y": «IF command.XValue !== null»«command.YValue.value»«ELSE»"undefined"«ENDIF»
+		{
+			"«command.robotType»"": {
+				"type": «command.robotType.toString»,
+				"name": "«IF command.robotName !== null»«command.robotName.value»«ELSE»undefined«ENDIF»,
+				"location": {
+					"x": «IF command.XValue !== null»«command.XValue.value»«ELSE»"undefined"«ENDIF»,
+					"y": «IF command.XValue !== null»«command.YValue.value»«ELSE»"undefined"«ENDIF»
+				}
 			}
 		}
 		'''

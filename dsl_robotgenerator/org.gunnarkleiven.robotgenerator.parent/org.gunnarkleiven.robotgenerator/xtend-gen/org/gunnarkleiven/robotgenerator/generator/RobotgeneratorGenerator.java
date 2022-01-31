@@ -73,55 +73,67 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
   
   public CharSequence compile_json(final Command command) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("\t");
     _builder.append("\"");
     RobotType _robotType = command.getRobotType();
-    _builder.append(_robotType);
+    _builder.append(_robotType, "\t");
     _builder.append("\"\": {");
     _builder.newLineIfNotEmpty();
-    _builder.append("\t");
+    _builder.append("\t\t");
+    _builder.append("\"type\": ");
+    String _string = command.getRobotType().toString();
+    _builder.append(_string, "\t\t");
+    _builder.append(",");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
     _builder.append("\"name\": \"");
     {
       RobotName _robotName = command.getRobotName();
       boolean _tripleNotEquals = (_robotName != null);
       if (_tripleNotEquals) {
         String _value = command.getRobotName().getValue();
-        _builder.append(_value, "\t");
+        _builder.append(_value, "\t\t");
       } else {
         _builder.append("undefined");
       }
     }
     _builder.append(",");
     _builder.newLineIfNotEmpty();
-    _builder.append("\t");
+    _builder.append("\t\t");
     _builder.append("\"location\": {");
     _builder.newLine();
-    _builder.append("\t\t");
+    _builder.append("\t\t\t");
     _builder.append("\"x\": ");
     {
       PositionValue _xValue = command.getXValue();
       boolean _tripleNotEquals_1 = (_xValue != null);
       if (_tripleNotEquals_1) {
         int _value_1 = command.getXValue().getValue();
-        _builder.append(_value_1, "\t\t");
+        _builder.append(_value_1, "\t\t\t");
       } else {
         _builder.append("\"undefined\"");
       }
     }
     _builder.append(",");
     _builder.newLineIfNotEmpty();
-    _builder.append("\t\t");
+    _builder.append("\t\t\t");
     _builder.append("\"y\": ");
     {
       PositionValue _xValue_1 = command.getXValue();
       boolean _tripleNotEquals_2 = (_xValue_1 != null);
       if (_tripleNotEquals_2) {
         int _value_2 = command.getYValue().getValue();
-        _builder.append(_value_2, "\t\t");
+        _builder.append(_value_2, "\t\t\t");
       } else {
         _builder.append("\"undefined\"");
       }
     }
     _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    _builder.append("}");
+    _builder.newLine();
     _builder.append("\t");
     _builder.append("}");
     _builder.newLine();
