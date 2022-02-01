@@ -25,7 +25,8 @@ CommandType:
 ;
 
 enum RobotType:
-	MOOSE="moose" | MAVIC2PRO="mavic2pro"
+	MOOSE="moose" |
+	MAVIC2PRO="mavic2pro"
 ;
 
 Parameter:

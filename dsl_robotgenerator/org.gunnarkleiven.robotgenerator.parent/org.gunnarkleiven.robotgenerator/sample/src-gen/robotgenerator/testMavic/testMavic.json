@@ -1,0 +1,10 @@
+{
+	"mavic2pro"": {
+		"type": mavic2pro,
+		"name": "testMavic,
+		"location": {
+			"x": 100,
+			"y": 100
+		}
+	}
+}

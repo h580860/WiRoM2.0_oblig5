@@ -1,1 +1,2 @@
-addRobot(moose, "anotherMoose", 4, 4);
+addRobot(mavic2pro, "testMavic", 100, 100);
+addRobot(moose, "testMoose1", 100, 1);

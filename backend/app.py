@@ -7,6 +7,11 @@ import logging
 from wirom_logger import Wirom_logger
 # from Logs.wirom_logger import Wirom_logger
 import pika
+import sys
+import pathlib
+# sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
+# from backend.generation_utils.update_checker import UpdateChecker
+# from generation_utils.update_checker import UpdateChecker
 
 app = Flask(__name__)
 app.debug = True
@@ -198,3 +203,8 @@ if __name__ == '__main__':
 
     # test_message = "Hello this message is from app.py"
     # test_communication_messages(test_message)
+
+    # When starting the server, check if there has been any updates of robots
+    # update_checker = UpdateChecker()
+    # update_checker.initiate_full_robot_check()
+

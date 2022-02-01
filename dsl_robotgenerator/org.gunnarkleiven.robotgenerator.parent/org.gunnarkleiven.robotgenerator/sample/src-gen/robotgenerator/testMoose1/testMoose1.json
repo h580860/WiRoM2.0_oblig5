@@ -1,0 +1,10 @@
+{
+	"moose"": {
+		"type": moose,
+		"name": "testMoose1,
+		"location": {
+			"x": 100,
+			"y": 1
+		}
+	}
+}

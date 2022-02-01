@@ -191,7 +191,7 @@ class UpdateChecker:
             self.add_robot_to_data(robot, robot_data, robot_type, data_template)
             self.add_robot_controller(robot, robot_controller_name)
 
-            # self.update_added_robots_json(robot)
+            self.update_added_robots_json(robot)
 
 
 if __name__ == "__main__":
