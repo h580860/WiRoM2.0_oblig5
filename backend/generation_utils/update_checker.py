@@ -2,8 +2,8 @@ import pathlib
 import os
 import shutil
 import json
-from json_reader_writer import json_reader_writer
-from wbt_json_parser import WbtJsonParser
+from backend.generation_utils.json_reader_writer import json_reader_writer
+from backend.generation_utils.wbt_json_parser import WbtJsonParser
 
 
 # TODO this should perhaps be renamed
@@ -14,21 +14,25 @@ class UpdateChecker:
     '''
 
     def __init__(self):
+        # print(f"current working directory using pathlib= {pathlib.Path.cwd()}")
+        # print(f"current working directory using OS= {os.getcwd()}")
         self.json_reader_writer = json_reader_writer()
-        self.update_file = pathlib.Path.cwd() / "added_robots.json"
+
+        self.update_file = pathlib.Path.cwd() / "generation_utils" / "added_robots.json"
         self.save_file_content = self.json_reader_writer.read_json(self.update_file)
         self.prev_added_robots = self.save_file_content["previouslyAddedRobots"]
         self.new_added_robots = self.save_file_content["newAddedRobots"]
-        self.controller_base_path = pathlib.Path.cwd().parent / "controllers"
+        self.controller_base_path = pathlib.Path.cwd() / "controllers"
         self.current_portnumber = 5002
         self.map_reader = WbtJsonParser()
-        self.configpath = pathlib.Path.cwd().parent / 'config.json'
-        self.datapath = pathlib.Path.cwd().parent.parent / 'web_interface' / 'src' / 'data.json'
+        self.configpath = pathlib.Path.cwd() / 'config.json'
+        self.datapath = pathlib.Path.cwd().parent / 'web_interface' / 'src' / 'data.json'
 
         self.robot_types_capital_lookup = {
             "moose": "Moose",
             "mavic2pro": "Mavic2Pro"
         }
+
 
     # def read_template(self, robotType):
     #     template = self.json_reader_writer.read_json(

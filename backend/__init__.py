@@ -4,14 +4,16 @@ import requests
 import json
 import time
 import logging
-from wirom_logger import Wirom_logger
+# from wirom_logger import Wirom_logger
 # from Logs.wirom_logger import Wirom_logger
 import pika
 import sys
 import pathlib
 # sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
 # from backend.generation_utils.update_checker import UpdateChecker
-# from generation_utils.update_checker import UpdateChecker
+from backend.generation_utils.update_checker import UpdateChecker
+# from .generation_utils.update_checker import UpdateChecker
+# import backend.generation_utils.update_checker
 
 app = Flask(__name__)
 app.debug = True
@@ -23,10 +25,11 @@ CORS(app)
 # wirom_logger = Wirom_logger("app.log")
 
 # routing_key lookup
-with open('routing_keys_lookup.json') as reader_file:
+with open('backend/routing_keys_lookup.json') as reader_file:
+# with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
     routing_key_lookup = json.load(reader_file)
 
-with open('config.json') as json_data_file:
+with open('backend/config.json') as json_data_file:
     data = json.load(json_data_file)
     robots = data["robots"]
 
@@ -201,10 +204,10 @@ if __name__ == '__main__':
     # app.run(processes='5', debug=True)
     # app.run(threaded=True)
 
-    # test_message = "Hello this message is from app.py"
+    # test_message = "Hello this message is from __init__.py"
     # test_communication_messages(test_message)
 
     # When starting the server, check if there has been any updates of robots
-    # update_checker = UpdateChecker()
-    # update_checker.initiate_full_robot_check()
+    update_checker = UpdateChecker()
+    update_checker.initiate_full_robot_check()
 

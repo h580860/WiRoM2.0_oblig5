@@ -15,9 +15,9 @@ class WbtJsonParser:
     def __init__(self, filepath=None, is_test=False):
         # self.filepath = filepath
         if is_test:
-            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'test_parse_world.wbt'
+            self.filepath = pathlib.Path.cwd() / 'worlds' / 'test_parse_world.wbt'
         elif not filepath:
-            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
+            self.filepath = pathlib.Path.cwd() / 'worlds' / 'delivery-missionUpdated.wbt'
         else:
             self.filepath = filepath
 
