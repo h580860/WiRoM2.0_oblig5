@@ -25,13 +25,16 @@ CORS(app)
 # wirom_logger = Wirom_logger("app.log")
 
 # routing_key lookup
-with open('backend/routing_keys_lookup.json') as reader_file:
+with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
 # with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
     routing_key_lookup = json.load(reader_file)
+    print(f"Routing lookup table:\n{routing_key_lookup}")
 
-with open('backend/config.json') as json_data_file:
+with open(pathlib.Path.cwd() / 'backend' / 'config.json') as json_data_file:
     data = json.load(json_data_file)
     robots = data["robots"]
+
+
 
 
 @app.route('/mission', methods=['POST'])
@@ -61,11 +64,14 @@ def receive_mission():
                 # test_sending_one_message(sequence)
 
                 # test_send_routing_messages(json.dumps(sequence), "moose_queue")
-                print("Sending sequence to " + mission[robot]['port'])
-                test_send_routing_messages(json.dumps(sequence), routing_key_lookup[mission[robot]['port']])
+                # print("Sending sequence to " + mission[robot]['port'])
+                routing_key = routing_key_lookup[mission[robot]['port']]
+                print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={routing_key}")
+                # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
+                test_send_routing_messages(json.dumps(sequence), routing_key)
                 success = True
             except Exception as e:
-                print(e)
+                print(f"Exception: {e}")
                 retries += 1
                 print('Retry: ' + str(retries) + '...')
                 time.sleep(1)
@@ -191,9 +197,8 @@ def test_send_routing_messages(message_as_json, routing_key):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
-
     channel.basic_publish(exchange='routing_exchange', routing_key=routing_key, body=message_as_json)
-    print("[send_routing_message] published to moose")
+    print(f"[send_routing_message] published to {routing_key_lookup[routing_key]}")
 
     connection.close()
 
@@ -208,6 +213,6 @@ if __name__ == '__main__':
     # test_communication_messages(test_message)
 
     # When starting the server, check if there has been any updates of robots
-    update_checker = UpdateChecker()
-    update_checker.initiate_full_robot_check()
+    # update_checker = UpdateChecker()
+    # update_checker.initiate_full_robot_check()
 
