@@ -18,15 +18,15 @@ class UpdateChecker:
         # print(f"current working directory using OS= {os.getcwd()}")
         self.json_reader_writer = json_reader_writer()
 
-        self.update_file = pathlib.Path.cwd() / "generation_utils" / "added_robots.json"
+        self.update_file = pathlib.Path.cwd() / 'backend' / "generation_utils" / "added_robots.json"
         self.save_file_content = self.json_reader_writer.read_json(self.update_file)
         self.prev_added_robots = self.save_file_content["previouslyAddedRobots"]
         self.new_added_robots = self.save_file_content["newAddedRobots"]
         self.controller_base_path = pathlib.Path.cwd() / "controllers"
         self.current_portnumber = 5002
         self.map_reader = WbtJsonParser()
-        self.configpath = pathlib.Path.cwd() / 'config.json'
-        self.datapath = pathlib.Path.cwd().parent / 'web_interface' / 'src' / 'data.json'
+        self.configpath = pathlib.Path.cwd() / 'backend'/ 'config.json'
+        self.datapath = pathlib.Path.cwd().parent / 'backend' / 'web_interface' / 'src' / 'data.json'
 
         self.robot_types_capital_lookup = {
             "moose": "Moose",

@@ -8,6 +8,7 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.gunnarkleiven.robotgenerator.robotgenerator.Command
+import org.gunnarkleiven.robotgenerator.robotgenerator.RobotType
 
 /**
  * Generates code from your model files on save.
@@ -24,18 +25,649 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 //				.join(', '))
 
 		for (e : resource.allContents.toIterable.filter(Command)) {
-			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».py''', e.compile_python)
+//			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».py''', e.compile_python)
+			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value»_controller.py''', e.compile_controller)
 			fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».json''', e.compile_json)
+			if (e.robotType.equals(RobotType.MOOSE)) {
+				fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value»_simpleactions.py''', e.compile_moose)
+			}
+			else if (e.robotType.equals(RobotType.MAVIC2PRO)) {
+				fsa.generateFile('''robotgenerator/«e.robotName.value»/«e.robotName.value».py''', e.compile_mavic2pro)
+			}
 		}
 	}
 	
-	def compile_python(Command command) {
+	
+	def compile_moose(Command command) {
 		'''
-		# package robotgenerator;
+		"""moose_controller simpleactions."""
+		from controller import Robot, Motor, PositionSensor, GPS, Compass
+		# from flask import Flask, request
+		import math
+		import threading
+		import time
+		import json
+		import logging
+		import os
+		import pika
 		
-		import «command.capitalizeType»SimpleactionsGenerator
-		«command.capitalizeType»SimpleactionsGenerator(port_number_placeholder, '«command.robotName.value»')
-		'''	
+		# create the Robot instance.
+		robot = Robot()
+		
+		# get the time step of the current world.
+		timestep = int(robot.getBasicTimeStep())
+		
+		left_motor_names = ["left motor 1", "left motor 2",
+		                    "left motor 3", "left motor 4"]
+		right_motor_names = ["right motor 1",
+		                     "right motor 2", "right motor 3", "right motor 4"]
+		left_motors = [robot.getDevice(name) for name in left_motor_names]
+		right_motors = [robot.getDevice(name) for name in right_motor_names]
+		left_speed = 0
+		right_speed = 0
+		
+		# get and enable nodes used by the robot
+		gps = robot.getDevice('gps')
+		compass = robot.getDevice('compass')
+		gps.enable(timestep)
+		compass.enable(timestep)
+		
+		target_reached = False
+		navigate = False
+		location = []
+		simpleactions = []
+		
+		moose_name = ""
+		
+		
+		# Initialize which sets the target altitude as well as start the main loop
+		def init(port, name):
+		    global moose_name
+		    logging.info("init")
+		    moose_name = name
+		    main = threading.Thread(target=moose_main)
+		    communication = threading.Thread(target=test_receive_routing_message)
+		    location_communication = threading.Thread(target=test_receive_location)
+		
+		    main.start()
+		    communication.start()
+		    location_communication.start()
+		
+		
+		def go_forward(duration):
+		    global left_speed
+		    global right_speed
+		    left_speed = 7.0
+		    right_speed = 7.0
+		    if duration != 0:
+		        print(f"Moose sleeping for {duration} seconds")
+		        time.sleep(duration)
+		        left_speed = 0
+		        right_speed = 0
+		
+		
+		def go_backward(duration):
+		    global left_speed
+		    global right_speed
+		    left_speed = -2.0
+		    right_speed = -2.0
+		    if duration != 0:
+		        time.sleep(duration)
+		        left_speed = 0
+		        right_speed = 0
+		
+		
+		def turn_left(duration):
+		    global left_speed
+		    global right_speed
+		    left_speed = 1.0
+		    right_speed = 4.0
+		    if duration != 0:
+		        time.sleep(duration)
+		        left_speed = 0
+		        right_speed = 0
+		
+		
+		def turn_right(duration):
+		    global left_speed
+		    global right_speed
+		    left_speed = 4.0
+		    right_speed = 1.0
+		    if duration != 0:
+		        time.sleep(duration)
+		        left_speed = 0
+		        right_speed = 0
+		
+		
+		def go_to_location(target):
+		    global location
+		    global navigate
+		    if not location and target:
+		        location = [target]
+		
+		    navigate = True
+		    while navigate:
+		        time.sleep(1)
+		
+		
+		def stop_movement():
+		    global left_speed
+		    global right_speed
+		    left_speed = 0
+		    right_speed = 0
+		
+		
+		# Function that finds the angle and distance to a location and moves the vehicle accordingly
+		def navigate_to_location():
+		    global navigate
+		    global location
+		    loc = location[0]
+		
+		    pos = gps.getValues()
+		    north = compass.getValues()
+		    front = [-north[0], north[1], north[2]]
+		
+		    dir = [loc[0] - pos[0], loc[1] - pos[2]]
+		    distance = math.sqrt(dir[0] * dir[0] + dir[1] * dir[1])
+		
+		    # calculate the angle of which the vehicle is supposed to go to reach target
+		    angle = math.atan2(dir[1], dir[0]) - math.atan2(front[2], front[0])
+		    if angle < 0:
+		        angle += 2 * math.pi
+		
+		    # vehicle is on the right path when angle = math.pi
+		    if angle < math.pi - 0.01:
+		        turn_left(0)
+		    elif angle > math.pi + 0.01:
+		        turn_right(0)
+		    else:
+		        go_forward(0)
+		
+		    # stop vehicle and navigation when target has been reached
+		    if distance < 1:
+		        print('Reached target')
+		        navigate = False
+		        location.pop(0)
+		        stop_movement()
+		
+		
+		# Actively wait for new location
+		def receive_location_from_robot():
+		    while not location:
+		        time.sleep(1)
+		
+		
+		# write the location of this robot to the config file
+		def setLocationConfig():
+		    with open('../config.json') as json_data_file:
+		        data = json.load(json_data_file)
+		
+		    with open('../config.json', 'w') as json_data_file:
+		        data['robots']['moose']['location'] = {
+		            "x": gps.getValues()[0], "y": gps.getValues()[2]}
+		        json.dump(data, json_data_file, indent=2, sort_keys=True)
+		
+		
+		def moose_main():
+		    logging.info("moose_main")
+		    step_count = 0
+		    for motor in left_motors:
+		        motor.setPosition(float('inf'))
+		    for motor in right_motors:
+		        motor.setPosition(float('inf'))
+		
+		    while robot.step(timestep) != -1:
+		        if navigate:
+		            navigate_to_location()
+		        for motor in left_motors:
+		            motor.setVelocity(left_speed)
+		        for motor in right_motors:
+		            motor.setVelocity(right_speed)
+		        # print(f'(moose) step number {step_count}')
+		        step_count += 1
+		        # logging.info(step_count)
+		        # print("main iteration")
+		
+		
+		def execute_simpleactions():
+		    global simpleactions
+		    try:
+		        while True:
+		            if simpleactions:
+		                simpleaction = simpleactions.pop(0)
+		                print("Executing simpleaction " + simpleaction)
+		                eval(simpleaction)
+		            else:
+		                print("No available simpleaction")
+		    except Exception as e:
+		        print(e)
+		
+		
+		def test_receive_routing_message():
+		    global moose_name
+		    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+		    channel = connection.channel()
+		    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
+		
+		    result = channel.queue_declare(queue='', exclusive=True)
+		    queue_name = result.method.queue
+		
+		    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{moose_name}_queue")
+		
+		    print("Moose ready to receive routed messages")
+		    channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
+		
+		    channel.start_consuming()
+		
+		
+		def test_receive_location():
+		    global moose_name
+		    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+		    channel = connection.channel()
+		    channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+		
+		    result = channel.queue_declare(queue='', exclusive=True)
+		    queue_name = result.method.queue
+		
+		    channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key=f"{moose_name}_location_queue")
+		
+		    print("Moose ready to receive locations")
+		    channel.basic_consume(queue=queue_name, on_message_callback=receive_location_callback, auto_ack=True)
+		    channel.start_consuming()
+		
+		
+		def execute_simpleactions_callback(ch, method, properties, body):
+		    global simpleactions
+		    print("(moose) callback: %r" % body)
+		    # TODO as for now, the incoming messages are functions calls, separated by ","
+		    # simpleactions.extend(body.decode('utf-8').split(","))
+		
+		    # Decode the JSON back to a list
+		    new_simpleactions = json.loads(body.decode('utf-8'))
+		    simpleactions.extend(new_simpleactions)
+		    print(f'(moose) Simpleactions = {simpleactions}, type={type(simpleactions)}')
+		
+		    # Now execute the simpleactions
+		    # for i in range(len(simpleactions)):
+		    while simpleactions:
+		        sim_act = simpleactions.pop(0)
+		        print("(moose) Executing simpleaction " + sim_act)
+		        eval(sim_act)
+		    print("finished callback function")
+		
+		
+		def receive_location_callback(ch, method, properties, body):
+		    global location
+		    print("(moose) received locations")
+		    new_location = json.loads(body.decode('utf-8'))
+		    location.append(new_location['location'])
+			
+		'''
+	}
+	
+	def compile_mavic2pro(Command command) {
+		'''
+		"""mavic2pro_controller simpleactions."""
+		from controller import Robot, Motor, PositionSensor, Gyro, Camera, InertialUnit, GPS, Compass, CameraRecognitionObject
+		import math
+		import threading
+		import time
+		import json
+		
+		import logging
+		import pika
+		
+		# create the Robot instance.
+		robot = Robot()
+		
+		# get the time step of the current world.
+		timestep = int(robot.getBasicTimeStep())
+		
+		# get the motors for the robot
+		front_left_motor = robot.getDevice('front left propeller')
+		front_right_motor = robot.getDevice('front right propeller')
+		rear_left_motor = robot.getDevice('rear left propeller')
+		rear_right_motor = robot.getDevice('rear right propeller')
+		motors = [front_left_motor, front_right_motor,
+		          rear_left_motor, rear_right_motor]
+		
+		# get and enable nodes used by the robot
+		gyro = robot.getDevice('gyro')
+		iu = robot.getDevice('inertial unit')
+		gps = robot.getDevice('gps')
+		compass = robot.getDevice('compass')
+		camera = robot.getDevice('camera')
+		
+		gyro.enable(timestep)
+		iu.enable(timestep)
+		gps.enable(timestep)
+		compass.enable(timestep)
+		camera.enable(timestep)
+		
+		# empirically found constants for the drone to perform stable flight; inspired by the drone demo controller
+		k_vertical_thrust = 68.5  # with this thrust, the drone lifts.
+		# Vertical offset where the robot actually targets to stabilize itself.
+		k_vertical_offset = 0.6
+		k_vertical_p = 3.0  # P constant of the vertical PID.
+		k_roll_p = 50.0  # P constant of the roll PID.
+		k_pitch_p = 30.0  # P constant of the pitch PID.
+		
+		# variables that control the movement of the drone
+		target_altitude = 0
+		roll_disturbance = 0
+		pitch_disturbance = 0
+		yaw_disturbance = 0
+		
+		# variables to set drone functions
+		rec_obj_arr = []
+		recognise = False
+		navigate = False
+		target_reached = False
+		message_recipient = ''
+		location = []
+		target_loc = []
+		simpleactions = []
+		amount_of_objects = 0
+		
+		mavic_name = ""
+		
+		
+		# Initialize which sets the target altitude as well as start the main loop
+		def init(port, name):
+		    global mavic_name
+		    logging.info("init")
+		    mavic_name = name
+		    main = threading.Thread(target=mavic2pro_main)
+		    communication = threading.Thread(target=test_receive_routing_message)
+		    main.start()
+		    communication.start()
+		
+		
+		def set_altitude(target):
+		    global target_altitude
+		    target_altitude = target
+		    time.sleep(5)
+		
+		
+		def go_forward(duration):
+		    global pitch_disturbance
+		    global yaw_disturbance
+		    pitch_disturbance = 3
+		    yaw_disturbance = 0
+		    if duration != 0:
+		        time.sleep(duration)
+		        pitch_disturbance = 0
+		
+		
+		def go_backward(duration):
+		    global pitch_disturbance
+		    pitch_disturbance = -2
+		    if duration != 0:
+		        time.sleep(duration)
+		        pitch_disturbance = 0
+		
+		
+		def turn_right(duration):
+		    global yaw_disturbance
+		    yaw_disturbance = 0.5
+		    if duration != 0:
+		        time.sleep(duration)
+		        yaw_disturbance = 0
+		
+		
+		def turn_left(duration):
+		    global yaw_disturbance
+		    yaw_disturbance = -0.5
+		    if duration != 0:
+		        time.sleep(duration)
+		        yaw_disturbance = 0
+		
+		
+		def recognise_objects():
+		    global recognise
+		    recognise = True
+		    camera.recognitionEnable(timestep)
+		
+		
+		def go_to_location(target):
+		    global target_loc
+		    global navigate
+		    target_loc = target
+		    navigate = True
+		    while navigate:
+		        time.sleep(1)
+		
+		
+		def set_message_target(target):
+		    print(target)
+		    global message_recipient
+		    message_recipient = target
+		
+		
+		def stop_movement():
+		    global pitch_disturbance
+		    global yaw_disturbance
+		    pitch_disturbance = 0
+		    yaw_disturbance = 0
+		
+		
+		def send_location():
+		    global amount_of_objects
+		    if not recognise:
+		        send = threading.Thread(target=sync_send_location)
+		        send.start()
+		    elif len(rec_obj_arr) > amount_of_objects:
+		        amount_of_objects = len(rec_obj_arr)
+		        send = threading.Thread(target=sync_send_location)
+		        send.start()
+		    else:
+		        print("No recognised object at location")
+		
+		
+		def sync_send_location():
+		    global location
+		    location_json = json.dumps({"location": [location[0], location[1] - 2]})
+		    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+		    channel = connection.channel()
+		
+		    channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+		
+		    # publish the moose message
+		    channel.basic_publish(exchange='location_exchange', routing_key=message_recipient + '_location_queue',
+		                          body=location_json)
+		    print("[mavic sync_send_location] sent location to " + message_recipient)
+		    connection.close()
+		
+		
+		# Function that finds the angle and distance to a location and moves the vehicle accordingly
+		def navigate_to_location():
+		    global navigate
+		    global target_loc
+		
+		    pos = gps.getValues()
+		    north = compass.getValues()
+		    front = [-north[0], north[1], north[2]]
+		    dir = [target_loc[0] - pos[0], target_loc[1] - pos[2]]
+		    distance = math.sqrt(dir[0] * dir[0] + dir[1] * dir[1])
+		
+		    # calculate the angle of which the vehicle is supposed to go to reach target
+		    angle = math.atan2(dir[1], dir[0]) - math.atan2(front[2], front[0])
+		    if angle < 0:
+		        angle += 2 * math.pi
+		
+		    # vehicle is on the right path when angle = math.pi
+		    if angle < math.pi - 0.01:
+		        turn_left(0)
+		    elif angle > math.pi + 0.01:
+		        turn_right(0)
+		    else:
+		        go_forward(0)
+		
+		    # stop navigation and vehicle movements when target has been reached
+		    if distance < 1:
+		        navigate = False
+		        stop_movement()
+		
+		
+		def CLAMP(value, low, high):
+		    if value < low:
+		        return low
+		    if value > high:
+		        return high
+		    return value
+		
+		
+		# Function that calculates the values for each motor, keeping the drone stable
+		def stabilize_and_control_movement():
+		    roll = iu.getRollPitchYaw()[0] + math.pi / 2.0
+		    pitch = iu.getRollPitchYaw()[1]
+		    roll_acceleration = gyro.getValues()[0]
+		    pitch_acceleration = gyro.getValues()[1]
+		    altitude = gps.getValues()[1]
+		
+		    # Compute the roll, pitch, yaw and vertical inputs.
+		    roll_input = k_roll_p * CLAMP(roll, -1.0, 1.0) + \
+		                 roll_acceleration + roll_disturbance
+		    pitch_input = k_pitch_p * \
+		                  CLAMP(pitch, -1.0, 1.0) - pitch_acceleration + pitch_disturbance
+		    yaw_input = yaw_disturbance
+		    clamped_difference_altitude = CLAMP(
+		        target_altitude - altitude + k_vertical_offset, -1.0, 1.0)
+		    vertical_input = k_vertical_p * pow(clamped_difference_altitude, 3.0)
+		
+		    # Actuate the motors taking into consideration all the computed inputs.
+		    front_left_motor_input = k_vertical_thrust + \
+		                             vertical_input - roll_input - pitch_input + yaw_input
+		    front_right_motor_input = k_vertical_thrust + \
+		                              vertical_input + roll_input - pitch_input - yaw_input
+		    rear_left_motor_input = k_vertical_thrust + \
+		                            vertical_input - roll_input + pitch_input - yaw_input
+		    rear_right_motor_input = k_vertical_thrust + \
+		                             vertical_input + roll_input + pitch_input + yaw_input
+		
+		    # Set the motor velocities required for stabilization and movement
+		    front_left_motor.setVelocity(front_left_motor_input)
+		    front_right_motor.setVelocity(-front_right_motor_input)
+		    rear_left_motor.setVelocity(-rear_left_motor_input)
+		    rear_right_motor.setVelocity(rear_right_motor_input)
+		
+		
+		# write the location of this robot to the config file
+		
+		
+		def setLocationConfig():
+		    with open('../config.json') as json_data_file:
+		        data = json.load(json_data_file)
+		
+		    with open('../config.json', 'w') as json_data_file:
+		        data['robots']['mavic2pro']['location'] = {
+		            "x": gps.getValues()[0], "y": gps.getValues()[2]}
+		        json.dump(data, json_data_file, indent=2, sort_keys=True)
+		
+		
+		# main loop, starting and controlling the robot based on the global variables
+		def mavic2pro_main():
+		    global recognise
+		    global navigate
+		    global rec_obj_arr
+		    global location
+		
+		    logging.info("maciv2pro_main")
+		    step_count = 0
+		    print("")
+		
+		    for motor in motors:
+		        motor.setPosition(float('inf'))
+		
+		    while robot.step(timestep) != -1:
+		        location = [gps.getValues()[0], gps.getValues()[2]]
+		
+		        if navigate:
+		            navigate_to_location()
+		
+		        stabilize_and_control_movement()
+		        if recognise and camera.getRecognitionObjects():
+		            for rec_obj in camera.getRecognitionObjects():
+		                if rec_obj.id not in rec_obj_arr:
+		                    rec_obj_arr.append(rec_obj.id)
+		                    navigate = False
+		                    stop_movement()
+		        # print(f'(mavic) step number {step_count}')
+		        step_count += 1
+		
+		
+		# Function for executing simpleactions in the queue
+		def execute_simpleactions():
+		    global simpleactions
+		    logging.info("receive_simpleactions")
+		
+		    while robot.step(timestep) != -1:
+		        if simpleactions:
+		            simpleaction = simpleactions.pop(0)
+		            print('Executing simpleaction: ' + simpleaction)
+		            eval(simpleaction)
+		
+		
+		def test_receive_routing_message():
+		    global mavic_name
+		    connection = pika.BlockingConnection(
+		        pika.ConnectionParameters(host='localhost'))
+		    channel = connection.channel()
+		    channel.exchange_declare(
+		        exchange='routing_exchange', exchange_type='direct')
+		
+		    result = channel.queue_declare(queue='', exclusive=True)
+		    queue_name = result.method.queue
+		
+		    channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{mavic_name}_queue")
+		
+		    print(f"{mavic_name} ready to receive routed messages")
+		    channel.basic_consume(
+		        queue=queue_name,
+		        on_message_callback=execute_simpleactions_callback,
+		        auto_ack=True
+		    )
+		
+		    channel.start_consuming()
+		
+		
+		def execute_simpleactions_callback(ch, method, properties, body):
+		    global simpleactions
+		    print("(mavic2pro) callback: %r" % body)
+		    # TODO as for now, the incoming messages are functions calls, separated by ","
+		    # simpleactions.extend(body.decode('utf-8').split(","))
+		    # simpleactions.extend(body.decode('utf-8'))
+		
+		    new_simpleactions = json.loads(body.decode('utf-8'))
+		    simpleactions.extend(new_simpleactions)
+		    print(f'(mavic) Simpleactions = {simpleactions}, type={type(simpleactions)}')
+		
+		    # Now execute the simpleactions
+		    # for i in range(len(simpleactions)):
+		    while simpleactions:
+		        sim_act = simpleactions.pop(0)
+		        print("(mavic) Executing simpleaction " + sim_act)
+		        eval(sim_act)
+		    print(f"(mavic2pro) finished callback function")
+		
+		'''
+		
+	}
+			
+	
+//	def compile_python(Command command) {
+//		'''
+//		import «command.capitalizeType»SimpleactionsGenerator
+//		«command.capitalizeType»SimpleactionsGenerator(port_number_placeholder, '«command.robotName.value»')
+//		'''	
+//	}
+
+
+	def compile_controller(Command command) {
+		'''
+		from «command.robotType.toString»_simpleactions import *
+		init(5003, "«command.robotName.value»")
+		'''
 	}
 
 	
@@ -53,7 +685,6 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 		}
 		'''
 	}
-	
 	
 	def capitalizeType(Command command) {
 		return command.robotType.toString.toFirstUpper

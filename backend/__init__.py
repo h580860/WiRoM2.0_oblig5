@@ -235,6 +235,6 @@ if __name__ == '__main__':
     # test_message = "Hello this message is from __init__.py"
     # test_communication_messages(test_message)
 
-    # When starting the server, check if there has been any updates of robots
-    # update_checker = UpdateChecker()
-    # update_checker.initiate_full_robot_check()
+# When starting the server, check if there has been any updates of robots
+update_checker = UpdateChecker()
+update_checker.initiate_full_robot_check()
