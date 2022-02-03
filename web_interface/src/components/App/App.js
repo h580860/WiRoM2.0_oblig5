@@ -417,6 +417,7 @@ function sendTaskAllocation(state) {
 
 function sendMission(state) {
   console.log('Sending request')
+  console.log(state.currentMission);
   fetch('http://localhost:5000/mission', {
     method: 'POST',
     headers: {

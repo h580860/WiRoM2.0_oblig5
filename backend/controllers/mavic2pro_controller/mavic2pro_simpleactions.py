@@ -365,7 +365,7 @@ def test_receive_routing_message():
 
     channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{mavic_name}_queue")
 
-    print("Mavic ready to receive routed messages")
+    print(f"{mavic_name} ready to receive routed messages")
     channel.basic_consume(
         queue=queue_name,
         on_message_callback=execute_simpleactions_callback,

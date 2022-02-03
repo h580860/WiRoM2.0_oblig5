@@ -12,6 +12,7 @@ import pathlib
 # sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
 # from backend.generation_utils.update_checker import UpdateChecker
 from backend.generation_utils.update_checker import UpdateChecker
+
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
 
@@ -26,21 +27,29 @@ CORS(app)
 
 # routing_key lookup
 with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
-# with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
+    # with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
     routing_key_lookup = json.load(reader_file)
-    print(f"Routing lookup table:\n{routing_key_lookup}")
+    # print(f"Routing lookup table:\n{routing_key_lookup}")
 
 with open(pathlib.Path.cwd() / 'backend' / 'config.json') as json_data_file:
     data = json.load(json_data_file)
     robots = data["robots"]
 
 
-
-
 @app.route('/mission', methods=['POST'])
 def receive_mission():
     # wirom_logger.info("receive_mission")
     mission = request.get_json()
+
+    # if not mission:
+    #     print(f"No missions received")
+    #     return 'No missions received', 200
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
+
+
     for robot in mission:
         sequence = []
         for simpleaction in mission[robot]['simpleactions']:
@@ -56,7 +65,14 @@ def receive_mission():
 
         success = False
         retries = 0
-        while not success or retries == 60:
+
+        # while not success or retries <= 60:
+        #     try:
+        #         port = mission[robot]["port"]
+        #         current_routing_key = routing_key_lookup[port]
+        #         channel.basic_publish(exchange="routing_exchange", routing_key=current_routing_key, body=)
+
+        while not success and retries <= 60:
             try:
                 # TODO this should normally be uncommented
                 # requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
@@ -65,16 +81,23 @@ def receive_mission():
 
                 # test_send_routing_messages(json.dumps(sequence), "moose_queue")
                 # print("Sending sequence to " + mission[robot]['port'])
-                routing_key = routing_key_lookup[mission[robot]['port']]
-                print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={routing_key}")
+                port = mission[robot]['port']
+                # print(f"port: {port}, type: {type(port)}")
+                current_routing_key = routing_key_lookup[mission[robot]['port']]
+                print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={current_routing_key}")
                 # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
-                test_send_routing_messages(json.dumps(sequence), routing_key)
+                # test_send_routing_messages(json.dumps(sequence), routing_key)
+                channel.basic_publish(
+                    exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence)
+                )
                 success = True
+                print("Success!")
             except Exception as e:
                 print(f"Exception: {e}")
                 retries += 1
                 print('Retry: ' + str(retries) + '...')
                 time.sleep(1)
+    connection.close()
 
     return 'Controllers successfully created', 200
 
@@ -198,7 +221,7 @@ def test_send_routing_messages(message_as_json, routing_key):
     channel = connection.channel()
     channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
     channel.basic_publish(exchange='routing_exchange', routing_key=routing_key, body=message_as_json)
-    print(f"[send_routing_message] published to {routing_key_lookup[routing_key]}")
+    print(f"[send_routing_message] published to {routing_key}")
 
     connection.close()
 
@@ -215,4 +238,3 @@ if __name__ == '__main__':
     # When starting the server, check if there has been any updates of robots
     # update_checker = UpdateChecker()
     # update_checker.initiate_full_robot_check()
-
