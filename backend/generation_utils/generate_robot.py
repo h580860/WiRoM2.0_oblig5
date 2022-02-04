@@ -3,7 +3,7 @@ import sys
 import pathlib
 
 # TODO is this the best fix?
-sys.path.insert(0, pathlib.Path.cwd().parent.parent.__str__())
+# sys.path.insert(0, pathlib.Path.cwd().parent.parent.__str__())
 # print(sys.path)
 from backend.generation_utils.wbt_json_parser import WbtJsonParser
 from backend.generation_utils.json_reader_writer import json_reader_writer
@@ -273,8 +273,15 @@ class GenerateRobot:
         added_robots_filepath = pathlib.Path.cwd() / "added_robots.json"
         added_robots_file = self.json_reader_writer.read_json(added_robots_filepath)
         for robot in added_robots_file["previouslyAddedRobots"]:
-            # current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / f"{robot}controller"
-            continue
+            current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / f"{robot}controller"
+            if current_controller_filepath.is_dir():
+                shutil.rmtree(current_controller_filepath)
+                print(f"Deleted directory {current_controller_filepath}")
+            else:
+                print(f"No controller in {current_controller_filepath}")
+
+        added_robots_file["previouslyAddedRobots"] = []
+        self.json_reader_writer.write_json(added_robots_filepath, added_robots_file)
 
         print(f'Finished reset')
 
