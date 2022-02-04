@@ -246,3 +246,17 @@ Moose {
     }
   ]
 }
+Moose {
+  translation 408.503 -0.37 -403.745
+  rotation 0 1 0 3.14
+  controller "testAnotherMoose_controller"
+  bodySlot [
+    Compass {
+      rotation 1 0 0 1.5708
+    }
+    GPS {
+      rotation 1 0 0 1.5708
+    }
+  ]
+  name "testAnotherMoose"
+}

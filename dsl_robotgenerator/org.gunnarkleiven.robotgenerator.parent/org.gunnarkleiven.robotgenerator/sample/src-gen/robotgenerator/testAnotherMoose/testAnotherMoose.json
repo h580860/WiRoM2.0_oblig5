@@ -1,0 +1,10 @@
+{
+	"addRobot": {
+		"type": "moose",
+		"name": "testAnotherMoose",
+		"location": {
+			"x": 33,
+			"y": 3
+		}
+	}
+}

@@ -1513,13 +1513,13 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
   public CharSequence compile_controller(final Command command) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("from ");
-    String _string = command.getRobotType().toString();
-    _builder.append(_string);
+    String _value = command.getRobotName().getValue();
+    _builder.append(_value);
     _builder.append("_simpleactions import *");
     _builder.newLineIfNotEmpty();
     _builder.append("init(5003, \"");
-    String _value = command.getRobotName().getValue();
-    _builder.append(_value);
+    String _value_1 = command.getRobotName().getValue();
+    _builder.append(_value_1);
     _builder.append("\")");
     _builder.newLineIfNotEmpty();
     return _builder;
@@ -1531,15 +1531,15 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("\"");
-    RobotType _robotType = command.getRobotType();
-    _builder.append(_robotType, "\t");
-    _builder.append("\"\": {");
+    String _value = command.getCommandType().getValue();
+    _builder.append(_value, "\t");
+    _builder.append("\": {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
-    _builder.append("\"type\": ");
+    _builder.append("\"type\": \"");
     String _string = command.getRobotType().toString();
     _builder.append(_string, "\t\t");
-    _builder.append(",");
+    _builder.append("\",");
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
     _builder.append("\"name\": \"");
@@ -1547,13 +1547,13 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
       RobotName _robotName = command.getRobotName();
       boolean _tripleNotEquals = (_robotName != null);
       if (_tripleNotEquals) {
-        String _value = command.getRobotName().getValue();
-        _builder.append(_value, "\t\t");
+        String _value_1 = command.getRobotName().getValue();
+        _builder.append(_value_1, "\t\t");
       } else {
         _builder.append("undefined");
       }
     }
-    _builder.append(",");
+    _builder.append("\",");
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
     _builder.append("\"location\": {");
@@ -1564,8 +1564,8 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
       PositionValue _xValue = command.getXValue();
       boolean _tripleNotEquals_1 = (_xValue != null);
       if (_tripleNotEquals_1) {
-        int _value_1 = command.getXValue().getValue();
-        _builder.append(_value_1, "\t\t\t");
+        int _value_2 = command.getXValue().getValue();
+        _builder.append(_value_2, "\t\t\t");
       } else {
         _builder.append("\"undefined\"");
       }
@@ -1578,8 +1578,8 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
       PositionValue _xValue_1 = command.getXValue();
       boolean _tripleNotEquals_2 = (_xValue_1 != null);
       if (_tripleNotEquals_2) {
-        int _value_2 = command.getYValue().getValue();
-        _builder.append(_value_2, "\t\t\t");
+        int _value_3 = command.getYValue().getValue();
+        _builder.append(_value_3, "\t\t\t");
       } else {
         _builder.append("\"undefined\"");
       }

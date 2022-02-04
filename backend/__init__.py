@@ -91,7 +91,6 @@ def receive_mission():
                     exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence)
                 )
                 success = True
-                print("Success!")
             except Exception as e:
                 print(f"Exception: {e}")
                 retries += 1

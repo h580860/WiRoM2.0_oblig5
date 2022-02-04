@@ -665,7 +665,7 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 
 	def compile_controller(Command command) {
 		'''
-		from «command.robotType.toString»_simpleactions import *
+		from «command.robotName.value»_simpleactions import *
 		init(5003, "«command.robotName.value»")
 		'''
 	}
@@ -674,9 +674,9 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 	def compile_json(Command command) {
 		'''
 		{
-			"«command.robotType»"": {
-				"type": «command.robotType.toString»,
-				"name": "«IF command.robotName !== null»«command.robotName.value»«ELSE»undefined«ENDIF»,
+			"«command.commandType.value»": {
+				"type": "«command.robotType.toString»",
+				"name": "«IF command.robotName !== null»«command.robotName.value»«ELSE»undefined«ENDIF»",
 				"location": {
 					"x": «IF command.XValue !== null»«command.XValue.value»«ELSE»"undefined"«ENDIF»,
 					"y": «IF command.XValue !== null»«command.YValue.value»«ELSE»"undefined"«ENDIF»

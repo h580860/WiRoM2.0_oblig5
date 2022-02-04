@@ -4,6 +4,7 @@ import shutil
 import json
 from backend.generation_utils.json_reader_writer import json_reader_writer
 from backend.generation_utils.wbt_json_parser import WbtJsonParser
+from backend.generation_utils.find_new_gen_robots import FindNewGenRobots
 
 
 # TODO this should perhaps be renamed
@@ -18,21 +19,26 @@ class UpdateChecker:
         # print(f"current working directory using OS= {os.getcwd()}")
         self.json_reader_writer = json_reader_writer()
 
+        # C:\Users\Gunnar\Documents\WiRoM2.0\dsl_robotgenerator\org.gunnarkleiven.robotgenerator.parent\org.gunnarkleiven.robotgenerator\sample\src
+        self.generated_files_filepath = pathlib.Path.cwd() / "dsl_robotgenerator" \
+                                        / "org.gunnarkleiven.robotgenerator.parent" \
+                                        / "org.gunnarkleiven.robotgenerator" / "sample" / "src-gen" / "robotgenerator"
+
         self.update_file = pathlib.Path.cwd() / 'backend' / "generation_utils" / "added_robots.json"
         self.save_file_content = self.json_reader_writer.read_json(self.update_file)
         self.prev_added_robots = self.save_file_content["previouslyAddedRobots"]
         self.new_added_robots = self.save_file_content["newAddedRobots"]
-        self.controller_base_path = pathlib.Path.cwd() / "controllers"
+        self.controller_base_path = pathlib.Path.cwd() / "backend" / "controllers"
         self.current_portnumber = 5002
-        self.map_reader = WbtJsonParser()
-        self.configpath = pathlib.Path.cwd() / 'backend'/ 'config.json'
-        self.datapath = pathlib.Path.cwd().parent / 'backend' / 'web_interface' / 'src' / 'data.json'
+        self.map_filepath = pathlib.Path.cwd() / "backend" / "worlds" / "delivery-missionUpdated.wbt"
+        self.map_reader = WbtJsonParser(filepath=self.map_filepath)
+        self.configpath = pathlib.Path.cwd() / 'backend' / 'config.json'
+        self.datapath = pathlib.Path.cwd() / 'web_interface' / 'src' / 'data.json'
 
         self.robot_types_capital_lookup = {
             "moose": "Moose",
             "mavic2pro": "Mavic2Pro"
         }
-
 
     # def read_template(self, robotType):
     #     template = self.json_reader_writer.read_json(
@@ -141,12 +147,18 @@ class UpdateChecker:
         print(f"Created directory at {controller_dir}")
 
         new_simpleactions_filename = f"{robot}_simpleactions.py"
-        # TODO the source path will have to be wherever the DSL generator generates code
-        source_filepath = pathlib.Path.cwd() / f"{robot}.py"
-        destination_filepath = controller_dir / f"{controller_name}.py"
+        simpleactions_source_filepath = self.generated_files_filepath / robot / new_simpleactions_filename
+        simpleactions_destination_filepath = controller_dir / new_simpleactions_filename
 
-        # Copy the generated controller to the new controller's directory
-        shutil.copy(source_filepath, destination_filepath)
+        # Copy the generated simpleactions implementations to the new controller's directory
+        shutil.copy(simpleactions_source_filepath, simpleactions_destination_filepath)
+        print(f"Copied simpleactions implementations for {robot}")
+
+        new_controller_filename = f"{robot}_controller.py"
+        controller_source_filepath = self.generated_files_filepath / robot / new_controller_filename
+        controller_destination_filepath = controller_dir / new_controller_filename
+        shutil.copy(controller_source_filepath, controller_destination_filepath)
+        print(f"Copied controller implementation for {robot}")
 
         # TODO update the routing key lookup table
 
@@ -169,25 +181,28 @@ class UpdateChecker:
         Finally, save the system configuration with the newly added robots
         """
 
+        # Check if there has been generated any new files in the Eclipse run configuration workspace
+        find_new_gen_robots = FindNewGenRobots(self.prev_added_robots)
+        self.new_added_robots = find_new_gen_robots.find_new_generated_robots()
+
         if not self.new_added_robots:
             print(f"No new robots")
             return
 
         for robot in self.new_added_robots:
-
             # read the generated json file to fetch the data
-            robot_data = self.json_reader_writer.read_json(f"{robot}.json")
+            robot_data = self.json_reader_writer.read_json(self.generated_files_filepath / robot / f"{robot}.json")
             print(f"Robot data: {robot_data}")
             robot_type = robot_data["addRobot"]["type"]
             robot_template = self.json_reader_writer.read_json(
-                pathlib.Path.cwd() / f"{robot_type}_template.json")
+                pathlib.Path.cwd() / "backend" / "generation_utils" / f"{robot_type}_template.json")
 
             robot_controller_name = f"{robot}_controller"
             world_template = robot_template["webots_world"]
 
-            new_positions = self.add_robot_to_world(robot, robot_data, robot_type, world_template, robot_controller_name)
-            self.current_portnumber += 1\
-
+            new_positions = self.add_robot_to_world(robot, robot_data, robot_type, world_template,
+                                                    robot_controller_name)
+            self.current_portnumber += 1
             config_template = robot_template["config"][robot_type]
             self.add_robot_to_config(robot, robot_data, robot_type, new_positions, config_template)
 

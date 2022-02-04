@@ -244,11 +244,13 @@ public class RobotgeneratorGrammarAccess extends AbstractElementFinder.AbstractG
 		private final Keyword cMAVIC2PROMavic2proKeyword_1_0 = (Keyword)cMAVIC2PROEnumLiteralDeclaration_1.eContents().get(0);
 		
 		//enum RobotType:
-		//    MOOSE="moose" | MAVIC2PRO="mavic2pro"
+		//    MOOSE="moose" |
+		//    MAVIC2PRO="mavic2pro"
 		//;
 		public EnumRule getRule() { return rule; }
 		
-		//MOOSE="moose" | MAVIC2PRO="mavic2pro"
+		//MOOSE="moose" |
+		//MAVIC2PRO="mavic2pro"
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//MOOSE="moose"
@@ -375,7 +377,8 @@ public class RobotgeneratorGrammarAccess extends AbstractElementFinder.AbstractG
 	}
 	
 	//enum RobotType:
-	//    MOOSE="moose" | MAVIC2PRO="mavic2pro"
+	//    MOOSE="moose" |
+	//    MAVIC2PRO="mavic2pro"
 	//;
 	public RobotTypeElements getRobotTypeAccess() {
 		return eRobotType;

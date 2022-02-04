@@ -268,6 +268,14 @@ class GenerateRobot:
 
             # Delete the configuration savefile
             os.remove(self.save_file)
+
+        # Delete controllers created by the DSL generator
+        added_robots_filepath = pathlib.Path.cwd() / "added_robots.json"
+        added_robots_file = self.json_reader_writer.read_json(added_robots_filepath)
+        for robot in added_robots_file["previouslyAddedRobots"]:
+            # current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / f"{robot}controller"
+            continue
+
         print(f'Finished reset')
 
 
