@@ -13,6 +13,9 @@ class FindNewGenRobots:
         # print(f"Path = {self.generated_files_filepath}")
 
     def find_new_generated_robots(self):
+        if not self.generated_files_filepath.parent.exists():
+            print("No src-gen folder")
+            return []
         all_generated_robots = os.listdir(self.generated_files_filepath)
         print(f"All generated robots: {all_generated_robots}")
         new_robots = []

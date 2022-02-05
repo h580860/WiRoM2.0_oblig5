@@ -25,6 +25,10 @@ CORS(app)
 # TODO use custom logging class for the other logging parts of the system as well
 # wirom_logger = Wirom_logger("app.log")
 
+update_checker = UpdateChecker()
+update_checker.initiate_full_robot_check()
+
+
 # routing_key lookup
 with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
     # with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
@@ -45,9 +49,9 @@ def receive_mission():
     #     print(f"No missions received")
     #     return 'No missions received', 200
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
+    # connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    # channel = connection.channel()
+    # channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
 
 
     for robot in mission:
@@ -86,17 +90,16 @@ def receive_mission():
                 current_routing_key = routing_key_lookup[mission[robot]['port']]
                 print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={current_routing_key}")
                 # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
-                # test_send_routing_messages(json.dumps(sequence), routing_key)
-                channel.basic_publish(
-                    exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence)
-                )
+                test_send_routing_messages(json.dumps(sequence), current_routing_key)
+                #channel.basic_publish(
+                    # exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence))
                 success = True
             except Exception as e:
                 print(f"Exception: {e}")
                 retries += 1
                 print('Retry: ' + str(retries) + '...')
                 time.sleep(1)
-    connection.close()
+    # connection.close()
 
     return 'Controllers successfully created', 200
 
@@ -235,5 +238,3 @@ if __name__ == '__main__':
     # test_communication_messages(test_message)
 
 # When starting the server, check if there has been any updates of robots
-update_checker = UpdateChecker()
-update_checker.initiate_full_robot_check()

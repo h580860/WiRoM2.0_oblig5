@@ -161,6 +161,12 @@ class UpdateChecker:
         print(f"Copied controller implementation for {robot}")
 
         # TODO update the routing key lookup table
+        # Update the routing key lookup table
+        routing_key_lookup_filepath = pathlib.Path.cwd() / "backend" / "routing_keys_lookup.json"
+        routing_key_lookup = self.json_reader_writer.read_json(routing_key_lookup_filepath)
+        routing_key_lookup[str(self.current_portnumber)] = f"{robot}_queue"
+        self.json_reader_writer.write_json(routing_key_lookup_filepath, json.dumps(routing_key_lookup, indent=4))
+
 
     def update_added_robots_json(self, robot):
         self.prev_added_robots.append(robot)
