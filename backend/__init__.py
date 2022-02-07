@@ -30,9 +30,9 @@ update_checker.initiate_full_robot_check()
 
 
 # routing_key lookup
-with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
+# with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
     # with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
-    routing_key_lookup = json.load(reader_file)
+    # routing_key_lookup = json.load(reader_file)
     # print(f"Routing lookup table:\n{routing_key_lookup}")
 
 with open(pathlib.Path.cwd() / 'backend' / 'config.json') as json_data_file:
@@ -53,7 +53,7 @@ def receive_mission():
     # channel = connection.channel()
     # channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
 
-
+    # for robotname, value in mission.items():
     for robot in mission:
         sequence = []
         for simpleaction in mission[robot]['simpleactions']:
@@ -87,8 +87,9 @@ def receive_mission():
                 # print("Sending sequence to " + mission[robot]['port'])
                 port = mission[robot]['port']
                 # print(f"port: {port}, type: {type(port)}")
-                current_routing_key = routing_key_lookup[mission[robot]['port']]
-                print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={current_routing_key}")
+                # current_routing_key = routing_key_lookup[mission[robot]['port']]
+                # print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={current_routing_key}")
+                current_routing_key = f"{robot}_queue"
                 # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
                 test_send_routing_messages(json.dumps(sequence), current_routing_key)
                 #channel.basic_publish(

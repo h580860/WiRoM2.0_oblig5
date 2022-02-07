@@ -1,0 +1,198 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+  basicTimeStep 16
+  defaultDamping Damping {
+    linear 0.5
+    angular 0.5
+  }
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.024319822148427258 0.9864327434587853 0.16235451605373694 3.434994253718995
+  position 407.20291151723956 1.0900704936962802 -404.48503585168993
+}
+TexturedBackground {
+  texture "noon_cloudy_countryside"
+}
+TexturedBackgroundLight {
+}
+UnevenTerrain {
+  translation 0 -4 0
+  size 1000 5 1000
+  appearance Grass {
+    type "mossy"
+    textureTransform TextureTransform {
+      scale 1000 1000
+    }
+  }
+}
+SimpleTwoFloorsHouse {
+  translation 377.6 -0.68 -363.59
+}
+SimpleTwoFloorsHouse {
+  translation 403.75 -0.68 -363.59
+  name "simple two-storey house(1)"
+}
+Forest {
+  translation 312.359 -0.88 -356.235
+  rotation 0 -1 0 0.785396
+  groundTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/appearances/protos/textures/grass/grass_prickly_base_color.jpg"
+  ]
+}
+Oak {
+  translation 418.32 -0.77 -370.19
+}
+SimpleTwoFloorsHouse {
+  translation 346.82 -0.68 -363.59
+  name "simple two-storey house(2)"
+  enableBoundingObject FALSE
+}
+SimpleTwoFloorsHouse {
+  translation 317.3 -0.68 -395.09
+  rotation 0 1 0 1.5708
+  name "simple two-storey house(3)"
+}
+SimpleTwoFloorsHouse {
+  translation 317.54 -0.68 -422.74
+  rotation 0 1 0 1.5708
+  name "simple two-storey house(4)"
+}
+SolidBox {
+  translation 407.852 -0.38 -401.327
+  name "box(2)"
+  size 2 0.8 2
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/metal.jpg"
+      ]
+    }
+    roughness 0.5
+    metalness 0
+  }
+}
+AdvertisingBoard {
+  translation 402.109 -0.71 -374.23
+  rotation 0 -1 0 -1.5708053071795867
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 377 -0.71 -374.23
+  rotation 0 -1 0 -1.5708053071795867
+  name "advertising board(2)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 345.26 -0.71 -375.85
+  rotation 0 -1 0 -1.5708053071795867
+  name "advertising board(3)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 327.31 -0.71 -395.02
+  rotation 0 -1 0 -5.307179586466759e-06
+  name "advertising board(4)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 330 -0.709994 -421.25
+  rotation 2.30815e-07 1 1.29029e-07 -3.141575307179586
+  name "advertising board(1)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+AdvertisingBoard {
+  translation 330 -0.709994 -440
+  rotation 2.30815e-07 1 1.29029e-07 -3.141575307179586
+  name "advertising board(5)"
+  frontTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  backTexture [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/carpet.jpg"
+  ]
+  displayWidth 1
+  displayHeight 1
+  frameThickness 0.3
+  frameColor 0.886269 0.886275 0.886275
+  poleNumber 1
+  poleHeight 3
+  poleThickness 0.2
+}
+Pedestrian {
+  translation 387.56 0.59 -364.59
+}
+SwingCouch {
+  translation 323.02 -0.9 -411.23
+  rotation 0 1 0 3.14159
+}
+SwingCouch {
+  translation 383.84 -0.9 -369.03
+  rotation 0 -1 0 1.5708
+  name "swing couch(1)"
+}
+RobotisOp3 {
+  translation 408.21 0.3 -401.99
+  rotation 7.481377684888015e-08 0.7071077811855291 0.7071057811861481 3.14159
+  controller "op3_test_controller"
+}
