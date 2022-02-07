@@ -246,3 +246,9 @@ Moose {
     }
   ]
 }
+RobotisOp2 {
+  translation 408.184 0.28 -402
+  rotation 1.0406396779735382e-06 0.7071077811851482 0.7071057811857672 3.14159
+  name "op2"
+  controller "op2_controller"
+}

@@ -283,8 +283,8 @@ class WbtJsonParser:
         # print(f'Content: {content}')
         # print(f'New file:\n{new_file}')
         for key, value in content.items():
-            if key[-1] in digits:
-                key = key[:-1]
+            #if key[-1] in digits:
+                #key = key[:-1]
             new_file.append(key + " {")
             self.transform_section(new_file, value, 1)
             new_file.append("}")

@@ -37,7 +37,8 @@ class UpdateChecker:
 
         self.robot_types_capital_lookup = {
             "moose": "Moose",
-            "mavic2pro": "Mavic2Pro"
+            "mavic2pro": "Mavic2Pro",
+            "op2": "RobotisOp2"
         }
 
     # def read_template(self, robotType):
@@ -61,6 +62,7 @@ class UpdateChecker:
         # The lowest transformation we are looking for will depend on which robot type we have
         # TODO Hardcoded. Not very dynamic
         # also TODO
+        """
         if robot_type == "moose":
             # The "lowest transformation" will be the one with the lowest z value
             lowest_transformation = [0, 0, float('inf')]
@@ -71,7 +73,16 @@ class UpdateChecker:
         else:
             translation_index = 0
             lowest_transformation = [0, 0, float('inf')]
+        
+        """
+        if robot_type == "mavic2pro":
+            translation_index = 0
+            lowest_transformation = [float('inf'), 0, 0]
+        else:
+            lowest_transformation = [0, 0, float('inf')]
+            translation_index = 2
 
+    
         for x in all_robots:
             translation = self.get_translation(x)
             if translation[translation_index] < lowest_transformation[translation_index]:

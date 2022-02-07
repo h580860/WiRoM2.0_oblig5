@@ -22,24 +22,25 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'('", "','", "')'", "';'", "'addRobot'", "'removeRobot'", "'moose'", "'mavic2pro'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'('", "','", "')'", "';'", "'addRobot'", "'removeRobot'", "'moose'", "'mavic2pro'", "'op2'"
     };
-    public static final int RULE_ID=6;
-    public static final int RULE_WS=9;
     public static final int RULE_STRING=4;
-    public static final int RULE_ANY_OTHER=10;
     public static final int RULE_SL_COMMENT=8;
+    public static final int T__19=19;
     public static final int T__15=15;
     public static final int T__16=16;
     public static final int T__17=17;
-    public static final int RULE_INT=5;
     public static final int T__18=18;
     public static final int T__11=11;
-    public static final int RULE_ML_COMMENT=7;
     public static final int T__12=12;
     public static final int T__13=13;
     public static final int T__14=14;
     public static final int EOF=-1;
+    public static final int RULE_ID=6;
+    public static final int RULE_WS=9;
+    public static final int RULE_ANY_OTHER=10;
+    public static final int RULE_INT=5;
+    public static final int RULE_ML_COMMENT=7;
 
     // delegates
     // delegators
@@ -906,36 +907,46 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleRobotType"
-    // InternalRobotgenerator.g:393:1: ruleRobotType returns [Enumerator current=null] : ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) ) ;
+    // InternalRobotgenerator.g:393:1: ruleRobotType returns [Enumerator current=null] : ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) ) ;
     public final Enumerator ruleRobotType() throws RecognitionException {
         Enumerator current = null;
 
         Token enumLiteral_0=null;
         Token enumLiteral_1=null;
+        Token enumLiteral_2=null;
 
 
         	enterRule();
 
         try {
-            // InternalRobotgenerator.g:399:2: ( ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) ) )
-            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) )
+            // InternalRobotgenerator.g:399:2: ( ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) ) )
+            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) )
             {
-            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) )
-            int alt6=2;
-            int LA6_0 = input.LA(1);
-
-            if ( (LA6_0==17) ) {
+            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) )
+            int alt6=3;
+            switch ( input.LA(1) ) {
+            case 17:
+                {
                 alt6=1;
-            }
-            else if ( (LA6_0==18) ) {
+                }
+                break;
+            case 18:
+                {
                 alt6=2;
-            }
-            else {
+                }
+                break;
+            case 19:
+                {
+                alt6=3;
+                }
+                break;
+            default:
                 NoViableAltException nvae =
                     new NoViableAltException("", 6, 0, input);
 
                 throw nvae;
             }
+
             switch (alt6) {
                 case 1 :
                     // InternalRobotgenerator.g:401:3: (enumLiteral_0= 'moose' )
@@ -964,6 +975,23 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
 
                     				current = grammarAccess.getRobotTypeAccess().getMAVIC2PROEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
                     				newLeafNode(enumLiteral_1, grammarAccess.getRobotTypeAccess().getMAVIC2PROEnumLiteralDeclaration_1());
+                    			
+
+                    }
+
+
+                    }
+                    break;
+                case 3 :
+                    // InternalRobotgenerator.g:417:3: (enumLiteral_2= 'op2' )
+                    {
+                    // InternalRobotgenerator.g:417:3: (enumLiteral_2= 'op2' )
+                    // InternalRobotgenerator.g:418:4: enumLiteral_2= 'op2'
+                    {
+                    enumLiteral_2=(Token)match(input,19,FOLLOW_2); 
+
+                    				current = grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+                    				newLeafNode(enumLiteral_2, grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2());
                     			
 
                     }
@@ -1001,7 +1029,7 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_2 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_3 = new BitSet(new long[]{0x0000000000018002L});
     public static final BitSet FOLLOW_4 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x0000000000060000L});
+    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x00000000000E0000L});
     public static final BitSet FOLLOW_6 = new BitSet(new long[]{0x0000000000001000L});
     public static final BitSet FOLLOW_7 = new BitSet(new long[]{0x0000000000001010L});
     public static final BitSet FOLLOW_8 = new BitSet(new long[]{0x0000000000001020L});

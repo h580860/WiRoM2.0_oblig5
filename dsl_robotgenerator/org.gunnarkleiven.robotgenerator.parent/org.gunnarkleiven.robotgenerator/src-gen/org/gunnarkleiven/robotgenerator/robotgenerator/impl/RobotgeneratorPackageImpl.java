@@ -454,6 +454,7 @@ public class RobotgeneratorPackageImpl extends EPackageImpl implements Robotgene
     initEEnum(robotTypeEEnum, RobotType.class, "RobotType");
     addEEnumLiteral(robotTypeEEnum, RobotType.MOOSE);
     addEEnumLiteral(robotTypeEEnum, RobotType.MAVIC2PRO);
+    addEEnumLiteral(robotTypeEEnum, RobotType.OP2);
 
     // Create resource
     createResource(eNS_URI);

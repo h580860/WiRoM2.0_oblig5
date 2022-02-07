@@ -413,6 +413,14 @@ ruleRobotType returns [Enumerator current=null]
 				newLeafNode(enumLiteral_1, grammarAccess.getRobotTypeAccess().getMAVIC2PROEnumLiteralDeclaration_1());
 			}
 		)
+		    |
+		(
+			enumLiteral_2='op2'
+			{
+				$current = grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+				newLeafNode(enumLiteral_2, grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2());
+			}
+		)
 	)
 ;
 

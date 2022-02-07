@@ -227,6 +227,12 @@ rule__RobotType__Alternatives
 		('mavic2pro')
 		{ after(grammarAccess.getRobotTypeAccess().getMAVIC2PROEnumLiteralDeclaration_1()); }
 	)
+	|
+	(
+		{ before(grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2()); }
+		('op2')
+		{ after(grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2()); }
+	)
 ;
 finally {
 	restoreStackSize(stackSize);

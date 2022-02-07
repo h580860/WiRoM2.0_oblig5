@@ -1,7 +1,6 @@
 grammar org.gunnarkleiven.robotgenerator.Robotgenerator with org.eclipse.xtext.common.Terminals
 
 generate robotgenerator "http://www.gunnarkleiven.org/robotgenerator/Robotgenerator"
-import "http://www.gunnarkleiven.org/robotgenerator/robottype"
 
 Model:
 	commands+=Command*;
@@ -27,7 +26,8 @@ CommandType:
 
 enum RobotType:
 	MOOSE="moose" |
-	MAVIC2PRO="mavic2pro"
+	MAVIC2PRO="mavic2pro" |
+	OP2="op2"
 ;
 
 Parameter:
