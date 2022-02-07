@@ -138,6 +138,23 @@
           "cost": 0
         }
       ]
+    },
+    "op2": {
+      "language": "python",
+      "location": {
+        "x": 408.171,
+        "y": -402
+      },
+      "port": "5010",
+      "simpleactions": [
+        {
+          "name": "go_backward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        }
+      ]
     }
   },
   "world": {

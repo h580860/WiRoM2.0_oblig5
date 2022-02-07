@@ -113,6 +113,18 @@
                     "information": "Wait for location from another robot"
                 }
             ]
+        },
+        "op2": {
+            "language": "python",
+            "port": "5010",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts walking forward"
+                }
+            ]
         }
     },
     "missions": {
