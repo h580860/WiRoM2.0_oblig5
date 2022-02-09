@@ -125,6 +125,36 @@
                     "information": "Robot starts walking forward"
                 }
             ]
+        },
+        "bb8": {
+            "language": "python",
+            "port": "5011",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling backwards"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                }
+            ]
         }
     },
     "missions": {
@@ -420,6 +450,30 @@
                     "name": "Test: forward moose",
                     "id": 0,
                     "robot": "moose",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "10",
+                            "id": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Test: forward op2",
+                    "id": 0,
+                    "robot": "op2",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "10",
+                            "id": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Test: forward bb8",
+                    "id": 0,
+                    "robot": "bb8",
                     "simpleactions": [
                         {
                             "name": "go_forward",

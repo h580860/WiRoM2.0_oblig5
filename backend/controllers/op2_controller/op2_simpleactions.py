@@ -92,15 +92,6 @@ def stop_movement():
     left_speed = 0
     right_speed = 0
 
-# write the location of this robot to the config file
-def setLocationConfig():
-    with open('../config.json') as json_data_file:
-        data = json.load(json_data_file)
-
-    with open('../config.json', 'w') as json_data_file:
-        data['robots']['moose']['location'] = {
-            "x": gps.getValues()[0], "y": gps.getValues()[2]}
-        json.dump(data, json_data_file, indent=2, sort_keys=True)
 
 
 def op2_main():

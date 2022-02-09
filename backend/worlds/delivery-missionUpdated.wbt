@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.07325039638953136 -0.9920151780998353 -0.10266579687670363 4.373458355814488
-  position 443.3105566046916 11.104878590501144 -419.4425010151024
+  orientation 0.06077446519199862 -0.9938265302055861 -0.0928185985681303 4.295360213945612
+  position 440.11281209659586 7.470162493536108 -417.1786407551285
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -199,6 +199,8 @@ AdvertisingBoard {
 }
 Pedestrian {
   translation 387.56 0.59 -364.59
+  rotation 0 1 0 2.61799
+  name "oyvind"
 }
 SwingCouch {
   translation 323.02 -0.9 -411.23
@@ -251,4 +253,9 @@ RobotisOp2 {
   rotation 1.0406396779735382e-06 0.7071077811851482 0.7071057811857672 3.14159
   name "op2"
   controller "op2_controller"
+}
+BB-8 {
+  translation 408 -0.81 -403.52
+  rotation 0 1 0 -1.5707953071795862
+  controller "bb8_controller"
 }
