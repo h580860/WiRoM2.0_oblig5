@@ -421,6 +421,14 @@ ruleRobotType returns [Enumerator current=null]
 				newLeafNode(enumLiteral_2, grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2());
 			}
 		)
+		    |
+		(
+			enumLiteral_3='bb8'
+			{
+				$current = grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+				newLeafNode(enumLiteral_3, grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3());
+			}
+		)
 	)
 ;
 

@@ -18,7 +18,8 @@ class GenerateRobot:
         self.robot_type = robot_type
         self.robot_type_capital_lookup = {
             "moose": "Moose",
-            "mavic2pro": "Mavic2Pro"
+            "mavic2pro": "Mavic2Pro",
+            "op2": "RobotisOp2"
         }
         # self.robot_type_capital = f"{self.robot_type[0].upper()}{self.robot_type[1:]}"
         self.robot_type_capital = self.robot_type_capital_lookup[self.robot_type]

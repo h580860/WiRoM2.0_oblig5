@@ -244,17 +244,21 @@ public class RobotgeneratorGrammarAccess extends AbstractElementFinder.AbstractG
 		private final Keyword cMAVIC2PROMavic2proKeyword_1_0 = (Keyword)cMAVIC2PROEnumLiteralDeclaration_1.eContents().get(0);
 		private final EnumLiteralDeclaration cOP2EnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
 		private final Keyword cOP2Op2Keyword_2_0 = (Keyword)cOP2EnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cBB8EnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cBB8Bb8Keyword_3_0 = (Keyword)cBB8EnumLiteralDeclaration_3.eContents().get(0);
 		
 		//enum RobotType:
 		//    MOOSE="moose" |
 		//    MAVIC2PRO="mavic2pro" |
-		//    OP2="op2"
+		//    OP2="op2" |
+		//    BB8="bb8"
 		//;
 		public EnumRule getRule() { return rule; }
 		
 		//MOOSE="moose" |
 		//MAVIC2PRO="mavic2pro" |
-		//OP2="op2"
+		//OP2="op2" |
+		//BB8="bb8"
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//MOOSE="moose"
@@ -274,6 +278,12 @@ public class RobotgeneratorGrammarAccess extends AbstractElementFinder.AbstractG
 		
 		//"op2"
 		public Keyword getOP2Op2Keyword_2_0() { return cOP2Op2Keyword_2_0; }
+		
+		//BB8="bb8"
+		public EnumLiteralDeclaration getBB8EnumLiteralDeclaration_3() { return cBB8EnumLiteralDeclaration_3; }
+		
+		//"bb8"
+		public Keyword getBB8Bb8Keyword_3_0() { return cBB8Bb8Keyword_3_0; }
 	}
 	
 	private final ModelElements pModel;
@@ -389,7 +399,8 @@ public class RobotgeneratorGrammarAccess extends AbstractElementFinder.AbstractG
 	//enum RobotType:
 	//    MOOSE="moose" |
 	//    MAVIC2PRO="mavic2pro" |
-	//    OP2="op2"
+	//    OP2="op2" |
+	//    BB8="bb8"
 	//;
 	public RobotTypeElements getRobotTypeAccess() {
 		return eRobotType;

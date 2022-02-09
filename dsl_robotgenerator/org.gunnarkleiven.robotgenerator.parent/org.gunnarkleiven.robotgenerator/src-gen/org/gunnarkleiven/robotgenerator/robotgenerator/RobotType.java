@@ -48,7 +48,17 @@ public enum RobotType implements Enumerator
    * @generated
    * @ordered
    */
-  OP2(2, "OP2", "op2");
+  OP2(2, "OP2", "op2"),
+
+  /**
+   * The '<em><b>BB8</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #BB8_VALUE
+   * @generated
+   * @ordered
+   */
+  BB8(3, "BB8", "bb8");
 
   /**
    * The '<em><b>MOOSE</b></em>' literal value.
@@ -84,6 +94,17 @@ public enum RobotType implements Enumerator
   public static final int OP2_VALUE = 2;
 
   /**
+   * The '<em><b>BB8</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #BB8
+   * @model literal="bb8"
+   * @generated
+   * @ordered
+   */
+  public static final int BB8_VALUE = 3;
+
+  /**
    * An array of all the '<em><b>Robot Type</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -95,6 +116,7 @@ public enum RobotType implements Enumerator
       MOOSE,
       MAVIC2PRO,
       OP2,
+      BB8,
     };
 
   /**
@@ -162,6 +184,7 @@ public enum RobotType implements Enumerator
       case MOOSE_VALUE: return MOOSE;
       case MAVIC2PRO_VALUE: return MAVIC2PRO;
       case OP2_VALUE: return OP2;
+      case BB8_VALUE: return BB8;
     }
     return null;
   }

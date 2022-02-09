@@ -155,6 +155,44 @@
           "cost": 0.1
         }
       ]
+    },
+    "bb8": {
+      "language": "python",
+      "location": {
+        "x": 408.171,
+        "y": -402
+      },
+      "port": "5010",
+      "simpleactions": [
+        {
+          "name": "go_forward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "go_backward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_right",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "turn_left",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        }
+      ]
     }
   },
   "world": {

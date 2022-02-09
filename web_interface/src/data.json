@@ -457,30 +457,6 @@
                             "id": 0
                         }
                     ]
-                },
-                {
-                    "name": "Test: forward op2",
-                    "id": 0,
-                    "robot": "op2",
-                    "simpleactions": [
-                        {
-                            "name": "go_forward",
-                            "args": "10",
-                            "id": 0
-                        }
-                    ]
-                },
-                {
-                    "name": "Test: forward bb8",
-                    "id": 0,
-                    "robot": "bb8",
-                    "simpleactions": [
-                        {
-                            "name": "go_forward",
-                            "args": "10",
-                            "id": 0
-                        }
-                    ]
                 }
             ]
         }

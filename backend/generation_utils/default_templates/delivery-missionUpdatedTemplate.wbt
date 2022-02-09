@@ -252,3 +252,8 @@ RobotisOp2 {
   name "op2"
   controller "op2_controller"
 }
+BB-8 {
+  translation 408 -0.81 -403.52
+  rotation 0 1 0 -1.5707953071795862
+  controller "bb8_controller"
+}

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'('", "','", "')'", "';'", "'addRobot'", "'removeRobot'", "'moose'", "'mavic2pro'", "'op2'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'('", "','", "')'", "';'", "'addRobot'", "'removeRobot'", "'moose'", "'mavic2pro'", "'op2'", "'bb8'"
     };
     public static final int RULE_STRING=4;
     public static final int RULE_SL_COMMENT=8;
@@ -41,6 +41,7 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
     public static final int RULE_ANY_OTHER=10;
     public static final int RULE_INT=5;
     public static final int RULE_ML_COMMENT=7;
+    public static final int T__20=20;
 
     // delegates
     // delegators
@@ -907,23 +908,24 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleRobotType"
-    // InternalRobotgenerator.g:393:1: ruleRobotType returns [Enumerator current=null] : ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) ) ;
+    // InternalRobotgenerator.g:393:1: ruleRobotType returns [Enumerator current=null] : ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) | (enumLiteral_3= 'bb8' ) ) ;
     public final Enumerator ruleRobotType() throws RecognitionException {
         Enumerator current = null;
 
         Token enumLiteral_0=null;
         Token enumLiteral_1=null;
         Token enumLiteral_2=null;
+        Token enumLiteral_3=null;
 
 
         	enterRule();
 
         try {
-            // InternalRobotgenerator.g:399:2: ( ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) ) )
-            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) )
+            // InternalRobotgenerator.g:399:2: ( ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) | (enumLiteral_3= 'bb8' ) ) )
+            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) | (enumLiteral_3= 'bb8' ) )
             {
-            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) )
-            int alt6=3;
+            // InternalRobotgenerator.g:400:2: ( (enumLiteral_0= 'moose' ) | (enumLiteral_1= 'mavic2pro' ) | (enumLiteral_2= 'op2' ) | (enumLiteral_3= 'bb8' ) )
+            int alt6=4;
             switch ( input.LA(1) ) {
             case 17:
                 {
@@ -938,6 +940,11 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
             case 19:
                 {
                 alt6=3;
+                }
+                break;
+            case 20:
+                {
+                alt6=4;
                 }
                 break;
             default:
@@ -999,6 +1006,23 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
 
                     }
                     break;
+                case 4 :
+                    // InternalRobotgenerator.g:425:3: (enumLiteral_3= 'bb8' )
+                    {
+                    // InternalRobotgenerator.g:425:3: (enumLiteral_3= 'bb8' )
+                    // InternalRobotgenerator.g:426:4: enumLiteral_3= 'bb8'
+                    {
+                    enumLiteral_3=(Token)match(input,20,FOLLOW_2); 
+
+                    				current = grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+                    				newLeafNode(enumLiteral_3, grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3());
+                    			
+
+                    }
+
+
+                    }
+                    break;
 
             }
 
@@ -1029,7 +1053,7 @@ public class InternalRobotgeneratorParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_2 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_3 = new BitSet(new long[]{0x0000000000018002L});
     public static final BitSet FOLLOW_4 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x00000000000E0000L});
+    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x00000000001E0000L});
     public static final BitSet FOLLOW_6 = new BitSet(new long[]{0x0000000000001000L});
     public static final BitSet FOLLOW_7 = new BitSet(new long[]{0x0000000000001010L});
     public static final BitSet FOLLOW_8 = new BitSet(new long[]{0x0000000000001020L});

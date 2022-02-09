@@ -233,6 +233,12 @@ rule__RobotType__Alternatives
 		('op2')
 		{ after(grammarAccess.getRobotTypeAccess().getOP2EnumLiteralDeclaration_2()); }
 	)
+	|
+	(
+		{ before(grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3()); }
+		('bb8')
+		{ after(grammarAccess.getRobotTypeAccess().getBB8EnumLiteralDeclaration_3()); }
+	)
 ;
 finally {
 	restoreStackSize(stackSize);

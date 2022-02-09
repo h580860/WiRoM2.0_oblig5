@@ -10,6 +10,7 @@
       <genEnumLiterals ecoreEnumLiteral="Robotgenerator.ecore#//RobotType/MOOSE"/>
       <genEnumLiterals ecoreEnumLiteral="Robotgenerator.ecore#//RobotType/MAVIC2PRO"/>
       <genEnumLiterals ecoreEnumLiteral="Robotgenerator.ecore#//RobotType/OP2"/>
+      <genEnumLiterals ecoreEnumLiteral="Robotgenerator.ecore#//RobotType/BB8"/>
     </genEnums>
     <genClasses ecoreClass="Robotgenerator.ecore#//Model">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Robotgenerator.ecore#//Model/commands"/>

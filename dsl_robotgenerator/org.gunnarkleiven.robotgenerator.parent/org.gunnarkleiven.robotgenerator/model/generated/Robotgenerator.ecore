@@ -30,6 +30,7 @@
     <eLiterals name="MOOSE" literal="moose"/>
     <eLiterals name="MAVIC2PRO" value="1" literal="mavic2pro"/>
     <eLiterals name="OP2" value="2" literal="op2"/>
+    <eLiterals name="BB8" value="3" literal="bb8"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AddRobot" eSuperTypes="#//CommandType"/>
   <eClassifiers xsi:type="ecore:EClass" name="RemoveRobot" eSuperTypes="#//CommandType"/>

@@ -38,7 +38,8 @@ class UpdateChecker:
         self.robot_types_capital_lookup = {
             "moose": "Moose",
             "mavic2pro": "Mavic2Pro",
-            "op2": "RobotisOp2"
+            "op2": "RobotisOp2",
+            "bb8": "BB-8"
         }
 
     # def read_template(self, robotType):
@@ -209,7 +210,7 @@ class UpdateChecker:
         for robot in self.new_added_robots:
             # read the generated json file to fetch the data
             robot_data = self.json_reader_writer.read_json(self.generated_files_filepath / robot / f"{robot}.json")
-            print(f"Robot data: {robot_data}")
+            # print(f"Robot data: {robot_data}")
             robot_type = robot_data["addRobot"]["type"]
             robot_template = self.json_reader_writer.read_json(
                 pathlib.Path.cwd() / "backend" / "generation_utils" / f"{robot_type}_template.json")

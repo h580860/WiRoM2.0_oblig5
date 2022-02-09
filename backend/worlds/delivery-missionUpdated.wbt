@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.06077446519199862 -0.9938265302055861 -0.0928185985681303 4.295360213945612
-  position 440.11281209659586 7.470162493536108 -417.1786407551285
+  orientation 0.07325039638953136 -0.9920151780998353 -0.10266579687670363 4.373458355814488
+  position 443.3105566046916 11.104878590501144 -419.4425010151024
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -199,8 +199,6 @@ AdvertisingBoard {
 }
 Pedestrian {
   translation 387.56 0.59 -364.59
-  rotation 0 1 0 2.61799
-  name "oyvind"
 }
 SwingCouch {
   translation 323.02 -0.9 -411.23

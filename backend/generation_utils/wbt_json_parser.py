@@ -57,6 +57,7 @@ class WbtJsonParser:
 
             # The node name (which will be a key in the json file) will always be the first 
             # string of a section
+            # print(f"self.raw file content:\n{self.raw_file_content}")
             section_name = self.raw_file_content[line_pointer].split()[0]
             if section_name in file_content.keys():
                 self.key_name_count[section_name] += 1
