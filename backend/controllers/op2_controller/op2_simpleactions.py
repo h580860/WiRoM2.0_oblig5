@@ -10,7 +10,9 @@ from controller import Robot
 # from controller import LED
 import os
 import sys
-libraryPath = os.path.join(os.environ.get("WEBOTS_HOME"), 'projects', 'robots', 'robotis', 'darwin-op', 'libraries', 'python39')
+
+libraryPath = os.path.join(os.environ.get("WEBOTS_HOME"), 'projects', 'robots', 'robotis', 'darwin-op', 'libraries',
+                           'python39')
 libraryPath = libraryPath.replace('/', os.sep)
 sys.path.append(libraryPath)
 from managers import RobotisOp2MotionManager, RobotisOp2GaitManager
@@ -21,24 +23,24 @@ robot = Robot()
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
 
-f_up = 0
-f_down = 0
+fup = 0
+fdown = 0
 gyro = robot.getDevice('Gyro')
 gyro.enable(timestep)
+accelerometer = robot.getDevice('Accelerometer')
+accelerometer.enable(timestep)
 x_amplitude_forward = 0.0
 
-
 positionSensorNames = ['ShoulderR', 'ShoulderL', 'ArmUpperR', 'ArmUpperL',
-                                    'ArmLowerR', 'ArmLowerL', 'PelvYR', 'PelvYL',
-                                    'PelvR', 'PelvL', 'LegUpperR', 'LegUpperL',
-                                    'LegLowerR', 'LegLowerL', 'AnkleR', 'AnkleL',
-                                    'FootR', 'FootL', 'Neck', 'Head']
+                       'ArmLowerR', 'ArmLowerL', 'PelvYR', 'PelvYL',
+                       'PelvR', 'PelvL', 'LegUpperR', 'LegUpperL',
+                       'LegLowerR', 'LegLowerL', 'AnkleR', 'AnkleL',
+                       'FootR', 'FootL', 'Neck', 'Head']
 
 positionSensors = []
 for i in range(len(positionSensorNames)):
     positionSensors.append(robot.getDevice(positionSensorNames[i] + 'S'))
     positionSensors[i].enable(timestep)
-
 
 motion_manager = RobotisOp2MotionManager(robot)
 gait_manager = RobotisOp2GaitManager(robot, "")
@@ -52,22 +54,55 @@ simpleactions = []
 
 op2_name = ""
 
+
 # Initialize which sets the target altitude as well as start the main loop
 def init(port, name):
     global op2_name
     op2_name = name
     main = threading.Thread(target=op2_main)
     communication = threading.Thread(target=test_receive_routing_message)
-    
+
     main.start()
     communication.start()
 
+
+# Source: https://github.com/cyberbotics/webots/blob/released/projects/robots/robotis/darwin-op/controllers/walk/Walk.cpp
+def check_if_fallen():
+    global accelerometer, motion_manager, op2_name, fup, fdown
+    accelerometer_tolerance = 80.0
+    accelerometer_step = 100
+
+    # Count how many steps the accelerometer says the robot is down
+    accelerometer_values = accelerometer.getValues()
+    if accelerometer_values[1] < 520.0 - accelerometer_tolerance:
+        fup += 1
+    else:
+        fup = 0
+
+    if accelerometer_values[1] > 512.0 + accelerometer_tolerance:
+        fdown += 1
+    else:
+        fdown = 0
+
+    # the robot is face down
+    if fup > accelerometer_step:
+        motion_manager.playPage(10)
+        motion_manager.playPage(9)
+        fup = 0
+        print(f"{op2_name} is face down")
+    elif fdown > accelerometer_step:
+        motion_manager.playPage(11)
+        motion_manager.playPage(9)
+        fdown = 0
+        print(f"{op2_name} is face up")
+
+
 def my_step():
-    global robot,timestep
+    global robot, timestep
     ret = robot.step(timestep)
     if ret == -1:
         exit(0)
-    
+
 
 def wait(ms):
     global robot
@@ -93,11 +128,10 @@ def stop_movement():
     right_speed = 0
 
 
-
 def op2_main():
-    global x_amplitude_forward
+    global x_amplitude_forward, motion_manager
     step_count = 0
-    my_step()       # Simulate a step to refresh the sensor reading
+    my_step()  # Simulate a step to refresh the sensor reading
     motion_manager.playPage(9)
     wait(200)
 
@@ -106,6 +140,8 @@ def op2_main():
     gait_manager.setBalanceEnable(True)
 
     while robot.step(timestep) != -1:
+        check_if_fallen()
+
         gait_manager.setXAmplitude(x_amplitude_forward)
         gait_manager.step(timestep)
         step_count += 1
@@ -116,14 +152,13 @@ def execute_simpleactions():
     try:
         while True:
             if simpleactions:
-                    simpleaction = simpleactions.pop(0)
-                    print("Executing simpleaction " + simpleaction)
-                    eval(simpleaction)
+                simpleaction = simpleactions.pop(0)
+                print("Executing simpleaction " + simpleaction)
+                eval(simpleaction)
             else:
                 print("No available simpleaction")
     except Exception as e:
         print(e)
-
 
 
 def test_receive_routing_message():
@@ -139,7 +174,7 @@ def test_receive_routing_message():
 
     print(f"{op2_name} ready to receive routed messages")
     channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
-    
+
     channel.start_consuming()
 
 
@@ -153,7 +188,7 @@ def execute_simpleactions_callback(ch, method, properties, body):
     new_simpleactions = json.loads(body.decode('utf-8'))
     simpleactions.extend(new_simpleactions)
     print(f'(moose) Simpleactions = {simpleactions}, type={type(simpleactions)}')
-    
+
     # Now execute the simpleactions
     # for i in range(len(simpleactions)):
     while simpleactions:
