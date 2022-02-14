@@ -11,11 +11,9 @@ import pika
 
 
 class MooseSimpleactionsGenerator:
-    def __init__(self, port):
-        # from backend.wirom_logger import Wirom_logger
-        # logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(os.pardir, os.pardir, "moose.log"),
-        #                     encoding='utf-8', level=logging.DEBUG)
-        # logging.info("-" * 50)
+    def __init__(self, name):
+
+        self.robot_name = name
 
         # create the Robot instance.
         self.robot = Robot()
@@ -44,23 +42,18 @@ class MooseSimpleactionsGenerator:
         # simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
         self.simpleactions = []
 
-        self.initiate_threads(port)
+        # self.initiate_threads()
 
         # Initialize which sets the target altitude as well as start the main loop
 
-    def initiate_threads(self, port):
-        # logging.info("init")
+    def initiate_threads(self):
         main = threading.Thread(target=self.moose_main)
-        # execute = threading.Thread(target=execute_simpleactions)
-        # communication = threading.Thread(target=test_communcation_receive)
-        communication = threading.Thread(target=self.test_receive_routing_message)
-        location_communication = threading.Thread(target=self.test_receive_location)
+        communication = threading.Thread(target=self.receive_routing_message)
+        location_communication = threading.Thread(target=self.receive_location)
 
         main.start()
-        # execute.start()
         communication.start()
         location_communication.start()
-        # app.run(port=port)
 
     def go_forward(self, duration):
         self.left_speed = 7.0
@@ -109,7 +102,7 @@ class MooseSimpleactionsGenerator:
 
     # Function that finds the angle and distance to a location and moves the vehicle accordingly
     def navigate_to_location(self):
-        loc = location[0]
+        loc = self.location[0]
 
         pos = self.gps.getValues()
         north = self.compass.getValues()
@@ -154,7 +147,6 @@ class MooseSimpleactionsGenerator:
             json.dump(data, json_data_file, indent=2, sort_keys=True)
 
     def moose_main(self):
-        logging.info("moose_main")
         step_count = 0
         for motor in self.left_motors:
             motor.setPosition(float('inf'))
@@ -185,23 +177,8 @@ class MooseSimpleactionsGenerator:
         except Exception as e:
             print(e)
 
-    def test_communcation_receive(self):
-        # initiate messaging communication
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
-        channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
 
-        result = channel.queue_declare(queue='', exclusive=True)
-        queue_name = result.method.queue
-
-        channel.queue_bind(exchange='test_exchange', queue=queue_name)
-
-        print("Moose ready to receive messages")
-
-        channel.basic_consume(queue=queue_name, on_message_callback=self.execute_simpleactions_callback, auto_ack=True)
-        channel.start_consuming()
-
-    def test_receive_routing_message(self):
+    def receive_routing_message(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
         channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
@@ -209,14 +186,14 @@ class MooseSimpleactionsGenerator:
         result = channel.queue_declare(queue='', exclusive=True)
         queue_name = result.method.queue
 
-        channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key="moose_queue")
+        channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{self.robot_name}_queue")
 
-        print("Moose ready to receive routed messages")
+        print(f"{self.robot_name} ready to receive routed messages")
         channel.basic_consume(queue=queue_name, on_message_callback=self.execute_simpleactions_callback, auto_ack=True)
 
         channel.start_consuming()
 
-    def test_receive_location(self):
+    def receive_location(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
         channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
@@ -224,41 +201,33 @@ class MooseSimpleactionsGenerator:
         result = channel.queue_declare(queue='', exclusive=True)
         queue_name = result.method.queue
 
-        channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key="moose_location_queue")
+        channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key=f"{self.robot_name}_location_queue")
 
-        print("Moose ready to receive locations")
+        print(f"{self.robot_name} ready to receive locations")
         channel.basic_consume(queue=queue_name, on_message_callback=self.receive_location_callback, auto_ack=True)
         channel.start_consuming()
 
     def execute_simpleactions_callback(self, ch, method, properties, body):
-        global simpleactions
-        print("(moose) callback: %r" % body)
+        print(f"{self.robot_name} callback: %r" % body)
         # TODO as for now, the incoming messages are functions calls, separated by ","
         # simpleactions.extend(body.decode('utf-8').split(","))
 
         # Decode the JSON back to a list
         new_simpleactions = json.loads(body.decode('utf-8'))
         self.simpleactions.extend(new_simpleactions)
-        print(f'(moose) Simpleactions = {self.simpleactions}, type={type(self.simpleactions)}')
+        print(f'{self.robot_name} Simpleactions = {self.simpleactions}, type={type(self.simpleactions)}')
 
         # Now execute the simpleactions
         # for i in range(len(simpleactions)):
         while self.simpleactions:
             sim_act = self.simpleactions.pop(0)
-            print("(moose) Executing simpleaction " + sim_act)
+            print(f"{self.robot_name} Executing simpleaction " + sim_act)
             eval("self." + sim_act)
-        print("finished callback function")
+        print(f"{self.robot_name} finished callback function")
 
     def receive_location_callback(self, ch, method, properties, body):
-        global location
-        print("(moose) received locations")
+        print(f"{self.robot} received locations")
 
         new_location = json.loads(body.decode('utf-8'))
         # print(f"new location={new_location}, type = {type(new_location)}")
         self.location.append(new_location['location'])
-
-    def callback(self, ch, method, properties, body):
-        print("(moose) %r" % body)
-        # logging.info("(moose) %r" % body)
-        print("(moose print)" + str(body))
-        print(body.decode('UTF-8'))
