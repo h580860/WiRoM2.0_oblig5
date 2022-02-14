@@ -13,10 +13,10 @@ import pika
 class MooseSimpleactionsGenerator:
     def __init__(self, name):
 
-        self.robot_name = name
 
         # create the Robot instance.
         self.robot = Robot()
+        self.robot_name = name
 
         # get the time step of the current world.
         self.timestep = int(self.robot.getBasicTimeStep())
@@ -171,7 +171,7 @@ class MooseSimpleactionsGenerator:
                 if self.simpleactions:
                     simpleaction = self.simpleactions.pop(0)
                     print("Executing simpleaction " + simpleaction)
-                    eval(simpleaction)
+                    eval(f"self.{simpleaction}")
                 else:
                     print("No available simpleaction")
         except Exception as e:
