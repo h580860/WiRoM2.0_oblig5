@@ -8,15 +8,16 @@ import json
 import logging
 import os
 import pika
+from simpleactions_superclass import SimpleactionsSuperclass
 
 
-class MooseSimpleactionsGenerator:
+class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-
+        super().__init__(name)
 
         # create the Robot instance.
-        self.robot = Robot()
-        self.robot_name = name
+        # self.robot = Robot()
+        # self.robot_name = name
 
         # get the time step of the current world.
         self.timestep = int(self.robot.getBasicTimeStep())
@@ -40,7 +41,7 @@ class MooseSimpleactionsGenerator:
         self.navigate = False
         self.location = []
         # simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
-        self.simpleactions = []
+        # self.simpleactions = []
 
         # self.initiate_threads()
 
@@ -165,34 +166,6 @@ class MooseSimpleactionsGenerator:
             # logging.info(step_count)
             # print("main iteration")
 
-    def execute_simpleactions(self):
-        try:
-            while True:
-                if self.simpleactions:
-                    simpleaction = self.simpleactions.pop(0)
-                    print("Executing simpleaction " + simpleaction)
-                    eval(f"self.{simpleaction}")
-                else:
-                    print("No available simpleaction")
-        except Exception as e:
-            print(e)
-
-
-    def receive_routing_message(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
-        channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
-
-        result = channel.queue_declare(queue='', exclusive=True)
-        queue_name = result.method.queue
-
-        channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{self.robot_name}_queue")
-
-        print(f"{self.robot_name} ready to receive routed messages")
-        channel.basic_consume(queue=queue_name, on_message_callback=self.execute_simpleactions_callback, auto_ack=True)
-
-        channel.start_consuming()
-
     def receive_location(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
@@ -207,26 +180,8 @@ class MooseSimpleactionsGenerator:
         channel.basic_consume(queue=queue_name, on_message_callback=self.receive_location_callback, auto_ack=True)
         channel.start_consuming()
 
-    def execute_simpleactions_callback(self, ch, method, properties, body):
-        print(f"{self.robot_name} callback: %r" % body)
-        # TODO as for now, the incoming messages are functions calls, separated by ","
-        # simpleactions.extend(body.decode('utf-8').split(","))
-
-        # Decode the JSON back to a list
-        new_simpleactions = json.loads(body.decode('utf-8'))
-        self.simpleactions.extend(new_simpleactions)
-        print(f'{self.robot_name} Simpleactions = {self.simpleactions}, type={type(self.simpleactions)}')
-
-        # Now execute the simpleactions
-        # for i in range(len(simpleactions)):
-        while self.simpleactions:
-            sim_act = self.simpleactions.pop(0)
-            print(f"{self.robot_name} Executing simpleaction " + sim_act)
-            eval("self." + sim_act)
-        print(f"{self.robot_name} finished callback function")
-
     def receive_location_callback(self, ch, method, properties, body):
-        print(f"{self.robot} received locations")
+        print(f"{self.robot_name} received locations")
 
         new_location = json.loads(body.decode('utf-8'))
         # print(f"new location={new_location}, type = {type(new_location)}")

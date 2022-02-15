@@ -10,16 +10,12 @@ import sys
 import os
 import logging
 import pika
+from simpleactions_superclass import SimpleactionsSuperclass
 
 
-class Mavic2proSimpleactiosGenerator():
+class Mavic2proSimpleactiosGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        # create the Robot instance.
-        self.robot = Robot()
-        self.robot_name = name
-
-        # get the time step of the current world.
-        self.timestep = int(self.robot.getBasicTimeStep())
+        super().__init__(name)
 
         # get the motors for the robot
         self.front_left_motor = self.robot.getDevice('front left propeller')
@@ -223,9 +219,7 @@ class Mavic2proSimpleactiosGenerator():
         self.rear_left_motor.setVelocity(-rear_left_motor_input)
         self.rear_right_motor.setVelocity(rear_right_motor_input)
 
-
-# write the location of this robot to the config file
-
+    # write the location of this robot to the config file
 
     def setLocationConfig(self):
         with open('../config.json') as json_data_file:
@@ -235,7 +229,6 @@ class Mavic2proSimpleactiosGenerator():
             data['robots']['mavic2pro']['location'] = {
                 "x": self.gps.getValues()[0], "y": self.gps.getValues()[2]}
             json.dump(data, json_data_file, indent=2, sort_keys=True)
-
 
     # main loop, starting and controlling the robot based on the global variables
     def mavic2pro_main(self):
@@ -258,52 +251,3 @@ class Mavic2proSimpleactiosGenerator():
                         self.stop_movement()
             # print(f'(mavic) step number {step_count}')
             step_count += 1
-
-    # Function for executing simpleactions in the queue
-    def execute_simpleactions(self):
-        while self.robot.step(self.timestep) != -1:
-            if self.simpleactions:
-                simpleaction = self.simpleactions.pop(0)
-                print('Executing simpleaction: ' + simpleaction)
-                eval(f'self.{simpleaction}')
-
-
-    def receive_routing_message(self):
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
-        channel.exchange_declare(
-            exchange='routing_exchange', exchange_type='direct')
-
-        result = channel.queue_declare(queue='', exclusive=True)
-        queue_name = result.method.queue
-
-        channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{self.robot_name}_queue")
-
-        print(f"{self.robot_name} ready to receive routed messages")
-        channel.basic_consume(
-            queue=queue_name,
-            on_message_callback=self.execute_simpleactions_callback,
-            auto_ack=True
-        )
-
-        channel.start_consuming()
-
-
-    def execute_simpleactions_callback(self, ch, method, properties, body):
-        print(f"{self.robot_name} callback: %r" % body)
-        # TODO as for now, the incoming messages are functions calls, separated by ","
-        # simpleactions.extend(body.decode('utf-8').split(","))
-        # simpleactions.extend(body.decode('utf-8'))
-
-        new_simpleactions = json.loads(body.decode('utf-8'))
-        self.simpleactions.extend(new_simpleactions)
-        # print(f'{self.robot_name} Simpleactions = {self.simpleactions}, type={type(simpleactions)}')
-
-        # Now execute the simpleactions
-        # for i in range(len(simpleactions)):
-        while self.simpleactions:
-            sim_act = self.simpleactions.pop(0)
-            print(f"{self.robot_name} Executing simpleaction " + sim_act)
-            eval(f"self.{sim_act}")
-        print(f"{self.robot_name} finished callback function")

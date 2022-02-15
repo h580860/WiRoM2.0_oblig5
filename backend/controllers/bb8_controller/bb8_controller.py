@@ -7,6 +7,6 @@ import os
 controller_path = os.path.join(os.getcwd(), os.pardir)
 sys.path.insert(0, controller_path)
 
-from bb8_simpleactions.bb8_simpleactions_generator import Bb8SimpleactionsGenerator
+from bb8_simpleactions_generator import Bb8SimpleactionsGenerator
 bb8_simpleactions = Bb8SimpleactionsGenerator("bb8")
 bb8_simpleactions.initiate_threads()
