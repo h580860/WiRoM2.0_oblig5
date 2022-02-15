@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.07325039638953136 -0.9920151780998353 -0.10266579687670363 4.373458355814488
-  position 443.3105566046916 11.104878590501144 -419.4425010151024
+  orientation 0.06695359103076207 -0.9943109122944327 -0.08284338440876468 4.495453784288962
+  position 434.68251838678816 5.766303613696413 -409.69143253172996
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -196,6 +196,11 @@ AdvertisingBoard {
   poleNumber 1
   poleHeight 3
   poleThickness 0.2
+}
+SpeedLimitSign {
+  translation 408.231 -0.71 -395.706
+  rotation 0 1 0 -1.5708003061004252
+  name "DEFAULT_TRANSLATION"
 }
 Pedestrian {
   translation 387.56 0.59 -364.59

@@ -248,10 +248,10 @@ class GenerateRobot:
         print("config reset finished")
 
         # Reset the routing_keys_lookup file
-        reset_routing_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_routing_keys_lookup.json'
-        reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
-        shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
-        print("routing_key_lookup reset finished")
+        # reset_routing_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_routing_keys_lookup.json'
+        # reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
+        # shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
+        # print("routing_key_lookup reset finished")
 
         # Access the save file to see how many controllers have been created
         # TODO better exception handling

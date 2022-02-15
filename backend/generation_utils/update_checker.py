@@ -57,7 +57,10 @@ class UpdateChecker:
         new_robot_node = world_template[robot_type_capitalized]
         self.map_reader.read_file()
 
-        all_robots = self.map_reader.get_all_of_robot_type(robot_type_capitalized)
+        all_robots = []
+        for val in self.robot_types_capital_lookup.values():
+            all_robots.extend(self.map_reader.get_all_of_robot_type(val))
+
         all_translations = []
 
         # The lowest transformation we are looking for will depend on which robot type we have
@@ -83,7 +86,6 @@ class UpdateChecker:
             lowest_transformation = [0, 0, float('inf')]
             translation_index = 2
 
-    
         for x in all_robots:
             translation = self.get_translation(x)
             if translation[translation_index] < lowest_transformation[translation_index]:
@@ -157,14 +159,15 @@ class UpdateChecker:
         controller_dir = self.controller_base_path / controller_name
         os.mkdir(controller_dir)
         print(f"Created directory at {controller_dir}")
+        open(controller_dir / "__init__.py", 'a').close()
 
-        new_simpleactions_filename = f"{robot}_simpleactions.py"
-        simpleactions_source_filepath = self.generated_files_filepath / robot / new_simpleactions_filename
-        simpleactions_destination_filepath = controller_dir / new_simpleactions_filename
+        # new_simpleactions_filename = f"{robot}_simpleactions.py"
+        # simpleactions_source_filepath = self.generated_files_filepath / robot / new_simpleactions_filename
+        # simpleactions_destination_filepath = controller_dir / new_simpleactions_filename
 
         # Copy the generated simpleactions implementations to the new controller's directory
-        shutil.copy(simpleactions_source_filepath, simpleactions_destination_filepath)
-        print(f"Copied simpleactions implementations for {robot}")
+        # shutil.copy(simpleactions_source_filepath, simpleactions_destination_filepath)
+        # print(f"Copied simpleactions implementations for {robot}")
 
         new_controller_filename = f"{robot}_controller.py"
         controller_source_filepath = self.generated_files_filepath / robot / new_controller_filename
@@ -172,13 +175,12 @@ class UpdateChecker:
         shutil.copy(controller_source_filepath, controller_destination_filepath)
         print(f"Copied controller implementation for {robot}")
 
-        # TODO update the routing key lookup table
+        # key lookup table no longer in use
         # Update the routing key lookup table
-        routing_key_lookup_filepath = pathlib.Path.cwd() / "backend" / "routing_keys_lookup.json"
-        routing_key_lookup = self.json_reader_writer.read_json(routing_key_lookup_filepath)
-        routing_key_lookup[str(self.current_portnumber)] = f"{robot}_queue"
-        self.json_reader_writer.write_json(routing_key_lookup_filepath, json.dumps(routing_key_lookup, indent=4))
-
+        # routing_key_lookup_filepath = pathlib.Path.cwd() / "backend" / "routing_keys_lookup.json"
+        # routing_key_lookup = self.json_reader_writer.read_json(routing_key_lookup_filepath)
+        # routing_key_lookup[str(self.current_portnumber)] = f"{robot}_queue"
+        # self.json_reader_writer.write_json(routing_key_lookup_filepath, json.dumps(routing_key_lookup, indent=4))
 
     def update_added_robots_json(self, robot):
         self.prev_added_robots.append(robot)

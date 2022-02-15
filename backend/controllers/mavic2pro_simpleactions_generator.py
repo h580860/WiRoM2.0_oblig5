@@ -13,7 +13,7 @@ import pika
 from simpleactions_superclass import SimpleactionsSuperclass
 
 
-class Mavic2proSimpleactiosGenerator(SimpleactionsSuperclass):
+class Mavic2proSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
         super().__init__(name)
 
