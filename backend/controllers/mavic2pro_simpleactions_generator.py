@@ -65,6 +65,20 @@ class Mavic2proSimpleactiosGenerator(SimpleactionsSuperclass):
         self.amount_of_objects = 0
 
         # self.initiate_threads()
+        self.add_all_simpleactions()
+
+    def add_all_simpleactions(self):
+        self.add_available_simpleaction("set_altitude", self.set_altitude)
+        self.add_available_simpleaction("go_forward", self.go_forward)
+        self.add_available_simpleaction("go_backward", self.go_backward)
+        self.add_available_simpleaction("turn_right", self.turn_right)
+        self.add_available_simpleaction("turn_left", self.turn_left)
+        self.add_available_simpleaction("recognise_objects", self.recognise_objects)
+        self.add_available_simpleaction("go_to_location", self.go_to_location)
+        self.add_available_simpleaction("set_message_target", self.set_message_target)
+        self.add_available_simpleaction("send_location", self.send_location)
+        self.add_available_simpleaction("stop_movement", self.stop_movement)
+
 
     # Initialize which sets the target altitude as well as start the main loop
     def initiate_threads(self):

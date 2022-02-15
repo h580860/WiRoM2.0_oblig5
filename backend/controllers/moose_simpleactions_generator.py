@@ -44,8 +44,16 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         # self.simpleactions = []
 
         # self.initiate_threads()
+        self.add_all_simpleactions()
 
-        # Initialize which sets the target altitude as well as start the main loop
+    def add_all_simpleactions(self):
+        self.add_available_simpleaction("go_forward", self.go_forward)
+        self.add_available_simpleaction("go_backward", self.go_backward)
+        self.add_available_simpleaction("turn_right", self.turn_right)
+        self.add_available_simpleaction("turn_left", self.turn_left)
+        self.add_available_simpleaction("go_to_location", self.go_to_location)
+        self.add_available_simpleaction("stop_movement", self.stop_movement)
+        self.add_available_simpleaction("receive_location_from_robot", self.receive_location_from_robot)
 
     def initiate_threads(self):
         main = threading.Thread(target=self.moose_main)
@@ -133,7 +141,7 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
             self.stop_movement()
 
     # Actively wait for new location
-    def receive_location_from_robot(self,):
+    def receive_location_from_robot(self, ):
         while not self.location:
             time.sleep(1)
 
@@ -174,7 +182,8 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         result = channel.queue_declare(queue='', exclusive=True)
         queue_name = result.method.queue
 
-        channel.queue_bind(exchange='location_exchange', queue=queue_name, routing_key=f"{self.robot_name}_location_queue")
+        channel.queue_bind(exchange='location_exchange', queue=queue_name,
+                           routing_key=f"{self.robot_name}_location_queue")
 
         print(f"{self.robot_name} ready to receive locations")
         channel.basic_consume(queue=queue_name, on_message_callback=self.receive_location_callback, auto_ack=True)

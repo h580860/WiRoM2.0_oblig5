@@ -148,7 +148,7 @@
       "port": "5010",
       "simpleactions": [
         {
-          "name": "go_backward",
+          "name": "go_forward",
           "numArgs": 1,
           "type": "move",
           "quality": 0.975,

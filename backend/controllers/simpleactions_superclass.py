@@ -1,7 +1,8 @@
 from controller import Robot
 import pika
 import json
-
+import string
+import ast
 
 class SimpleactionsSuperclass:
     def __init__(self, name):
@@ -12,14 +13,12 @@ class SimpleactionsSuperclass:
         # get the time step of the current world.
         self.timestep = int(self.robot.getBasicTimeStep())
 
-        # self.available_simpleactions = {}
+        self.available_simpleactions = {}
         self.simpleactions = []
         print(f"Super class initiated. {self.robot_name}")
 
-    # def add_available_simpleaction(self, name, function_reference):
-    #     self.available_simpleactions[name] = function_reference
-    #
-
+    def add_available_simpleaction(self, name, function_reference):
+        self.available_simpleactions[name] = function_reference
 
     def receive_routing_message(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
@@ -36,7 +35,6 @@ class SimpleactionsSuperclass:
 
         channel.start_consuming()
 
-
     def execute_simpleactions_callback(self, ch, method, properties, body):
         print(f"{self.robot_name} callback: %r" % body)
         # TODO as for now, the incoming messages are functions calls, separated by ","
@@ -51,6 +49,26 @@ class SimpleactionsSuperclass:
         # for i in range(len(simpleactions)):
         while self.simpleactions:
             sim_act = self.simpleactions.pop(0)
-            print(f"{self.robot_name} Executing simpleaction " + sim_act)
-            eval("self." + sim_act)
+            print(f"sim_act = {sim_act}")
+            print(f"Function name = {sim_act['function_name']}, Args = {sim_act['args']}")
+            function_name = sim_act['function_name']
+            args = sim_act['args']
+            # Retrieve the args
+            # function_name = sim_act.split('(')[0]
+            # args = sim_act.split('(')[1].split(')')[0]
+            #
+            if not args:
+                self.available_simpleactions[function_name]()
+                continue
+            # Convert the arguments
+            if all([x in string.digits for x in args]):
+                print(f"{args} is a number")
+                args = int(args)
+            elif "[" in args or "]" in args:
+                # ast.literal_eval will safely evaluate the string representation of a list (with the square brackets
+                # as well) to a python list
+                args = ast.literal_eval(args)
+
+            self.available_simpleactions[function_name](args)
+
         print(f"{self.robot_name} finished callback function")

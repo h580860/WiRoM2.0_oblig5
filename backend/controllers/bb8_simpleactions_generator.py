@@ -35,6 +35,15 @@ class Bb8SimpleactionsGenerator(SimpleactionsSuperclass):
         # simpleactions = ["go_forward(3)", "turn_right(2)", "go_forward(2)"]
         self.simpleactions = []
 
+        self.add_all_simpleactions()
+
+    def add_all_simpleactions(self):
+        self.add_available_simpleaction("go_forward", self.go_forward)
+        self.add_available_simpleaction("go_backward", self.go_backward)
+        self.add_available_simpleaction("turn_left", self.turn_left)
+        self.add_available_simpleaction("turn_right", self.turn_right)
+
+
     def initiate_threads(self):
         main = threading.Thread(target=self.bb8_main)
         communication = threading.Thread(target=self.receive_routing_message)

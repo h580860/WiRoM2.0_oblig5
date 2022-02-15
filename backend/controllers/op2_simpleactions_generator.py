@@ -52,6 +52,10 @@ class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.navigate = False
         self.location = []
 
+        self.add_all_simpleactions()
+
+    def add_all_simpleactions(self):
+        self.add_available_simpleaction("go_forward", self.go_forward)
 
     # Initialize which sets the target altitude as well as start the main loop
     def initiate_threads(self):

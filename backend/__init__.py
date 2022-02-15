@@ -57,15 +57,17 @@ def receive_mission():
     for robot in mission:
         sequence = []
         for simpleaction in mission[robot]['simpleactions']:
-            if simpleaction['args'] == "":
-                sequence.append(simpleaction['name'] + "()")
-            else:
-                if simpleaction['name'] == 'set_message_target':
-                    sequence.append(
-                        simpleaction['name'] + "(" + "'" + simpleaction['args'] + "'" + ")")
-                else:
-                    sequence.append(
-                        simpleaction['name'] + "(" + simpleaction['args'] + ")")
+            sequence.append({'function_name': simpleaction['name'], 'args': simpleaction['args']})
+
+            # if simpleaction['args'] == "":
+            #     sequence.append(simpleaction['name'] + "()")
+            # else:
+            #     if simpleaction['name'] == 'set_message_target':
+            #         sequence.append(
+            #             simpleaction['name'] + "(" + "'" + simpleaction['args'] + "'" + ")")
+            #     else:
+            #         sequence.append(
+            #             simpleaction['name'] + "(" + simpleaction['args'] + ")")
 
         success = False
         retries = 0
@@ -78,8 +80,6 @@ def receive_mission():
 
         while not success and retries <= 60:
             try:
-                # TODO this should normally be uncommented
-                # requests.post('http://localhost:' + mission[robot]['port'] + '/simpleactions', json=sequence)
                 # TODO this will send one sequence per task defined in "Tasks" in a mission
                 # test_sending_one_message(sequence)
 
