@@ -209,6 +209,11 @@ SwingCouch {
   rotation 0 -1 0 1.5708
   name "swing couch(1)"
 }
+SpeedLimitSign {
+  translation 408.231 -0.71 -395.966
+  rotation 0 1 0 -1.5708003061004252
+  name "DEFAULT_TRANSLATION"
+}
 Mavic2Pro {
   translation 407.939 0.127252 -401.225
   rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159

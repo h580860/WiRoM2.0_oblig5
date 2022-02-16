@@ -70,7 +70,7 @@ public class RobotgeneratorGenerator extends AbstractGenerator {
     _builder.append("_simpleactions_generator import ");
     String _capitalizeType = this.capitalizeType(command);
     _builder.append(_capitalizeType);
-    _builder.append("SimpleactiosGenerator");
+    _builder.append("SimpleactionsGenerator");
     _builder.newLineIfNotEmpty();
     String _string_1 = command.getRobotType().toString();
     _builder.append(_string_1);

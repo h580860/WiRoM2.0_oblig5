@@ -269,7 +269,7 @@ class WbtJsonParser:
         for key, value in self.file_content.items():
             if key[:len(robot_type_capital_first)] == robot_type_capital_first:
                 result.append(value)
-        print(f"Found {len(result)} of robot type {robot_type_capital_first}")
+        # print(f"Found {len(result)} of robot type {robot_type_capital_first}")
         return result
 
     def transform_from_json_to_world(self, content, has_header=False):

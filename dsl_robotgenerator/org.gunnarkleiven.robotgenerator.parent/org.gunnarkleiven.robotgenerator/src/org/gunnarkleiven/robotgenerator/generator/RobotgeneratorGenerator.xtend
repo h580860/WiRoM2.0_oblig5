@@ -64,7 +64,7 @@ class RobotgeneratorGenerator extends AbstractGenerator {
 		controller_path = os.path.join(os.getcwd(), os.pardir)
 		sys.path.insert(0, controller_path)
 		
-		from «command.robotType.toString»_simpleactions_generator import «capitalizeType(command)»SimpleactiosGenerator
+		from «command.robotType.toString»_simpleactions_generator import «capitalizeType(command)»SimpleactionsGenerator
 		«command.robotType.toString»_simpleactions = «capitalizeType(command)»SimpleactionsGenerator("«IF command.robotName.value !== null»«command.robotName.value»«ELSE»undefined_«command.robotType.toString»«ENDIF»")
 		«command.robotType.toString»_simpleactions.initiate_threads()
 		'''

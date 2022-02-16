@@ -1,14 +1,16 @@
 import os
 import pathlib
+import shutil
 
 
 class FindNewGenRobots:
-    def __init__(self, prev_added_robots):
+    def __init__(self, prev_added_robots, controllers_base_filepath):
         # self.generated_files_filepath = pathlib.Path.cwd().parent.parent / "dsl_robotgenerator" \
         self.generated_files_filepath = pathlib.Path.cwd() / "dsl_robotgenerator" \
                                         / "org.gunnarkleiven.robotgenerator.parent" \
                                         / "org.gunnarkleiven.robotgenerator" / "sample" / "src-gen" / "robotgenerator"
         self.prev_added_robots = prev_added_robots
+        self.controllers_base_filepath = controllers_base_filepath
 
         # print(f"Path = {self.generated_files_filepath}")
 
@@ -26,6 +28,10 @@ class FindNewGenRobots:
             if len(os.listdir(current_dir)) == 0:
                 print(f"Empty dir: {current_dir}")
                 os.removedirs(current_dir)
+                # Also remove the created controller directory
+                # current_controller_filepath = self.controllers_base_filepath / f"{x}_controller"
+                # shutil.rmtree(current_controller_filepath)
+                # print(f"Removed controller in {current_controller_filepath}")
                 continue
 
             if x not in self.prev_added_robots:

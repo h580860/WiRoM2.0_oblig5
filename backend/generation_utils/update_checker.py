@@ -58,6 +58,12 @@ class UpdateChecker:
         self.map_reader.read_file()
 
         all_robots = []
+        # All new robot translations are determined according to the one and only SPEEDSIGN, the most
+        # default position if them all. I know that there is 1, so we can take the first item from the result list
+        speed_sign = self.map_reader.get_all_of_robot_type("SpeedLimitSign")[0]
+
+        default_translation = self.get_translation(speed_sign)
+
         for val in self.robot_types_capital_lookup.values():
             all_robots.extend(self.map_reader.get_all_of_robot_type(val))
 
@@ -86,14 +92,22 @@ class UpdateChecker:
             lowest_transformation = [0, 0, float('inf')]
             translation_index = 2
 
-        for x in all_robots:
-            translation = self.get_translation(x)
-            if translation[translation_index] < lowest_transformation[translation_index]:
-                lowest_transformation = translation
-            all_translations.append(translation)
+        # for x in all_robots:
+        #     translation = self.get_translation(x)
+        #     if translation[translation_index] < lowest_transformation[translation_index]:
+        #         lowest_transformation = translation
+        #     all_translations.append(translation)
 
-        new_transformation = lowest_transformation
-        new_transformation[translation_index] = lowest_transformation[translation_index] - 5
+        # new_transformation = lowest_transformation
+        # new_transformation[translation_index] = lowest_transformation[translation_index] - 5
+
+        new_transformation = default_translation
+        # TODO this needs to be update if I change the coordination axis by updating to webots 2022
+        z_value_offset = len(all_robots) * 2.5
+        new_transformation[2] -= z_value_offset
+        # Also increase the y-value, so the robot does not spawn in the ground
+        new_transformation[1] += 0.3
+
         # Since we converted it to floats to do calculations, we need to convert them back to string
         new_transformation = " ".join([str(x) for x in new_transformation])
         new_positions = new_transformation
@@ -120,7 +134,6 @@ class UpdateChecker:
     def add_robot_to_config(self, robot, robot_data, robot_type, new_positions, config_template):
         # updated_config_object = {robot: config_template[robot_type]}
         updated_config_object = config_template
-        print(f"updated_config_object:\n{updated_config_object}")
         # del config_template
         new_x = new_positions[0]
         new_y = new_positions[1]
@@ -182,12 +195,11 @@ class UpdateChecker:
         # routing_key_lookup[str(self.current_portnumber)] = f"{robot}_queue"
         # self.json_reader_writer.write_json(routing_key_lookup_filepath, json.dumps(routing_key_lookup, indent=4))
 
-    def update_added_robots_json(self, robot):
-        self.prev_added_robots.append(robot)
+    def update_added_robots_json(self):
         # When one of the robots are added, remove all of the same type from the queue
         # while robot in self.save_file_content
-        while robot in self.new_added_robots:
-            self.new_added_robots.remove(robot)
+        self.save_file_content["previouslyAddedRobots"] = self.prev_added_robots
+        self.save_file_content["newAddedRobots"] = []
         self.json_reader_writer.write_json(self.update_file, json.dumps(self.save_file_content))
         print(f"finished updating the save file")
 
@@ -202,7 +214,7 @@ class UpdateChecker:
         """
 
         # Check if there has been generated any new files in the Eclipse run configuration workspace
-        find_new_gen_robots = FindNewGenRobots(self.prev_added_robots)
+        find_new_gen_robots = FindNewGenRobots(self.prev_added_robots, self.controller_base_path)
         self.new_added_robots = find_new_gen_robots.find_new_generated_robots()
 
         if not self.new_added_robots:
@@ -210,6 +222,9 @@ class UpdateChecker:
             return
 
         for robot in self.new_added_robots:
+            if robot in self.prev_added_robots:
+                print(f"Skipping adding duplicate of {robot}")
+                continue
             # read the generated json file to fetch the data
             robot_data = self.json_reader_writer.read_json(self.generated_files_filepath / robot / f"{robot}.json")
             # print(f"Robot data: {robot_data}")
@@ -230,7 +245,10 @@ class UpdateChecker:
             self.add_robot_to_data(robot, robot_data, robot_type, data_template)
             self.add_robot_controller(robot, robot_controller_name)
 
-            self.update_added_robots_json(robot)
+            self.prev_added_robots.append(robot)
+            # We remove this robot from the "queue", just in case it has been added multiple times
+
+        self.update_added_robots_json()
 
 
 if __name__ == "__main__":
