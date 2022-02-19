@@ -14,7 +14,6 @@ from simpleactions_superclass import SimpleactionsSuperclass
 class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
         super().__init__(name)
-
         # create the Robot instance.
         # self.robot = Robot()
         # self.robot_name = name
@@ -46,6 +45,14 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         # self.initiate_threads()
         self.add_all_simpleactions()
 
+        # Added message subscriber special for the moose
+        location_subscriber_data = [{
+            "name": "location",
+            "binding_key": f"{self.robot_name}_location",
+            "callback_function": self.receive_location_callback
+        }]
+        self.add_subscribers(extra_subscriptions=location_subscriber_data)
+
     def add_all_simpleactions(self):
         self.add_available_simpleaction("go_forward", self.go_forward)
         self.add_available_simpleaction("go_backward", self.go_backward)
@@ -57,12 +64,18 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
 
     def initiate_threads(self):
         main = threading.Thread(target=self.moose_main)
-        communication = threading.Thread(target=self.receive_routing_message)
-        location_communication = threading.Thread(target=self.receive_location)
+        # communication = threading.Thread(target=self.receive_routing_message)
+        # location_communication = threading.Thread(target=self.receive_location)
+        communication = threading.Thread(target=self.subscriber.subscription())
 
         main.start()
         communication.start()
-        location_communication.start()
+
+        for sub in self.extra_subscribers:
+            sub_thread = threading.Thread(target=sub.subscription)
+            sub_thread.start()
+        # communication.start()
+        # location_communication.start()
 
     def go_forward(self, duration):
         self.left_speed = 7.0
@@ -174,21 +187,29 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
             # logging.info(step_count)
             # print("main iteration")
 
-    def receive_location(self):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
-        channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+    def receive_topic_message_callback(self, ch, method, properties, body):
+        print(f"{self.robot_name} receive_topic_message_callbacks")
+        print(f"method.routin_key: {method.routing_key}")
+        if "location" in method.routing_key:
+            self.receive_location_callback(ch, method, properties, body)
+        else:
+            self.execute_simpleactions_callback(ch, method, properties, body)
 
-        result = channel.queue_declare(queue='', exclusive=True)
-        queue_name = result.method.queue
-
-        channel.queue_bind(exchange='location_exchange', queue=queue_name,
-                           routing_key=f"{self.robot_name}_location_queue")
-
-        print(f"{self.robot_name} ready to receive locations")
-        channel.basic_consume(queue=queue_name, on_message_callback=self.receive_location_callback, auto_ack=True)
-        channel.start_consuming()
-
+    # def receive_location(self):
+    #     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    #     channel = connection.channel()
+    #     channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+    #
+    #     result = channel.queue_declare(queue='', exclusive=True)
+    #     queue_name = result.method.queue
+    #
+    #     channel.queue_bind(exchange='location_exchange', queue=queue_name,
+    #                        routing_key=f"{self.robot_name}_location_queue")
+    #
+    #     print(f"{self.robot_name} ready to receive locations")
+    #     channel.basic_consume(queue=queue_name, on_message_callback=self.receive_location_callback, auto_ack=True)
+    #     channel.start_consuming()
+    #
     def receive_location_callback(self, ch, method, properties, body):
         print(f"{self.robot_name} received locations")
 
