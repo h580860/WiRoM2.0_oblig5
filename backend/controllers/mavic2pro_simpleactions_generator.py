@@ -83,7 +83,7 @@ class Mavic2proSimpleactionsGenerator(SimpleactionsSuperclass):
     # Initialize which sets the target altitude as well as start the main loop
     def initiate_threads(self):
         main = threading.Thread(target=self.mavic2pro_main)
-        communication = threading.Thread(target=self.receive_routing_message)
+        communication = threading.Thread(target=self.simpleactions_subscriber.subscription)
         main.start()
         communication.start()
 

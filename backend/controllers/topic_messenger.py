@@ -28,15 +28,6 @@ class TopicMessenger:
         print(f"Subscription with binding key: {self.binding_key} is consuming")
         channel.start_consuming()
 
-    def class_callback_function(self, ch, method, properties, body):
-        print(f"class callback function")
-        print(f"ch: {ch}")
-        print(f"method: {method}")
-        print(f"properties: {properties}")
-        print(f"body: {body}")
-        print("-" * 40)
-
-
 def test_callback_function(ch, method, properties, body):
     print("Test callback function")
     print(f"ch: {ch}")

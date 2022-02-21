@@ -7,14 +7,9 @@ from message_subscriber import MessageSubscriber
 
 
 class SimpleactionsSuperclass:
-    def __init__(self, name, extra_subscriptions=None):
+    def __init__(self, name):
         '''
         Super class for the simpleactions generators, with the most common functionalities
-
-        Parameters
-        ----------
-        extra_subscriptions: list
-            Optional list with extra subscriptions than just the default one.
         '''
         # create the Robot instance.
         self.robot = Robot()
@@ -26,39 +21,16 @@ class SimpleactionsSuperclass:
         self.simpleactions = []
 
         # Initiate the topics subscriber
-        self.topic_binding_key = f"{name}_queue"
-        self.subscriber = None
-        self.extra_subscribers = []
-        # self.topic_callback_function = topic_callback_function
+        self.binding_key = f"{name}_queue"
+        self.exchange = "routing_exchange"
+        self.simpleactions_subscriber = MessageSubscriber(
+            self.binding_key, self.exchange,self.execute_simpleactions_callback
+        )
 
         print(f"Super class initiated. {self.robot_name}")
 
-    def add_subscribers(self, extra_subscriptions=None):
-        self.subscriber = MessageSubscriber(self.topic_binding_key, self.execute_simpleactions_callback)
-
-        if extra_subscriptions:
-            print(f"Adding extra subscribers for {self.robot_name}")
-            for x in extra_subscriptions:
-                sub = MessageSubscriber(x['binding_key'], x['callback_function'])
-                self.extra_subscribers[x["name"]] = sub
-
     def add_available_simpleaction(self, name, function_reference):
         self.available_simpleactions[name] = function_reference
-
-    # def receive_routing_message(self):
-    #     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    #     channel = connection.channel()
-    #     channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
-    #
-    #     result = channel.queue_declare(queue='', exclusive=True)
-    #     queue_name = result.method.queue
-    #
-    #     channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{self.robot_name}_queue")
-    #
-    #     print(f"{self.robot_name} ready to receive routed messages")
-    #     channel.basic_consume(queue=queue_name, on_message_callback=self.execute_simpleactions_callback, auto_ack=True)
-    #
-    #     channel.start_consuming()
 
     def execute_simpleactions_callback(self, ch, method, properties, body):
         print(f"{self.robot_name} callback: %r" % body)

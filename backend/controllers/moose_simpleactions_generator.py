@@ -9,6 +9,7 @@ import logging
 import os
 import pika
 from simpleactions_superclass import SimpleactionsSuperclass
+from message_subscriber import MessageSubscriber
 
 
 class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
@@ -45,13 +46,11 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         # self.initiate_threads()
         self.add_all_simpleactions()
 
-        # Added message subscriber special for the moose
-        location_subscriber_data = [{
-            "name": "location",
-            "binding_key": f"{self.robot_name}_location",
-            "callback_function": self.receive_location_callback
-        }]
-        self.add_subscribers(extra_subscriptions=location_subscriber_data)
+        # The moose needs to listen to a queue for receiving locations
+        self.location_binding_key = f"{self.robot_name}_location_queue"
+        self.location_exchange = "location_exchange"
+        self.locations_subscriber = MessageSubscriber(
+            self.location_binding_key, self.location_exchange, self.receive_location_callback)
 
     def add_all_simpleactions(self):
         self.add_available_simpleaction("go_forward", self.go_forward)
@@ -66,16 +65,13 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         main = threading.Thread(target=self.moose_main)
         # communication = threading.Thread(target=self.receive_routing_message)
         # location_communication = threading.Thread(target=self.receive_location)
-        communication = threading.Thread(target=self.subscriber.subscription())
+        communication = threading.Thread(target=self.simpleactions_subscriber.subscription)
+        location_communication = threading.Thread(target=self.locations_subscriber.subscription)
 
         main.start()
         communication.start()
-
-        for sub in self.extra_subscribers:
-            sub_thread = threading.Thread(target=sub.subscription)
-            sub_thread.start()
         # communication.start()
-        # location_communication.start()
+        location_communication.start()
 
     def go_forward(self, duration):
         self.left_speed = 7.0

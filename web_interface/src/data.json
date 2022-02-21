@@ -182,7 +182,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[402, -374]",
+                            "args": "[377, -374]",
                             "id": 3
                         },
                         {
@@ -192,7 +192,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[377, -374]",
+                            "args": "[347, -374]",
                             "id": 5
                         },
                         {
@@ -202,7 +202,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[347, -374]",
+                            "args": "[330, -393]",
                             "id": 7
                         },
                         {
@@ -212,23 +212,13 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[330, -393]",
+                            "args": "[330, -419]",
                             "id": 9
                         },
                         {
                             "name": "send_location",
                             "args": "",
                             "id": 10
-                        },
-                        {
-                            "name": "go_to_location",
-                            "args": "[330, -419]",
-                            "id": 11
-                        },
-                        {
-                            "name": "send_location",
-                            "args": "",
-                            "id": 12
                         }
                     ]
                 },
