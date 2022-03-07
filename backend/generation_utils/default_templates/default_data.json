@@ -113,6 +113,48 @@
                     "information": "Wait for location from another robot"
                 }
             ]
+        },
+        "op2": {
+            "language": "python",
+            "port": "5010",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts walking forward"
+                }
+            ]
+        },
+        "bb8": {
+            "language": "python",
+            "port": "5011",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling backwards"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                }
+            ]
         }
     },
     "missions": {
@@ -140,7 +182,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[402, -374]",
+                            "args": "[377, -374]",
                             "id": 3
                         },
                         {
@@ -150,7 +192,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[377, -374]",
+                            "args": "[347, -374]",
                             "id": 5
                         },
                         {
@@ -160,7 +202,7 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[347, -374]",
+                            "args": "[330, -393]",
                             "id": 7
                         },
                         {
@@ -170,23 +212,13 @@
                         },
                         {
                             "name": "go_to_location",
-                            "args": "[330, -393]",
+                            "args": "[330, -419]",
                             "id": 9
                         },
                         {
                             "name": "send_location",
                             "args": "",
                             "id": 10
-                        },
-                        {
-                            "name": "go_to_location",
-                            "args": "[330, -419]",
-                            "id": 11
-                        },
-                        {
-                            "name": "send_location",
-                            "args": "",
-                            "id": 12
                         }
                     ]
                 },
@@ -408,6 +440,30 @@
                     "name": "Test: forward moose",
                     "id": 0,
                     "robot": "moose",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "10",
+                            "id": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Test: forward op2",
+                    "id": 0,
+                    "robot": "op2",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "10",
+                            "id": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Test: forward bb8",
+                    "id": 0,
+                    "robot": "bb8",
                     "simpleactions": [
                         {
                             "name": "go_forward",

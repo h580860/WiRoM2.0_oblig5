@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.emf.mwe2.launch.Mwe2LaunchConfigurationType">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/org.gunnarkleiven.robotgenerator"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.debug.core.ATTR_REFRESH_SCOPE" value="${working_set:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;resources&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.parent&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.ide&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.ui&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.web&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.target&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.tests&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.ui.tests&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.tests&quot; type=&quot;4&quot;/&gt;&#10;&lt;item path=&quot;/org.gunnarkleiven.robotgenerator.ui.tests&quot; type=&quot;4&quot;/&gt;&#10;;&lt;/resources&gt;}"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="org.gunnarkleiven.robotgenerator.GenerateRobotgenerator"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.gunnarkleiven.robotgenerator"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
+</launchConfiguration>

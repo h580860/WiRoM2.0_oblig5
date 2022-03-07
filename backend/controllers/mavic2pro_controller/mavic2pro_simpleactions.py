@@ -15,7 +15,6 @@ import os
 import logging
 import pika
 
-
 # create flask instance
 # app = Flask(__name__)
 # app.debug = True
@@ -57,9 +56,9 @@ camera.enable(timestep)
 k_vertical_thrust = 68.5  # with this thrust, the drone lifts.
 # Vertical offset where the robot actually targets to stabilize itself.
 k_vertical_offset = 0.6
-k_vertical_p = 3.0        # P constant of the vertical PID.
-k_roll_p = 50.0           # P constant of the roll PID.
-k_pitch_p = 30.0          # P constant of the pitch PID.
+k_vertical_p = 3.0  # P constant of the vertical PID.
+k_roll_p = 50.0  # P constant of the roll PID.
+k_pitch_p = 30.0  # P constant of the pitch PID.
 
 # variables that control the movement of the drone
 target_altitude = 0
@@ -79,6 +78,7 @@ simpleactions = []
 amount_of_objects = 0
 
 mavic_name = ""
+
 
 # Initialize which sets the target altitude as well as start the main loop
 def init(port, name):
@@ -190,7 +190,8 @@ def sync_send_location():
     channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
 
     # publish the moose message
-    channel.basic_publish(exchange='location_exchange', routing_key= message_recipient+'_location_queue', body=location_json)
+    channel.basic_publish(exchange='location_exchange', routing_key=message_recipient + '_location_queue',
+                          body=location_json)
     print("[mavic sync_send_location] sent location to " + message_recipient)
     connection.close()
 
@@ -243,9 +244,9 @@ def stabilize_and_control_movement():
 
     # Compute the roll, pitch, yaw and vertical inputs.
     roll_input = k_roll_p * CLAMP(roll, -1.0, 1.0) + \
-        roll_acceleration + roll_disturbance
+                 roll_acceleration + roll_disturbance
     pitch_input = k_pitch_p * \
-        CLAMP(pitch, -1.0, 1.0) - pitch_acceleration + pitch_disturbance
+                  CLAMP(pitch, -1.0, 1.0) - pitch_acceleration + pitch_disturbance
     yaw_input = yaw_disturbance
     clamped_difference_altitude = CLAMP(
         target_altitude - altitude + k_vertical_offset, -1.0, 1.0)
@@ -253,19 +254,20 @@ def stabilize_and_control_movement():
 
     # Actuate the motors taking into consideration all the computed inputs.
     front_left_motor_input = k_vertical_thrust + \
-        vertical_input - roll_input - pitch_input + yaw_input
+                             vertical_input - roll_input - pitch_input + yaw_input
     front_right_motor_input = k_vertical_thrust + \
-        vertical_input + roll_input - pitch_input - yaw_input
+                              vertical_input + roll_input - pitch_input - yaw_input
     rear_left_motor_input = k_vertical_thrust + \
-        vertical_input - roll_input + pitch_input - yaw_input
+                            vertical_input - roll_input + pitch_input - yaw_input
     rear_right_motor_input = k_vertical_thrust + \
-        vertical_input + roll_input + pitch_input + yaw_input
+                             vertical_input + roll_input + pitch_input + yaw_input
 
     # Set the motor velocities required for stabilization and movement
     front_left_motor.setVelocity(front_left_motor_input)
     front_right_motor.setVelocity(-front_right_motor_input)
     rear_left_motor.setVelocity(-rear_left_motor_input)
     rear_right_motor.setVelocity(rear_right_motor_input)
+
 
 # write the location of this robot to the config file
 
@@ -289,6 +291,7 @@ def mavic2pro_main():
 
     logging.info("maciv2pro_main")
     step_count = 0
+    print("")
 
     for motor in motors:
         motor.setPosition(float('inf'))
@@ -331,7 +334,7 @@ def execute_simpleactions():
 
 
 def test_communcation_receive():
-     # initiate messaging communication
+    # initiate messaging communication
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
@@ -349,7 +352,6 @@ def test_communcation_receive():
     channel.start_consuming()
 
 
-
 def test_receive_routing_message():
     global mavic_name
     connection = pika.BlockingConnection(
@@ -363,15 +365,14 @@ def test_receive_routing_message():
 
     channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{mavic_name}_queue")
 
-    print("Mavic ready to receive routed messages")
+    print(f"{mavic_name} ready to receive routed messages")
     channel.basic_consume(
         queue=queue_name,
         on_message_callback=execute_simpleactions_callback,
         auto_ack=True
-        )
-    
-    channel.start_consuming()
+    )
 
+    channel.start_consuming()
 
 
 def execute_simpleactions_callback(ch, method, properties, body):
@@ -381,11 +382,9 @@ def execute_simpleactions_callback(ch, method, properties, body):
     # simpleactions.extend(body.decode('utf-8').split(","))
     # simpleactions.extend(body.decode('utf-8'))
 
-
     new_simpleactions = json.loads(body.decode('utf-8'))
     simpleactions.extend(new_simpleactions)
     print(f'(mavic) Simpleactions = {simpleactions}, type={type(simpleactions)}')
-
 
     # Now execute the simpleactions
     # for i in range(len(simpleactions)):
@@ -393,8 +392,7 @@ def execute_simpleactions_callback(ch, method, properties, body):
         sim_act = simpleactions.pop(0)
         print("(mavic) Executing simpleaction " + sim_act)
         eval(sim_act)
-    print("finished callback function")
-
+    print(f"(mavic2pro) finished callback function")
 
 
 def callback(ch, method, properties, body):

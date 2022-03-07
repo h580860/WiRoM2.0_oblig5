@@ -209,6 +209,11 @@ SwingCouch {
   rotation 0 -1 0 1.5708
   name "swing couch(1)"
 }
+SpeedLimitSign {
+  translation 408.231 -0.71 -395.966
+  rotation 0 1 0 -1.5708003061004252
+  name "DEFAULT_TRANSLATION"
+}
 Mavic2Pro {
   translation 407.939 0.127252 -401.225
   rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
@@ -245,4 +250,15 @@ Moose {
       rotation 1 0 0 1.5708
     }
   ]
+}
+RobotisOp2 {
+  translation 408.184 0.28 -402
+  rotation 1.0406396779735382e-06 0.7071077811851482 0.7071057811857672 3.14159
+  name "op2"
+  controller "op2_controller"
+}
+BB-8 {
+  translation 408 -0.81 -403.52
+  rotation 0 1 0 -1.5707953071795862
+  controller "bb8_controller"
 }

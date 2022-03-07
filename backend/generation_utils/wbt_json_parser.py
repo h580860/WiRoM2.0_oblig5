@@ -15,9 +15,9 @@ class WbtJsonParser:
     def __init__(self, filepath=None, is_test=False):
         # self.filepath = filepath
         if is_test:
-            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'test_parse_world.wbt'
+            self.filepath = pathlib.Path.cwd() / 'worlds' / 'test_parse_world.wbt'
         elif not filepath:
-            self.filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
+            self.filepath = pathlib.Path.cwd() / 'worlds' / 'delivery-missionUpdated.wbt'
         else:
             self.filepath = filepath
 
@@ -57,6 +57,7 @@ class WbtJsonParser:
 
             # The node name (which will be a key in the json file) will always be the first 
             # string of a section
+            # print(f"self.raw file content:\n{self.raw_file_content}")
             section_name = self.raw_file_content[line_pointer].split()[0]
             if section_name in file_content.keys():
                 self.key_name_count[section_name] += 1
@@ -268,7 +269,7 @@ class WbtJsonParser:
         for key, value in self.file_content.items():
             if key[:len(robot_type_capital_first)] == robot_type_capital_first:
                 result.append(value)
-        print(f"Found {len(result)} of robot type {robot_type_capital_first}")
+        # print(f"Found {len(result)} of robot type {robot_type_capital_first}")
         return result
 
     def transform_from_json_to_world(self, content, has_header=False):
@@ -283,8 +284,8 @@ class WbtJsonParser:
         # print(f'Content: {content}')
         # print(f'New file:\n{new_file}')
         for key, value in content.items():
-            if key[-1] in digits:
-                key = key[:-1]
+            #if key[-1] in digits:
+                #key = key[:-1]
             new_file.append(key + " {")
             self.transform_section(new_file, value, 1)
             new_file.append("}")

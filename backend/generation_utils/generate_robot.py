@@ -3,10 +3,10 @@ import sys
 import pathlib
 
 # TODO is this the best fix?
-sys.path.insert(0, pathlib.Path.cwd().parent.parent.__str__())
+# sys.path.insert(0, pathlib.Path.cwd().parent.parent.__str__())
 # print(sys.path)
-from backend.generation_utils.wbt_json_parser import WbtJsonParser
-from backend.generation_utils.json_reader_writer import json_reader_writer
+from wbt_json_parser import WbtJsonParser
+from json_reader_writer import json_reader_writer
 # import backend.generation_utils.wbt_json_parser
 # import backend.generation_utils.json_reader_writer
 import shutil
@@ -18,7 +18,8 @@ class GenerateRobot:
         self.robot_type = robot_type
         self.robot_type_capital_lookup = {
             "moose": "Moose",
-            "mavic2pro": "Mavic2Pro"
+            "mavic2pro": "Mavic2Pro",
+            "op2": "RobotisOp2"
         }
         # self.robot_type_capital = f"{self.robot_type[0].upper()}{self.robot_type[1:]}"
         self.robot_type_capital = self.robot_type_capital_lookup[self.robot_type]
@@ -200,7 +201,7 @@ class GenerateRobot:
         os.mkdir(self.new_dir_filepath)
 
         new_simpleactions_filename = f'{self.robot_type}_simpleactions{self.new_robot_number}.py'
-        source_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller' / f'{self.robot_type}_simpleactions.py '
+        source_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller' / f'{self.robot_type}_simpleactions.py'
 
         destination_filepath = self.new_dir_filepath / new_simpleactions_filename
         shutil.copy(source_filepath, destination_filepath)
@@ -247,10 +248,10 @@ class GenerateRobot:
         print("config reset finished")
 
         # Reset the routing_keys_lookup file
-        reset_routing_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_routing_keys_lookup.json'
-        reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
-        shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
-        print("routing_key_lookup reset finished")
+        # reset_routing_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_routing_keys_lookup.json'
+        # reset_routing_destination_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
+        # shutil.copy(reset_routing_source_filepath, reset_routing_destination_filepath)
+        # print("routing_key_lookup reset finished")
 
         # Access the save file to see how many controllers have been created
         # TODO better exception handling
@@ -268,6 +269,22 @@ class GenerateRobot:
 
             # Delete the configuration savefile
             os.remove(self.save_file)
+
+        # Delete controllers created by the DSL generator
+        added_robots_filepath = pathlib.Path.cwd() / "added_robots.json"
+        added_robots_file = self.json_reader_writer.read_json(added_robots_filepath)
+        for robot in added_robots_file["previouslyAddedRobots"]:
+            current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / f"{robot}_controller"
+
+            if current_controller_filepath.is_dir():
+                shutil.rmtree(current_controller_filepath)
+                print(f"Deleted directory {current_controller_filepath}")
+            else:
+                print(f"No controller in {current_controller_filepath}")
+
+        added_robots_file["previouslyAddedRobots"] = []
+        self.json_reader_writer.write_json(added_robots_filepath, json.dumps(added_robots_file))
+
         print(f'Finished reset')
 
 
@@ -288,7 +305,6 @@ if __name__ == '__main__':
 
     if args[1] == "generate":
         generate_moose = GenerateRobot(args[2])
-        # TODO rename these functions, remove "test" from the function names
         generate_moose.add_robot_to_world()
         generate_moose.add_robot_to_config()
         generate_moose.add_robot_to_data()

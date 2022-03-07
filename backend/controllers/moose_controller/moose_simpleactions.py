@@ -282,7 +282,7 @@ def test_receive_routing_message():
 
     channel.queue_bind(exchange='routing_exchange', queue=queue_name, routing_key=f"{moose_name}_queue")
 
-    print("Moose ready to receive routed messages")
+    print(f"{moose_name} ready to receive routed messages")
     channel.basic_consume(queue=queue_name, on_message_callback=execute_simpleactions_callback, auto_ack=True)
     
     channel.start_consuming()
