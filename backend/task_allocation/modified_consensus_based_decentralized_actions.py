@@ -1,5 +1,6 @@
 # Source: Consensus-Based Decentralized Auctions for Robust
 # Task Allocation
+# This version is more heavily modified from the original algorithm, and may change some of the pseudocode
 import threading
 import random
 
@@ -16,10 +17,13 @@ class Agent:
         self.y_vector = []
         self.winning_bid_list = []
         self.others_winning_bid_list = {}
+        self.winning_robots = []
 
     def select_task(self):
         """
-        Basically, the robot creates a list including its highest bid it can make on a task
+        Basically, the robot creates a list including its highest bid it can make on a task.
+        This is mostly used to utilize the algorithms "iterations through T steps" which calls this function for
+        each step t.
         """
         # Algorithm 1
         # CBAA Phase 1 for agent i at iteration t
@@ -34,22 +38,26 @@ class Agent:
         # winning bids ist
         # Yij is an up-to-date as possible estimate of the highest bid made for each task this far
         self.y_vector = [0 for _ in range(self.Nt)]
-        # indicator_function = \
-        #     lambda cost_function, y_winning_bids_list : \
-        #         [1 if cost_function(self.robot_index, j) > y_vector[j] else 0 for j in range(self.Nt)]
         if sum(self.x_vector) == 0:
             # valid_tasks = indicator_function(self.cost, y_vector)
-            valid_tasks = self.indicator_function_self(self.cost_function, self.y_vector)
+            valid_tasks = self.indicator_function_self()
             print(f"Valid tasks for {self.name}: {valid_tasks}")
             if valid_tasks:
                 # Loop through the y vector, and create a list only including the valid tasks from the valid task
                 # list. Then select the maximum argument
                 # task_J = max([y_vector[i] if valid_tasks[i] == 1 else 0 for i in range(len(y_vector))])
-                task_j, task_j_index = self.get_max_value_and_index_of_valid_task_bid(self.y_vector, valid_tasks)
-                print(f"task_j: {task_j} at index={task_j_index}")
-                # Update the
+                task_j, task_j_index = self.get_max_value_and_index_of_valid_task_bid(valid_tasks)
+                # print(f"task_j: {task_j} at index={task_j_index}")
+                # Update the vectors
                 self.x_vector[task_j_index] = 1
                 self.y_vector[task_j_index] = task_j
+
+
+                # Second implementation:
+                # Fill the y_vector with the cost of all the task, where y_vector[i] is the cost of executing task
+                # with id i
+                for task_id in range(self.Nt):
+                    self.y_vector[task_id] = self.cost_function(task_id)
 
         print(f"After the first iteration of 'selected_tasks', we have the following values")
         print(f"x_vector: {self.x_vector}, y_vector={self.y_vector}")
@@ -57,7 +65,8 @@ class Agent:
 
 
     def get_winning_bids(self):
-        return self.winning_bid_list
+        # Important so send a copy of the list, and not a pointer to the list itself
+        return self.winning_bid_list.copy()
 
     def receive_other_winning_bids(self, other_robot_name, other_bids):
         self.others_winning_bid_list[other_robot_name] = other_bids
@@ -70,55 +79,61 @@ class Agent:
         print(f"Robot {self.name} updating task")
         # consensus = [0 for _ in range(self.Nt)]
         consensus_bids = self.y_vector.copy()
-        winning_robots = [self.name for _ in range(self.Nt)]
+        self.winning_robots = [self.name for _ in range(self.Nt)]
         for other_robot_name, other_bid_list in self.others_winning_bid_list.items():
+            print(f"other_robot_name = {other_robot_name}, other bid list = {other_bid_list}")
             for task_id in range(self.Nt):
                 nbr_bid = other_bid_list[task_id]
                 if nbr_bid > self.y_vector[task_id]:
                     consensus_bids[task_id] = nbr_bid
-                    print(f"{self.name} got outbid on task id {task_id}.\n"
-                          f"Robots bid = {self.x_vector[task_id]}. Nbr bid = {nbr_bid}")
+                    print(f"{self.name} got outbid on task id {task_id} by robot {other_robot_name}.\n"
+                          f"Robots bid = {self.y_vector[task_id]}. Nbr bid = {nbr_bid}")
                     self.y_vector[task_id] = nbr_bid
-                    winning_robots[task_id] = other_robot_name
+                    self.winning_robots[task_id] = other_robot_name
                 elif nbr_bid == self.y_vector[task_id]:
                     print(f"Same bid on task id {task_id} by {self.name} and {other_robot_name}. "
                           f"Both bid {nbr_bid}")
 
-        for i in range(len(winning_robots)):
+        for i in range(len(self.winning_robots)):
             # This robot loses its assignment if it has been outbid by another robot
-            if winning_robots[i] != self.name:
+            if self.winning_robots[i] != self.name:
                 self.x_vector[i] = 0
 
+        print(f"{self.name} with the current y_vector list: {self.y_vector}")
+        print(f"{self.name} with the current winning robots: {self.winning_robots}")
         return consensus_bids
 
 
-    def get_max_value_and_index_of_valid_task_bid(self, y_vector, valid_tasks):
-        max_value = self.cost_function(self.robot_index, 0)
+    def get_max_value_and_index_of_valid_task_bid(self, valid_tasks):
+        """
+        Find maximum score and its task index based on the current winning bids
+        """
+        max_value = self.cost_function(0)
         index = 0
         # print(f"Initial max_value = {max_value}, index = {index}")
-        for i in range(index + 1, len(y_vector)):
+        for i in range(index + 1, self.Nt):
             # if valid_tasks[i] == 1 and y_vector[i] > max_value:
-            if valid_tasks[i] == 1 and self.cost_function(self.robot_index, i) > y_vector[i] \
-                    and self.cost_function(self.robot_index, i) > max_value:
-                max_value = self.cost_function(self.robot_index, i)
+            if valid_tasks[i] == 1 and self.cost_function(i) > self.y_vector[i] \
+                    and self.cost_function(i) > max_value:
+                max_value = self.cost_function(i)
                 index = i
         return max_value, index
 
 
-    def indicator_function_self(self, cost_function, y):
+    def indicator_function_self(self):
         # Note: When run the first time, it will return a list of ones, because the winning bid list y_vector will
         # be initiated as a zero vector/list
         # TODO for it to be a valid task, the robot needs to be able to execute the task, i.e., the robot needs
         #  to be able to perform that simpleaction
         valid_tasks_h = []
         for j in range(self.Nt):
-            if cost_function(self.robot_index, j) > y[j]:
+            if self.cost_function(j) > self.y_vector[j]:
                 valid_tasks_h.append(1)
             else:
                 valid_tasks_h.append(0)
         return valid_tasks_h
 
-    def cost_function(self, robot_index, j):
+    def cost_function(self, j):
         return self.tasks[j].cost
 
 
@@ -158,6 +173,7 @@ if __name__ == '__main__':
     all_robots = [robot0, robot1, robot2, robot3]
 
     # Phase 1
+
     for r in all_robots:
         r.select_task()
         print("-" * 30)
@@ -193,11 +209,28 @@ if __name__ == '__main__':
     print("-" * 30)
 
     consensuses = []
+    robot_and_other_winning_bids = {}
     for robot in all_robots:
         consensuses.append(robot.update_task())
+        robot_and_other_winning_bids[robot.name] = robot.others_winning_bid_list
 
     print(f"All consensuses")
     for x in consensuses:
         print(x)
 
+    print("Robots and their lists of winning bids")
+    for k, v in robot_and_other_winning_bids.items():
+        print(f"{k} : {v}")
+
+    print(f"Robots and their x_vector list of assigned tasks")
+    for robot in all_robots:
+        print(robot.x_vector)
+
+    print("Robots and their 'winning_robots' list")
+    for robot in all_robots:
+        print(robot.winning_robots)
+
+    print("Robots and their y_vectors")
+    for robot in all_robots:
+        print(robot.y_vector)
 
