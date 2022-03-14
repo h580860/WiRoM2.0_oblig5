@@ -55,7 +55,6 @@ class Agent:
         print(f"x_vector: {self.x_vector}, y_vector={self.y_vector}")
         self.winning_bid_list = self.y_vector
 
-
     def get_winning_bids(self):
         return self.winning_bid_list
 
@@ -91,7 +90,6 @@ class Agent:
 
         return consensus_bids
 
-
     def get_max_value_and_index_of_valid_task_bid(self, y_vector, valid_tasks):
         max_value = self.cost_function(self.robot_index, 0)
         index = 0
@@ -103,7 +101,6 @@ class Agent:
                 max_value = self.cost_function(self.robot_index, i)
                 index = i
         return max_value, index
-
 
     def indicator_function_self(self, cost_function, y):
         # Note: When run the first time, it will return a list of ones, because the winning bid list y_vector will
@@ -121,10 +118,8 @@ class Agent:
     def cost_function(self, robot_index, j):
         return self.tasks[j].cost
 
-
     def __str__(self):
         return f"{self.name}, winning bid list = {self.winning_bid_list}\nOther Winning Bid List: {self.others_winning_bid_list}"
-
 
 
 class Task:
@@ -186,7 +181,6 @@ if __name__ == '__main__':
                 current_robot.receive_other_winning_bids(other_robot.name, other_robot_bids)
                 # print(f"{current_robot.name} receiving bids from {other_robot.name}")
 
-
     for robot in all_robots:
         print("-" * 30)
         print(f"{robot}")
@@ -199,5 +193,3 @@ if __name__ == '__main__':
     print(f"All consensuses")
     for x in consensuses:
         print(x)
-
-
