@@ -3,7 +3,9 @@ import pika
 import json
 import string
 import ast
+import threading
 from message_subscriber import MessageSubscriber
+
 
 
 class SimpleactionsSuperclass:
@@ -23,9 +25,23 @@ class SimpleactionsSuperclass:
         # Initiate the topics subscriber
         self.binding_key = f"{name}_queue"
         self.exchange = "routing_exchange"
+        self.exchange_type = "direct"
         self.simpleactions_subscriber = MessageSubscriber(
-            self.binding_key, self.exchange,self.execute_simpleactions_callback
+            self.binding_key, self.exchange, self.exchange_type, self.execute_simpleactions_callback
         )
+
+        # Create subscriber for listening to the CBAA task allocation updates
+        # we can give it an empty binding key, because the 'fanout' exchange will ignore its value
+        # either way
+        cbaa_exchange_name = "cbaa_exchange"
+        cbaa_exchange_type = "fanout"
+        self.cbaa_subscriber = MessageSubscriber(
+            "", cbaa_exchange_name, cbaa_exchange_type, self.initiate_cbaa_callback
+        )
+
+        # Initiate thread for listening to the CBAA task allocation initiation from the server
+        cbaa_communication = threading.Thread(target=self.cbaa_subscriber.subscription)
+        cbaa_communication.start()
 
         print(f"Super class initiated. {self.robot_name}")
 
@@ -69,3 +85,6 @@ class SimpleactionsSuperclass:
             self.available_simpleactions[function_name](args)
 
         print(f"{self.robot_name} finished callback function")
+
+    def initiate_cbaa_callback(self, ch, method, properties, body):
+        print(f'{self.robot_name} initiate cbaa callback function, received {body}')
