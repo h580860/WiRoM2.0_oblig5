@@ -21,7 +21,7 @@ from simpleactions_superclass import SimpleactionsSuperclass
 
 class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        super().__init__(name)
+        super().__init__(name, "op2")
 
         self.fup = 0
         self.fdown = 0
