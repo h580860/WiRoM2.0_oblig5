@@ -74,8 +74,9 @@ class CBAA:
 
     def update_task(self):
         """
-        Agents make use of a consensus strategy to converge on the list of winning bids and use that list to
-        determine the winner.
+        The robots make use of a consensus strategy to converge on the list of winning bids and use that list to
+        determine the winner. They compare each of the other robots' bids to their own, and updates their winning
+        bids list accordingly. By this convention, each individual robot will reach a consensus on the winning robots.
         """
         print(f"Robot {self.robot_name} updating task")
         # consensus = [0 for _ in range(self.Nt)]
@@ -111,7 +112,7 @@ class CBAA:
 
         print(f"{self.robot_name} with the current y_vector list: {self.y_vector}")
         print(f"{self.robot_name} with the current winning robots: {self.winning_robots}")
-        return consensus_bids
+        # return consensus_bids
 
     def get_max_value_and_index_of_valid_task_bid(self, valid_tasks):
         """
@@ -178,9 +179,8 @@ class CBAA:
 
     def confirm_all_bids(self, robot_name):
         retries = 0
-        while self.n_other_bids < self.Nu - 1 or retries < 10:
-            print(f"{robot_name} received "
-              f"{self.n_other_bids}/{self.Nu - 1}")
+        while self.n_other_bids < self.Nu - 1 and retries < 10:
+            print(f"{robot_name} received {self.n_other_bids}/{self.Nu - 1}")
             time.sleep(0.5)
             retries += 1
         print(f"{robot_name} FINISHED RECEIVING. Received {self.n_other_bids}/{self.Nu - 1}")

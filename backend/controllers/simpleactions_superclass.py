@@ -166,7 +166,25 @@ class SimpleactionsSuperclass:
 
         self.consensus_based_auction_algorithm.confirm_all_bids(self.robot_name)
 
+        self.consensus_based_auction_algorithm.update_task()
 
+        # Finally, publish the results
+        winning_robots = self.consensus_based_auction_algorithm.winning_robots
+        self.send_cbaa_result_to_server(winning_robots)
 
+    def send_cbaa_result_to_server(self, winning_robots):
+        """
+        Publish the winning robots to the server, using the 'routing_exchange' exchange which is commonly used
+        to publish the simpleactions to the server
+        """
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
 
-        
+        exchange_name = 'routing_exchange'
+        routing_key = 'test_cbaa_routing_key'
+        message = json.dumps(winning_robots)
+
+        channel.exchange_declare(exchange=exchange_name, exchange_type='direct')
+        channel.basic_publish(exchange=exchange_name, routing_key=routing_key, body=message)
+        print(f"{self.robot_name} published it winning bid list")
+        connection.close()
