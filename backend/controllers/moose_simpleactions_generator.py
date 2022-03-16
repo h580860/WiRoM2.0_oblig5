@@ -14,7 +14,8 @@ from message_subscriber import MessageSubscriber
 
 class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        super().__init__(name, "moose")
+        test_avail_simpleactions = {"go_forward": 0.9, "turn_right": 0.5, "turn_left": 0.5, "go_backwards": 0.7}
+        super().__init__(name, "moose", test_avail_simpleactions)
         # create the Robot instance.
         # self.robot = Robot()
         # self.robot_name = name

@@ -19,7 +19,7 @@ from task_allocation.cbaa import CBAA
 
 
 class SimpleactionsSuperclass:
-    def __init__(self, name, robot_type):
+    def __init__(self, name, robot_type, test_avail_simpleactions):
         '''
         Super class for the simpleactions generators, with the most common functionalities. Each robot type
         class extends this class
@@ -70,6 +70,11 @@ class SimpleactionsSuperclass:
         # Read the config data
         self.read_config_data()
 
+        self.test_avail_simpleactions = test_avail_simpleactions
+        # TODO this should somehow be dynamic
+        n_robots = 4
+        self.consensus_based_auction_algorithm = CBAA(self.robot_name, self.test_avail_simpleactions, n_robots)
+
         print(f"Super class initiated. {self.robot_name}")
 
     def read_config_data(self):
@@ -78,7 +83,8 @@ class SimpleactionsSuperclass:
         """
         with open(pathlib.Path.cwd().parent.parent / 'config.json') as json_config_file:
             data = json.load(json_config_file)
-            self.config_simpleactions = data["robots"][self.robot_type]["simpleactions"]
+            for x in data["robots"][self.robot_type]["simpleactions"]:
+                self.available_simpleactions[x["name"]] = x["cost"]
 
     def add_available_simpleaction(self, name, function_reference):
         self.available_simpleactions[name] = function_reference
@@ -122,25 +128,45 @@ class SimpleactionsSuperclass:
         print(f"{self.robot_name} finished callback function")
 
     def receive_cbaa_bids_callback(self, ch, method, properties, body):
-        print(f"{self.robot_name} receive {body}")
+        all_bids = json.loads(body)
+        print(f"{self.robot_name} received: {all_bids}")
+        for other_robot_name, bids in all_bids.items():
+            if self.robot_name == other_robot_name:
+                # Skip the bid of this robot
+                continue
+            self.consensus_based_auction_algorithm.receive_other_winning_bids(other_robot_name, bids)
 
-    def publish_bids(self):
+    def publish_bids(self, bids):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
 
         channel.exchange_declare(exchange=self.cbaa_bids_exchange_name, exchange_type='fanout')
 
-        message = f"Bids by {self.robot_name}"
-        channel.basic_publish(exchange=self.cbaa_bids_exchange_name, routing_key='', body=message)
+        # message = f"Bids by {self.robot_name}: {bids}"
+        message = {self.robot_name : bids}
+        channel.basic_publish(exchange=self.cbaa_bids_exchange_name, routing_key='', body=json.dumps(message))
         # print(" [x] Sent %r" % message)
         connection.close()
 
     def initiate_cbaa_callback(self, ch, method, properties, body):
-        # print(f'{self.robot_name} initiate cbaa callback function, received {body}')
-        every_simpleaction_name = [x["name"] for x in self.config_simpleactions]
-        print(f"{self.robot_name} of type {self.robot_type} has these available simpleactions:"
-              f"{every_simpleaction_name}")
+        print(f'{self.robot_name} initiate cbaa callback function, received {body}')
         # time.sleep(1)
         # self.publish_bids()
+        new_available_tasks = json.loads(body.decode('utf-8'))
+        self.consensus_based_auction_algorithm.add_task_list(new_available_tasks)
+
+        # Phase 1
+        self.consensus_based_auction_algorithm.select_task()
+
+        # Phase 2
+        # self.consensus_based_auction_algorithm.update_task()
+        bids = self.consensus_based_auction_algorithm.get_winning_bids()
+        self.publish_bids(bids)
+
+        self.consensus_based_auction_algorithm.confirm_all_bids(self.robot_name)
+
+
+
+
         

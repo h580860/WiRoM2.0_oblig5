@@ -206,13 +206,12 @@ if __name__ == '__main__':
     tasks2 = {"go_forward": 0.3, "turn_right": 1.0}
     tasks3 = {"go_forward": 0.6, "turn_right": 0.95, "go_backwards": 0.85}
 
-    n_robots = 5
-    robot0 = Agent("robot0", tasks0, 0, n_robots)
-    robot1 = Agent("robot1", tasks1, 1, n_robots)
-    robot2 = Agent("robot2", tasks2, 2, n_robots)
-    robot3 = Agent("robot3", tasks3, 3, n_robots)
-    robot4 = Agent("robot4", {}, 4, n_robots)
-    all_robots = [robot0, robot1, robot2, robot3, robot4]
+    n_robots = 4
+    robot0 = Agent("moose", tasks0, 0, n_robots)
+    robot1 = Agent("mavic2pro", tasks1, 1, n_robots)
+    robot2 = Agent("op2", tasks2, 2, n_robots)
+    robot3 = Agent("bb8", tasks3, 3, n_robots)
+    all_robots = [robot0, robot1, robot2, robot3]
 
     # Tasks to be executed and bid on
     user_tasks0 = ["go_forward", "turn_right", "go_backwards"]

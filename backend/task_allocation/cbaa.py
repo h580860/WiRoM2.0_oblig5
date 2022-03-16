@@ -1,16 +1,19 @@
+import time
 
 class CBAA:
-    def __init__(self, robot_name, available_simpleactions):
+    def __init__(self, robot_name, available_simpleactions, Nu):
         self.robot_name = robot_name
         self.available_simpleactions = available_simpleactions
 
         self.task_work_list = []
         self.Nt = 0
+        self.Nu = Nu
 
         self.x_vector = []
         self.y_vector = []
         self.winning_bid_list = []
         self.others_winning_bid_list = {}
+        self.n_other_bids = 0
         self.winning_robots = []
 
     def select_task(self):
@@ -56,7 +59,7 @@ class CBAA:
                         print(f"{self.robot_name} skipping task id {task_id}, values={self.task_work_list[task_id]}")
 
         print(f"After the first iteration of 'selected_tasks', we have the following values")
-        print(f"x_vector: {self.x_vector}, y_vector={self.y_vector}")
+        print(f"{self.robot_name} x_vector: {self.x_vector}, y_vector={self.y_vector}")
         self.winning_bid_list = self.y_vector
 
 
@@ -66,6 +69,7 @@ class CBAA:
 
     def receive_other_winning_bids(self, other_robot_name, other_bids):
         self.others_winning_bid_list[other_robot_name] = other_bids
+        self.n_other_bids += 1
 
 
     def update_task(self):
@@ -171,4 +175,14 @@ class CBAA:
         self.task_work_list.extend(tasks_list)
         # Also update the number of tasks
         self.Nt = len(self.task_work_list)
+
+    def confirm_all_bids(self, robot_name):
+        retries = 0
+        while self.n_other_bids < self.Nu - 1 or retries < 10:
+            print(f"{robot_name} received "
+              f"{self.n_other_bids}/{self.Nu - 1}")
+            time.sleep(0.5)
+            retries += 1
+        print(f"{robot_name} FINISHED RECEIVING. Received {self.n_other_bids}/{self.Nu - 1}")
+
 
