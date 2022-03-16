@@ -1,10 +1,13 @@
+import json
 import time
+import requests
 
 class CBAA:
     def __init__(self, robot_name, available_simpleactions, Nu):
         self.robot_name = robot_name
         self.available_simpleactions = available_simpleactions
 
+        self.new_available_tasks = []
         self.task_work_list = []
         self.Nt = 0
         self.Nu = Nu
@@ -172,8 +175,13 @@ class CBAA:
     def __str__(self):
         return f"{self.robot_name}, winning bid list = {self.winning_bid_list}\nOther Winning Bid List: {self.others_winning_bid_list}"
 
-    def add_task_list(self, tasks_list):
-        self.task_work_list.extend(tasks_list)
+    def add_task_list(self, new_available_tasks):
+        self.new_available_tasks = new_available_tasks
+        for task in new_available_tasks:
+            print(f"{self.robot_name} adding {task}")
+            # self.task_work_list.extend(task["simpleactions"])
+            self.task_work_list.append(task["simpleactions"])
+
         # Also update the number of tasks
         self.Nt = len(self.task_work_list)
 
@@ -184,5 +192,22 @@ class CBAA:
             time.sleep(0.5)
             retries += 1
         print(f"{robot_name} FINISHED RECEIVING. Received {self.n_other_bids}/{self.Nu - 1}")
+
+    def post_results(self):
+        """
+        Send the results of the winning bids to the server
+        This is done over HTTP with a POST request
+        """
+        result = []
+        for task_id in range(self.Nt):
+            # task_name = self.task_work_list[task_id]
+            task_name = self.new_available_tasks[task_id]["name"]
+            winner = self.winning_robots[task_id]
+            result.append({"name": task_name, "robot": winner})
+            # result["name"] = task_name
+            # result["robot"] = winner
+
+        print(f"{self.robot_name} posting result {result}")
+        requests.post("http://localhost:5000/cbaa_results", json=result)
 
 

@@ -9,9 +9,11 @@ import logging
 import pika
 import sys
 import pathlib
+
 # sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
 # from backend.generation_utils.update_checker import UpdateChecker
 from backend.generation_utils.update_checker import UpdateChecker
+from backend.controllers.message_subscriber import MessageSubscriber
 
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
@@ -25,19 +27,58 @@ CORS(app)
 # TODO use custom logging class for the other logging parts of the system as well
 # wirom_logger = Wirom_logger("app.log")
 
+
+# When starting the server, check if there has been any updates of robots
 update_checker = UpdateChecker()
 update_checker.initiate_full_robot_check()
 
+"""
+TODO a big note here is that flask is neither thread safe or process safe so we can normally get race conditions if
+multiple requests are trying to access the same data. However, this will not be the case here, as the user is only
+allowed to call this request once before waiting for it to finish
+https://stackoverflow.com/questions/32815451/are-global-variables-thread-safe-in-flask-how-do-i-share-data-between-requests
+"""
+cbaa_results = []
 
 # routing_key lookup
 # with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
-    # with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
-    # routing_key_lookup = json.load(reader_file)
-    # print(f"Routing lookup table:\n{routing_key_lookup}")
+# with open(pathlib.Path.cwd() / 'backend ' / 'routing_keys_lookup.json') as reader_file:
+# routing_key_lookup = json.load(reader_file)
+# print(f"Routing lookup table:\n{routing_key_lookup}")
 
 with open(pathlib.Path.cwd() / 'backend' / 'config.json') as json_data_file:
     data = json.load(json_data_file)
     robots = data["robots"]
+
+
+@app.route('/cbaa_initiation', methods=['POST'])
+def initiate_cbaa():
+    # wirom_logger.info("receive_tasks_for_allocation")
+    tasks = request.get_json()
+    print(f"Server received tasks: {tasks}")
+    # TODO FINISHED HERE 16.03.2022 16.27
+    while not cbaa_results:
+        time.sleep(1)
+    print(f"cbaa_initiation finished. Global chaa_results variable = {cbaa_results}")
+    return "some response"
+
+def send_task_list(task_list_as_json):
+    print("Sending the task list to the robots")
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='cbaa_initiate_exchange', exchange_type='fanout')
+
+    channel.basic_publish(exchange='cbaa_initiate_exchange', routing_key='', body=task_list_as_json)
+    connection.close()
+
+@app.route('/cbaa_results', methods=['POST'])
+def receive_cbaa_results():
+    result = request.get_json()
+    cbaa_results.append(1)
+    print(f"Received results: {result}")
+    return {"res": "Server received winning bids"}
 
 
 @app.route('/mission', methods=['POST'])
@@ -92,8 +133,8 @@ def receive_mission():
                 current_routing_key = f"{robot}_queue"
                 # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
                 test_send_routing_messages(json.dumps(sequence), current_routing_key)
-                #channel.basic_publish(
-                    # exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence))
+                # channel.basic_publish(
+                # exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence))
                 success = True
             except Exception as e:
                 print(f"Exception: {e}")
@@ -109,7 +150,12 @@ def receive_mission():
 def receive_tasks_for_allocation():
     # wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
+    print(f"tasks:\n{tasks}")
+    for t in tasks:
+        print(t)
     tasks = task_allocation(tasks, robots)
+    print(f"jsonify(tasks):\n{jsonify(tasks)}")
+    print(tasks)
     return jsonify(tasks)
 
 
@@ -138,6 +184,7 @@ def task_allocation(tasks, robots):
             bids[task["name"]][robot] = bid
 
     tasks = allocate_tasks_to_highest_bidder(tasks, bids)
+    # print(f"Tasks after task_allocation = {task}")
     return tasks
 
 
@@ -237,5 +284,3 @@ if __name__ == '__main__':
 
     # test_message = "Hello this message is from __init__.py"
     # test_communication_messages(test_message)
-
-# When starting the server, check if there has been any updates of robots

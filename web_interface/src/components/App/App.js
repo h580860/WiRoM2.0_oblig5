@@ -273,6 +273,23 @@ class App extends Component {
       .then(res => {
         if (res === undefined)
           throw 'Could not connect to server'
+        console.log("Received res = ", res)
+        let missions = this.state.missions
+        missions[this.state.selectedMission].tasks = res
+        console.log(res)
+        this.setState({ missions: missions })
+        this.handleMissionChange();
+      })
+      .catch(console.log)
+
+    event.preventDefault();
+  }
+  handleCBAATaskAllocation = event => {
+    let response = sendCBAAInitiation(this.state);
+    response
+      .then(res => {
+        if (res === undefined)
+          throw 'Could not connect to server'
 
         let missions = this.state.missions
         missions[this.state.selectedMission].tasks = res
@@ -362,6 +379,9 @@ class App extends Component {
                   <Button type="submit" variant="outline-dark" onClick={this.handleSubmitTaskAllocation}>
                     Automatic task allocation
                   </Button>
+                  <Button type="submit"variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
+                    Test CBAA
+                  </Button>
                 </Col>
               </Row>
             </div>
@@ -402,7 +422,24 @@ function validateMission(state) {
 
 function sendTaskAllocation(state) {
   console.log('Sending request')
+  console.log(JSON.stringify(state.missions[state.selectedMission].tasks))
+  console.log(state.missions[state.selectedMission].tasks)
   let res = fetch('http://localhost:5000/allocate', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(state.missions[state.selectedMission].tasks)
+  })
+    .then(res => { return res.json() })
+    .catch(console.log)
+  return res
+}
+
+function sendCBAAInitiation(state) {
+  console.log('Sending request to CBAA task allocation')
+  let res = fetch('http://localhost:5000/cbaa_initiation', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',

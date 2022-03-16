@@ -154,7 +154,13 @@ class SimpleactionsSuperclass:
         # time.sleep(1)
         # self.publish_bids()
         new_available_tasks = json.loads(body.decode('utf-8'))
+        # print(f"new_available_tasks = {new_available_tasks}")
+        # new_task_lists = []
+        # for task in new_available_tasks:
+        #     new_task_lists.append(task["simpleactions"])
+        # print(f"new_task_list = {new_task_lists}")
         self.consensus_based_auction_algorithm.add_task_list(new_available_tasks)
+        # self.consensus_based_auction_algorithm.add_task_list(new_task_lists)
 
         # Phase 1
         self.consensus_based_auction_algorithm.select_task()
@@ -169,22 +175,24 @@ class SimpleactionsSuperclass:
         self.consensus_based_auction_algorithm.update_task()
 
         # Finally, publish the results
-        winning_robots = self.consensus_based_auction_algorithm.winning_robots
-        self.send_cbaa_result_to_server(winning_robots)
+        # winning_robots = self.consensus_based_auction_algorithm.winning_robots
+        # self.send_cbaa_result_to_server(winning_robots)
+        self.consensus_based_auction_algorithm.post_results()
 
-    def send_cbaa_result_to_server(self, winning_robots):
-        """
-        Publish the winning robots to the server, using the 'routing_exchange' exchange which is commonly used
-        to publish the simpleactions to the server
-        """
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
 
-        exchange_name = 'routing_exchange'
-        routing_key = 'test_cbaa_routing_key'
-        message = json.dumps(winning_robots)
-
-        channel.exchange_declare(exchange=exchange_name, exchange_type='direct')
-        channel.basic_publish(exchange=exchange_name, routing_key=routing_key, body=message)
-        print(f"{self.robot_name} published it winning bid list")
-        connection.close()
+    # def send_cbaa_result_to_server(self, winning_robots):
+    #     """
+    #     Publish the winning robots to the server, using the 'routing_exchange' exchange which is commonly used
+    #     to publish the simpleactions to the server
+    #     """
+    #     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    #     channel = connection.channel()
+    #
+    #     exchange_name = 'routing_exchange'
+    #     routing_key = 'server_queue'
+    #     message = json.dumps(winning_robots)
+    #
+    #     channel.exchange_declare(exchange=exchange_name, exchange_type='direct')
+    #     channel.basic_publish(exchange=exchange_name, routing_key=routing_key, body=message)
+    #     print(f"{self.robot_name} published it winning bid list")
+    #     connection.close()
