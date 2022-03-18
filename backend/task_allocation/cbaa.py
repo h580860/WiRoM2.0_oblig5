@@ -2,6 +2,7 @@ import json
 import time
 import requests
 
+
 class CBAA:
     def __init__(self, robot_name, available_simpleactions, Nu):
         self.robot_name = robot_name
@@ -65,7 +66,6 @@ class CBAA:
         print(f"{self.robot_name} x_vector: {self.x_vector}, y_vector={self.y_vector}")
         self.winning_bid_list = self.y_vector
 
-
     def get_winning_bids(self):
         # Important so send a copy of the list, and not a pointer to the list itself
         return self.winning_bid_list.copy()
@@ -73,7 +73,6 @@ class CBAA:
     def receive_other_winning_bids(self, other_robot_name, other_bids):
         self.others_winning_bid_list[other_robot_name] = other_bids
         self.n_other_bids += 1
-
 
     def update_task(self):
         """
@@ -198,6 +197,7 @@ class CBAA:
         Send the results of the winning bids to the server
         This is done over HTTP with a POST request
         """
+        # print(f"{self.robot_name} in post results. Nt={self.Nt}, length new avail tasks = {len(self.new_available_tasks)}")
         result = []
         for task_id in range(self.Nt):
             # task_name = self.task_work_list[task_id]
@@ -210,4 +210,13 @@ class CBAA:
         print(f"{self.robot_name} posting result {result}")
         requests.post("http://localhost:5000/cbaa_results", json=result)
 
-
+    def cleanup(self):
+        self.new_available_tasks.clear()
+        self.x_vector.clear()
+        self.y_vector.clear()
+        self.Nt = 0
+        self.winning_robots.clear()
+        self.others_winning_bid_list.clear()
+        self.task_work_list.clear()
+        self.n_other_bids = 0
+        self.winning_robots.clear()

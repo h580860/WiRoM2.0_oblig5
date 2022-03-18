@@ -9,6 +9,7 @@ import logging
 import pika
 import sys
 import pathlib
+import pprint
 
 # sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
 # from backend.generation_utils.update_checker import UpdateChecker
@@ -31,6 +32,9 @@ CORS(app)
 # When starting the server, check if there has been any updates of robots
 update_checker = UpdateChecker()
 update_checker.initiate_full_robot_check()
+
+# Printer to "pretty print" JSON/dictionary objects
+pp = pprint.PrettyPrinter()
 
 """
 TODO a big note here is that flask is neither thread safe or process safe so we can normally get race conditions if
@@ -56,11 +60,47 @@ def initiate_cbaa():
     # wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
     print(f"Server received tasks: {tasks}")
+    print()
+    pp.pprint(tasks)
     # TODO FINISHED HERE 16.03.2022 16.27
+
+    # The tasks currently needs to be formatted before they are published to the robots
+    formatted_task_list = []
+    for t in tasks:
+        formatted_task_list.append({
+            "name": t["name"],
+            # "simpleactions": t["simpleactions"]["name"]
+            "simpleactions": [x["name"] for x in t["simpleactions"]]
+        })
+    print(f"formatted task list = {formatted_task_list}")
+    send_task_list(json.dumps(formatted_task_list))
+
     while not cbaa_results:
         time.sleep(1)
-    print(f"cbaa_initiation finished. Global chaa_results variable = {cbaa_results}")
-    return "some response"
+    print(f"cbaa_initiation finished. Global cbaa_results variable = {cbaa_results}")
+
+    # TODO check that all of the bids consensus are the same over the different robots
+
+    consensus = cbaa_results[0]
+    print("consensus")
+    pp.pprint(consensus)
+    print(consensus)
+
+    # Reformat the results to be sent back to the frontend
+    new_allocation = []
+    for i in range(len(tasks)):
+        new_consensus = consensus[i]
+        for original_task in tasks:
+            if original_task["name"] == new_consensus["name"]:
+                original_task["robot"] = new_consensus["robot"]
+                # new_allocation.append(original_task)
+                break
+
+    print("New Allocation:")
+    pp.pprint(tasks)
+
+    return jsonify(tasks)
+
 
 def send_task_list(task_list_as_json):
     print("Sending the task list to the robots")
@@ -73,12 +113,13 @@ def send_task_list(task_list_as_json):
     channel.basic_publish(exchange='cbaa_initiate_exchange', routing_key='', body=task_list_as_json)
     connection.close()
 
+
 @app.route('/cbaa_results', methods=['POST'])
 def receive_cbaa_results():
     result = request.get_json()
-    cbaa_results.append(1)
+    cbaa_results.append(result)
     print(f"Received results: {result}")
-    return {"res": "Server received winning bids"}
+    return 'Server received winning bids', 200
 
 
 @app.route('/mission', methods=['POST'])
@@ -154,8 +195,6 @@ def receive_tasks_for_allocation():
     for t in tasks:
         print(t)
     tasks = task_allocation(tasks, robots)
-    print(f"jsonify(tasks):\n{jsonify(tasks)}")
-    print(tasks)
     return jsonify(tasks)
 
 
@@ -185,6 +224,9 @@ def task_allocation(tasks, robots):
 
     tasks = allocate_tasks_to_highest_bidder(tasks, bids)
     # print(f"Tasks after task_allocation = {task}")
+
+    print("Tasks after task allocation")
+    pp.pprint(tasks)
     return tasks
 
 

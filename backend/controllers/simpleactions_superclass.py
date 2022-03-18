@@ -72,8 +72,8 @@ class SimpleactionsSuperclass:
 
         self.test_avail_simpleactions = test_avail_simpleactions
         # TODO this should somehow be dynamic
-        n_robots = 4
-        self.consensus_based_auction_algorithm = CBAA(self.robot_name, self.test_avail_simpleactions, n_robots)
+        self.n_robots = 4
+        self.consensus_based_auction_algorithm = CBAA(self.robot_name, self.test_avail_simpleactions, self.n_robots)
 
         print(f"Super class initiated. {self.robot_name}")
 
@@ -178,6 +178,8 @@ class SimpleactionsSuperclass:
         # winning_robots = self.consensus_based_auction_algorithm.winning_robots
         # self.send_cbaa_result_to_server(winning_robots)
         self.consensus_based_auction_algorithm.post_results()
+        # After posting the consensus to the server, reset the values in the CBAA Class
+        self.consensus_based_auction_algorithm.cleanup()
 
 
     # def send_cbaa_result_to_server(self, winning_robots):

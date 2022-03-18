@@ -21,7 +21,7 @@
                     "numArgs": 1,
                     "type": "move",
                     "quality": 0.975,
-                    "cost": 0.1
+                    "cost": 0.001
                 }
             ]
         }

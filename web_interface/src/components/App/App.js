@@ -290,7 +290,7 @@ class App extends Component {
       .then(res => {
         if (res === undefined)
           throw 'Could not connect to server'
-
+        console.log("Received CBAA res = ", res)
         let missions = this.state.missions
         missions[this.state.selectedMission].tasks = res
         console.log(res)
