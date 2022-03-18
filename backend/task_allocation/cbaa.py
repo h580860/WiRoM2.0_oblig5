@@ -4,9 +4,9 @@ import requests
 
 
 class CBAA:
-    def __init__(self, robot_name, available_simpleactions, Nu):
+    def __init__(self, robot_name, available_simpleactions_names_cost, Nu):
         self.robot_name = robot_name
-        self.available_simpleactions = available_simpleactions
+        self.available_simpleactions_names_cost = available_simpleactions_names_cost
 
         self.new_available_tasks = []
         self.task_work_list = []
@@ -146,7 +146,7 @@ class CBAA:
         valid_tasks_h = []
         for j in range(self.Nt):
             # First, check if the current robot is able to perform the given task
-            if not all([x in self.available_simpleactions.keys() for x in self.task_work_list[j]]):
+            if not all([x in self.available_simpleactions_names_cost.keys() for x in self.task_work_list[j]]):
                 print(f"{self.robot_name} is not able to perform all the simpleactions in {self.task_work_list[j]}")
                 valid_tasks_h.append(0)
                 continue
@@ -165,7 +165,7 @@ class CBAA:
             # Use an try/except here, however this should be already checked before this function is called, and
             # it should hopefully never have to throw this error.
             try:
-                total_cost += self.available_simpleactions[simpleaction_name]
+                total_cost += self.available_simpleactions_names_cost[simpleaction_name]
             except KeyError:
                 print(f"Key error, no key named {simpleaction_name}")
         return total_cost

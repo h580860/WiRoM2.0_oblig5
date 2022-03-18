@@ -31,11 +31,11 @@ class SimpleactionsSuperclass:
         # get the time step of the current world.
         self.timestep = int(self.robot.getBasicTimeStep())
 
-        self.available_simpleactions = {}
+        self.available_simpleactions_functions = {}
         self.simpleactions = []
 
         # List of simpleaction from the configuration file
-        self.config_simpleactions = []
+        self.config_simpleactions_names_cost = {}
 
         # Initiate the topics subscriber
         self.binding_key = f"{name}_queue"
@@ -70,28 +70,15 @@ class SimpleactionsSuperclass:
         # Read the config data to get the available simpleactions for this robot type
         self.read_config_data()
 
-        self.test_avail_simpleactions = test_avail_simpleactions
+
         # TODO this should somehow be dynamic
         self.n_robots = 4
         self.consensus_based_auction_algorithm = CBAA(
             # self.robot_name, self.test_avail_simpleactions, self.n_robots
-            self.robot_name, self.available_simpleactions.copy(), self.n_robots
+            self.robot_name, self.config_simpleactions_names_cost, self.n_robots
         )
 
-        # compare test avail simpleactions
-        # for i in range(2):
-        #     print(f"k, v testavailsimpleactions = "
-        #           f"{self.test_avail_simpleactions[self.test_avail_simpleactions.keys()[0]]}"
-        #           f"k, v testavail = "
-        #           f"{self.available_simpleactions[self.available_simpleactions.keys()[0]]}")
-
-        #
-        # self.consensus_based_auction_algorithm.set_available_simpleactions(self.available_simpleactions)
-        # for key, val in self.test_avail_simpleactions.items():
-        #     print(f"k and type: {key}, {type(key)}. val and type: {val}, {type(val)}")
-        print(f"Super class initiated. {self.robot_name}\n"
-              f"Available simpleactions = {self.available_simpleactions}\n"
-              f"Test      simpleactions = {self.test_avail_simpleactions}")
+        print(f"Super class initiated. {self.robot_name}")
 
     def read_config_data(self):
         """
@@ -100,10 +87,10 @@ class SimpleactionsSuperclass:
         with open(pathlib.Path.cwd().parent.parent / 'config.json') as json_config_file:
             data = json.load(json_config_file)
             for x in data["robots"][self.robot_type]["simpleactions"]:
-                self.available_simpleactions[x["name"]] = float(x["cost"])
+                self.config_simpleactions_names_cost[x["name"]] = float(x["cost"])
 
     def add_available_simpleaction(self, name, function_reference):
-        self.available_simpleactions[name] = function_reference
+        self.available_simpleactions_functions[name] = function_reference
 
     def execute_simpleactions_callback(self, ch, method, properties, body):
         print(f"{self.robot_name} callback: %r" % body)
@@ -128,7 +115,7 @@ class SimpleactionsSuperclass:
             # args = sim_act.split('(')[1].split(')')[0]
             #
             if not args:
-                self.available_simpleactions[function_name]()
+                self.available_simpleactions_functions[function_name]()
                 continue
             # Convert the arguments
             if all([x in string.digits for x in args]):
@@ -139,7 +126,7 @@ class SimpleactionsSuperclass:
                 # as well) to a python list
                 args = ast.literal_eval(args)
 
-            self.available_simpleactions[function_name](args)
+            self.available_simpleactions_functions[function_name](args)
 
         print(f"{self.robot_name} finished callback function")
 

@@ -15,7 +15,6 @@ from message_subscriber import MessageSubscriber
 class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
         super().__init__(name, "moose")
-        super().__init__(name, "moose")
         # create the Robot instance.
         # self.robot = Robot()
         # self.robot_name = name
