@@ -13,8 +13,7 @@ from simpleactions_superclass import SimpleactionsSuperclass
 
 class Bb8SimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        test_avail_simpleactions = {"go_forward": 0.6, "turn_right": 0.95, "go_backwards": 0.85}
-        super().__init__(name, "bb8", test_avail_simpleactions)
+        super().__init__(name, "bb8")
 
         # initiate the motors
         # keep track of the motors in a dictionary

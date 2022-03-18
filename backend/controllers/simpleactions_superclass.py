@@ -19,7 +19,7 @@ from task_allocation.cbaa import CBAA
 
 
 class SimpleactionsSuperclass:
-    def __init__(self, name, robot_type, test_avail_simpleactions):
+    def __init__(self, name, robot_type):
         '''
         Super class for the simpleactions generators, with the most common functionalities. Each robot type
         class extends this class
@@ -67,15 +67,31 @@ class SimpleactionsSuperclass:
         cbaa_bids_communication = threading.Thread(target=self.cbaa_bids_subscriber.subscription)
         cbaa_bids_communication.start()
 
-        # Read the config data
+        # Read the config data to get the available simpleactions for this robot type
         self.read_config_data()
 
         self.test_avail_simpleactions = test_avail_simpleactions
         # TODO this should somehow be dynamic
         self.n_robots = 4
-        self.consensus_based_auction_algorithm = CBAA(self.robot_name, self.test_avail_simpleactions, self.n_robots)
+        self.consensus_based_auction_algorithm = CBAA(
+            # self.robot_name, self.test_avail_simpleactions, self.n_robots
+            self.robot_name, self.available_simpleactions.copy(), self.n_robots
+        )
 
-        print(f"Super class initiated. {self.robot_name}")
+        # compare test avail simpleactions
+        # for i in range(2):
+        #     print(f"k, v testavailsimpleactions = "
+        #           f"{self.test_avail_simpleactions[self.test_avail_simpleactions.keys()[0]]}"
+        #           f"k, v testavail = "
+        #           f"{self.available_simpleactions[self.available_simpleactions.keys()[0]]}")
+
+        #
+        # self.consensus_based_auction_algorithm.set_available_simpleactions(self.available_simpleactions)
+        # for key, val in self.test_avail_simpleactions.items():
+        #     print(f"k and type: {key}, {type(key)}. val and type: {val}, {type(val)}")
+        print(f"Super class initiated. {self.robot_name}\n"
+              f"Available simpleactions = {self.available_simpleactions}\n"
+              f"Test      simpleactions = {self.test_avail_simpleactions}")
 
     def read_config_data(self):
         """
@@ -84,7 +100,7 @@ class SimpleactionsSuperclass:
         with open(pathlib.Path.cwd().parent.parent / 'config.json') as json_config_file:
             data = json.load(json_config_file)
             for x in data["robots"][self.robot_type]["simpleactions"]:
-                self.available_simpleactions[x["name"]] = x["cost"]
+                self.available_simpleactions[x["name"]] = float(x["cost"])
 
     def add_available_simpleaction(self, name, function_reference):
         self.available_simpleactions[name] = function_reference

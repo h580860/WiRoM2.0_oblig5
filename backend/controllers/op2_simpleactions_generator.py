@@ -21,8 +21,7 @@ from simpleactions_superclass import SimpleactionsSuperclass
 
 class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        test_avail_simpleactions = {"go_forward": 0.3, "turn_right": 1.0}
-        super().__init__(name, "op2", test_avail_simpleactions)
+        super().__init__(name, "op2")
 
         self.fup = 0
         self.fdown = 0

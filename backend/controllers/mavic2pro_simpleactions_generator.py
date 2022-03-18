@@ -15,8 +15,7 @@ from simpleactions_superclass import SimpleactionsSuperclass
 
 class Mavic2proSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        test_avail_simpleactions = {"go_forward": 0.6, "turn_right": 0.8, "turn_left": 0.5, "go_backwards": 0.7}
-        super().__init__(name, "mavic2pro", test_avail_simpleactions)
+        super().__init__(name, "mavic2pro")
 
         # get the motors for the robot
         self.front_left_motor = self.robot.getDevice('front left propeller')
