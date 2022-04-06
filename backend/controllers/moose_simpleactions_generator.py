@@ -14,7 +14,7 @@ from message_subscriber import MessageSubscriber
 
 class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     def __init__(self, name):
-        super().__init__(name)
+        super().__init__(name, "moose")
         # create the Robot instance.
         # self.robot = Robot()
         # self.robot_name = name
@@ -49,8 +49,9 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
         # The moose needs to listen to a queue for receiving locations
         self.location_binding_key = f"{self.robot_name}_location_queue"
         self.location_exchange = "location_exchange"
+        self.location_exchange_type = "direct"
         self.locations_subscriber = MessageSubscriber(
-            self.location_binding_key, self.location_exchange, self.receive_location_callback)
+            self.location_binding_key, self.location_exchange, self.location_exchange_type, self.receive_location_callback)
 
     def add_all_simpleactions(self):
         self.add_available_simpleaction("go_forward", self.go_forward)

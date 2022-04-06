@@ -9,7 +9,7 @@ controller_path = os.getcwd()
 controller_path = os.path.join(controller_path, os.pardir)
 # TODO does this part only work on Windows?
 # controller_path = controller_path.replace('\\', os.sep)
-print(os.getcwd())
+# print(os.getcwd())
 sys.path.insert(0, controller_path)
 # print(f"Sys path:\n{sys.path}")
 # from backend.controllers.import_testing import ImportTesting
