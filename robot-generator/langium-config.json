@@ -1,0 +1,12 @@
+{
+    "projectName": "RobotGenerator",
+    "languages": [{
+        "id": "robot-generator",
+        "grammar": "src/language-server/robot-generator.langium",
+        "fileExtensions": [".robotgenerator"],
+        "textMate": {
+            "out": "syntaxes/robot-generator.tmLanguage.json"
+        }
+    }],
+    "out": "src/language-server/generated"
+}
