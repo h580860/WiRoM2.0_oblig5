@@ -10,6 +10,7 @@ import MissionTimeline from '../MissionTimeline/MissionTimeline'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { Button, Form, Dropdown, Container, Col, Row } from 'react-bootstrap';
+import Editor from "@monaco-editor/react";
 
 //Toggle used by the Dropdown component when searching for simpleactions
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -67,7 +68,9 @@ class App extends Component {
     missions: data.missions,
     currentMission: data.defaultCurrentMission,
     graphData: { nodes: [{ id: "robot" }], links: [] },
-    showTimeline: false
+    showTimeline: false,
+    showEditor: false,
+    editorContent: "",
   }
 
   componentDidMount() {
@@ -302,6 +305,12 @@ class App extends Component {
     event.preventDefault();
   }
 
+  handleEditorClick = event => {
+    // let response = sendDslEditorContent(this.state)
+    this.setState({ showEditor: !this.state.showEditor })
+
+  }
+
   //render function for the app, upper layer which ties together all components
   render() {
     return (
@@ -322,6 +331,7 @@ class App extends Component {
                     handleAddNewMission={(missionName) => this.handleAddNewMission(missionName)}
                   >
                   </NewMission>
+
                 </Row>
               </div>
 
@@ -366,6 +376,7 @@ class App extends Component {
                       </div>
                   }
                 </Col>
+
               </Row>
 
               <Row >
@@ -379,11 +390,30 @@ class App extends Component {
                   <Button type="submit" variant="outline-dark" onClick={this.handleSubmitTaskAllocation}>
                     Automatic task allocation
                   </Button>
-                  <Button type="submit"variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
+                  <Button type="submit" variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
                     Test CBAA
                   </Button>
                 </Col>
               </Row>
+            </div>
+            <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
+              <div className="shadow p-3 mb-5 bg-white rounded">
+                <Button type="submit" variant="outline-dark" onClick={this.handleEditorClick}>
+                  {!this.state.showEditor ? "Show Editor" : "Hide Editor"}
+                </Button>
+                {this.state.showEditor && <div>
+                  Hello here comes the editor. Please use the DSL!
+                  <Editor
+                    height="20vh"
+                  // defaultLanguage="javascript"
+                  // defaultValue="// some comment"
+                  />
+                  <Button type="submit" variant="outline-dark">
+                    Send
+                  </Button>
+
+                </div>}
+              </div>
             </div>
           </Col>
 
@@ -393,6 +423,7 @@ class App extends Component {
                 state={this.state}
                 handleRobotClick={(name) => this.handleRobotClick(name)}>
               </Robot>
+
             </div>
           </Col>
         </Row>
@@ -465,6 +496,22 @@ function sendMission(state) {
   })
     .then(res => console.log(res))
     .catch(console.log)
+}
+
+function sendDslEditorContent(state) {
+  console.log('Sending DSL Editor Test Data')
+  let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
+  let res = fetch('http://localhost:5000/robot-generator', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(testData)
+  })
+    .then(res => { return res.json() })
+    .catch(console.log)
+  return res
 }
 
 export default App;

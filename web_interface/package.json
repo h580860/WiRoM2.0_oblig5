@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@monaco-editor/react": "^4.4.1",
     "array-move": "^2.2.1",
     "bootstrap": "^4.4.1",
     "d3": "^5.15.0",

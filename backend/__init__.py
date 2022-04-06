@@ -30,8 +30,9 @@ CORS(app)
 
 
 # When starting the server, check if there has been any updates of robots
-update_checker = UpdateChecker()
-update_checker.initiate_full_robot_check()
+# TODO update checked is currently disabled
+# update_checker = UpdateChecker()
+# update_checker.initiate_full_robot_check()
 
 # Printer to "pretty print" JSON/dictionary objects
 pp = pprint.PrettyPrinter()
@@ -265,6 +266,13 @@ def allocate_tasks_to_highest_bidder(tasks, bids):
                 task["robot"] = highest_bidder
 
     return tasks
+
+
+@app.route('/robot-generator', methods=['POST'])
+def generate_dsl_code():
+    editor_content = request.get_json()
+    print(f"Received: {editor_content}")
+    return "Success", 200
 
 
 @app.route('/ping')

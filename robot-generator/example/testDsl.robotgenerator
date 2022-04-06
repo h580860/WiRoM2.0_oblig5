@@ -1,0 +1,2 @@
+addRobot(moose, "Stig", 3,3);
+addRobot(mavic2pro, "Mavic2", 3, 3);
