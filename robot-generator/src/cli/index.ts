@@ -5,6 +5,7 @@ import { RobotGeneratorLanguageMetaData } from '../language-server/generated/mod
 import { createRobotGeneratorServices } from '../language-server/robot-generator-module';
 import { extractAstNode } from './cli-util';
 import { generateJson, generateController } from './generator';
+import { deleteAllNewFilesFromDSL } from './deleter';
 
 export const generateAction = async (fileName: string, opts: GenerateOptions): Promise<void> => {
     const services = createRobotGeneratorServices().RobotGenerator;
@@ -21,8 +22,9 @@ export const generateAction = async (fileName: string, opts: GenerateOptions): P
     )
 };
 
-export const deleteNewFiles = async (): Promise<void> => {
-    console.log("delete function")
+export const deleteNewFiles = async (fileName: string, opts: GenerateOptions): Promise<void> => {
+    deleteAllNewFilesFromDSL(fileName, opts.destination);
+
 }
 
 export type GenerateOptions = {
@@ -61,6 +63,8 @@ export default function (): void {
 
     program
         .command('delete')
+        .argument('<file>', `source file (possible file extensions: ${fileExtensions})`)
+        .option('-d, --destination <dir>', 'destination directory of generating')
         .description('delete all of the generated files from the DSL')
         .action(deleteNewFiles)
 

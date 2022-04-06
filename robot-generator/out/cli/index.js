@@ -19,6 +19,7 @@ const module_1 = require("../language-server/generated/module");
 const robot_generator_module_1 = require("../language-server/robot-generator-module");
 const cli_util_1 = require("./cli-util");
 const generator_1 = require("./generator");
+const deleter_1 = require("./deleter");
 const generateAction = (fileName, opts) => __awaiter(void 0, void 0, void 0, function* () {
     const services = (0, robot_generator_module_1.createRobotGeneratorServices)().RobotGenerator;
     const model = yield (0, cli_util_1.extractAstNode)(fileName, services);
@@ -31,8 +32,8 @@ const generateAction = (fileName, opts) => __awaiter(void 0, void 0, void 0, fun
     });
 });
 exports.generateAction = generateAction;
-const deleteNewFiles = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("delete function");
+const deleteNewFiles = (fileName, opts) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, deleter_1.deleteAllNewFilesFromDSL)(fileName, opts.destination);
 });
 exports.deleteNewFiles = deleteNewFiles;
 function default_1() {
@@ -60,6 +61,8 @@ function default_1() {
     // programDelete.parse(process.argv)
     program
         .command('delete')
+        .argument('<file>', `source file (possible file extensions: ${fileExtensions})`)
+        .option('-d, --destination <dir>', 'destination directory of generating')
         .description('delete all of the generated files from the DSL')
         .action(exports.deleteNewFiles);
     program.parse(process.argv);
