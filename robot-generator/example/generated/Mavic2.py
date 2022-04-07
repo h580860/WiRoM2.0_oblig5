@@ -1,1 +1,0 @@
-print(f"Hello 'Mavic2'!")

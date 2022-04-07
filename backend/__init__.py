@@ -267,11 +267,14 @@ def allocate_tasks_to_highest_bidder(tasks, bids):
 
     return tasks
 
-
 @app.route('/robot-generator', methods=['POST'])
 def generate_dsl_code():
     editor_content = request.get_json()
-    print(f"Received: {editor_content}")
+    commands = editor_content["content"].split("\n")
+    print(f"Received: {editor_content}. Command list = {commands}")
+
+    # Write the received commands to the proper .robotgenerator file
+
     return "Success", 200
 
 

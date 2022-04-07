@@ -311,6 +311,16 @@ class App extends Component {
 
   }
 
+  handleEditorChange = (value, event) => {
+    this.setState({ editorContent: value })
+  }
+
+  handleSendEditorContentClick = event => {
+    console.log(this.state.editorContent);
+    let response = sendDslEditorContent(this.state);
+    // TODO stopped here, perhaps implement it the same way as handleSubmitTaskAllocaiton()?
+  }
+
   //render function for the app, upper layer which ties together all components
   render() {
     return (
@@ -405,10 +415,11 @@ class App extends Component {
                   Hello here comes the editor. Please use the DSL!
                   <Editor
                     height="20vh"
-                  // defaultLanguage="javascript"
-                  // defaultValue="// some comment"
+                    // defaultLanguage="javascript"
+                    // defaultValue="// some comment"
+                    onChange={this.handleEditorChange}
                   />
-                  <Button type="submit" variant="outline-dark">
+                  <Button type="submit" variant="outline-dark" onClick={this.handleSendEditorContentClick}>
                     Send
                   </Button>
 
@@ -500,14 +511,14 @@ function sendMission(state) {
 
 function sendDslEditorContent(state) {
   console.log('Sending DSL Editor Test Data')
-  let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
+  // let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
   let res = fetch('http://localhost:5000/robot-generator', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(testData)
+    body: JSON.stringify({ content: state.editorContent })
   })
     .then(res => { return res.json() })
     .catch(console.log)
