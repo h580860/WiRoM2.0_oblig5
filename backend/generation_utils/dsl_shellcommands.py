@@ -5,7 +5,9 @@ import time
 
 
 class DSLShellCommands:
+    # def __init__(self, script_path, filepath):
     def __init__(self, filepath):
+        #self.script_path = script_path
         self.filepath = filepath
 
     def test(self):
@@ -20,13 +22,13 @@ class DSLShellCommands:
         # TODO this was written on Mac OS, there might be a different way to call
         # the ./bin/cli on another operating system
         # subprocess.run([".", "../../robot-generator/bin/cli"])
-        res = subprocess.run(["./../../robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
+        res = subprocess.run(["./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
                              "-d", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         # subprocess.run(["./../../robot-generator/bin/cli", "generate",
         #                f"{self.filepath}/example/testDsl.robotgenerator"])
         # print(f"res  = {res}")
-        print(f"stdout type: {type(res.stdout)}")
+        print(f"stdout: {res.stdout}")
         print(f"stderr: {res.stderr}")
         print(f"returncode: {res.returncode}")
 
@@ -35,9 +37,14 @@ class DSLShellCommands:
         # subprocess.run([f"./{self.filepath}/bin/cli", "generate", f"{self.filepath}example/testDsl.robotgenerator"])
 
     def delete_generated_files_command(self):
-        subprocess.run(["./../../robot-generator/bin/cli",
-                       "delete", f"{self.filepath}/example/generated"])
+        res = subprocess.run(["./robot-generator/bin/cli",
+                              "delete", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         # subprocess.run(["./../../robot-generator/bin/cli", "delete"])
+        print(f"stdout: {res.stdout}")
+        print(f"stderr: {res.stderr}")
+        print(f"returncode: {res.returncode}")
+
+        return res
 
 
 if __name__ == '__main__':

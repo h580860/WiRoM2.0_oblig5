@@ -321,6 +321,10 @@ class App extends Component {
     // TODO stopped here, perhaps implement it the same way as handleSubmitTaskAllocaiton()?
   }
 
+  handleDeleteGeneratedRobots = event => {
+    deleteGeneratedRobots()
+  }
+
   //render function for the app, upper layer which ties together all components
   render() {
     return (
@@ -422,6 +426,9 @@ class App extends Component {
                   <Button type="submit" variant="outline-dark" onClick={this.handleSendEditorContentClick}>
                     Send
                   </Button>
+                  <Button type="submit" variant="outline-dark" onClick={this.handleDeleteGeneratedRobots}>
+                    Delete generated robots
+                  </Button>
 
                 </div>}
               </div>
@@ -519,6 +526,20 @@ function sendDslEditorContent(state) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ content: state.editorContent })
+  })
+    .then(res => { return res.json() })
+    .catch(console.log)
+  return res
+}
+
+function deleteGeneratedRobots() {
+  console.log("Deleting generated robots");
+  let res = fetch('http://localhost:5000/deleteGeneratedDSL', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
   })
     .then(res => { return res.json() })
     .catch(console.log)

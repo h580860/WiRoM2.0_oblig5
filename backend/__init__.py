@@ -15,6 +15,7 @@ import pprint
 # from backend.generation_utils.update_checker import UpdateChecker
 from backend.generation_utils.update_checker import UpdateChecker
 from backend.controllers.message_subscriber import MessageSubscriber
+from backend.generation_utils.dsl_shellcommands import DSLShellCommands
 
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
@@ -22,6 +23,12 @@ from backend.controllers.message_subscriber import MessageSubscriber
 app = Flask(__name__)
 app.debug = True
 CORS(app)
+
+
+# The location of the script used to run the DSL code generation
+script_location_filepath = pathlib.Path().parent / "robot-generator"
+# Utility class for executing the DSL Langium commands in a Python class
+dsl_shell_commands = DSLShellCommands(script_location_filepath)
 
 # configure logging
 # this file uses the custom logging class, because it is currently only working with this class
@@ -78,7 +85,8 @@ def initiate_cbaa():
 
     while not cbaa_results:
         time.sleep(1)
-    print(f"cbaa_initiation finished. Global cbaa_results variable = {cbaa_results}")
+    print(
+        f"cbaa_initiation finished. Global cbaa_results variable = {cbaa_results}")
 
     # TODO check that all of the bids consensus are the same over the different robots
 
@@ -109,9 +117,11 @@ def send_task_list(task_list_as_json):
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='cbaa_initiate_exchange', exchange_type='fanout')
+    channel.exchange_declare(
+        exchange='cbaa_initiate_exchange', exchange_type='fanout')
 
-    channel.basic_publish(exchange='cbaa_initiate_exchange', routing_key='', body=task_list_as_json)
+    channel.basic_publish(exchange='cbaa_initiate_exchange',
+                          routing_key='', body=task_list_as_json)
     connection.close()
 
 
@@ -140,7 +150,8 @@ def receive_mission():
     for robot in mission:
         sequence = []
         for simpleaction in mission[robot]['simpleactions']:
-            sequence.append({'function_name': simpleaction['name'], 'args': simpleaction['args']})
+            sequence.append(
+                {'function_name': simpleaction['name'], 'args': simpleaction['args']})
 
             # if simpleaction['args'] == "":
             #     sequence.append(simpleaction['name'] + "()")
@@ -174,7 +185,8 @@ def receive_mission():
                 # print(f"Sending sequence to robot {mission[robot]['port']}, queue_name={current_routing_key}")
                 current_routing_key = f"{robot}_queue"
                 # print(f'Sequence:\n{sequence}\nType: {type(sequence)}')
-                test_send_routing_messages(json.dumps(sequence), current_routing_key)
+                test_send_routing_messages(
+                    json.dumps(sequence), current_routing_key)
                 # channel.basic_publish(
                 # exchange="routing_exchange", routing_key=current_routing_key, body=json.dumps(sequence))
                 success = True
@@ -214,8 +226,10 @@ def task_allocation(tasks, robots):
                     lambda robot_simpleaction: robot_simpleaction["name"] == simpleaction["name"],
                     robots[robot]["simpleactions"]))
                 if robot_simpleaction != []:
-                    robot_simpleaction[0].update({"args": simpleaction["args"]})
-                    robot_simpleaction[0].update({"location": robots[robot]["location"]})
+                    robot_simpleaction[0].update(
+                        {"args": simpleaction["args"]})
+                    robot_simpleaction[0].update(
+                        {"location": robots[robot]["location"]})
 
                     utility = calculate_utility(robot_simpleaction[0])
                     bid = bid * utility
@@ -267,6 +281,7 @@ def allocate_tasks_to_highest_bidder(tasks, bids):
 
     return tasks
 
+
 @app.route('/robot-generator', methods=['POST'])
 def generate_dsl_code():
     editor_content = request.get_json()
@@ -274,6 +289,25 @@ def generate_dsl_code():
     print(f"Received: {editor_content}. Command list = {commands}")
 
     # Write the received commands to the proper .robotgenerator file
+    # TODO hard coded file location
+    file_location = pathlib.Path().parent / "robot-generator" / \
+        "example" / "testDsl.robotgenerator"
+    with open(file_location, "w") as f:
+        for x in commands:
+            f.write(x + "\n")
+
+    # Run the commands for generating the DSL in Langium, through the static methods in the Python helper class
+
+    generation_results = dsl_shell_commands.generate_dsl_code_command()
+    print(f"generation_result = {generation_results}")
+
+    return "Success", 200
+
+
+@app.route('/deleteGeneratedDSL', methods=['POST'])
+def delete_dsl_code():
+    print("Server received request to delete the generated DSL files")
+    deletion_results = dsl_shell_commands.delete_generated_files_command()
 
     return "Success", 200
 
@@ -309,7 +343,8 @@ def test_sending_one_message(sequence):
     # Test. Send 10 messages, with a time interval of 3 seconds between each message
 
     # inititate message communication
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
     channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
@@ -320,10 +355,13 @@ def test_sending_one_message(sequence):
 
 
 def test_send_routing_messages(message_as_json, routing_key):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
-    channel.exchange_declare(exchange='routing_exchange', exchange_type='direct')
-    channel.basic_publish(exchange='routing_exchange', routing_key=routing_key, body=message_as_json)
+    channel.exchange_declare(
+        exchange='routing_exchange', exchange_type='direct')
+    channel.basic_publish(exchange='routing_exchange',
+                          routing_key=routing_key, body=message_as_json)
     print(f"[send_routing_message] published to {routing_key}")
 
     connection.close()
