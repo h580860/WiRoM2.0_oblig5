@@ -26,5 +26,5 @@ export function deleteAllNewFilesFromDSL(filePath: string, destination: string |
         console.log(colors.red(`${filePath} does not exist`));
         return
     }
-    console.log(colors.green(`Finished deleting files in ${filePath}`));
+
 }

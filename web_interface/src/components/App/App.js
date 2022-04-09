@@ -9,7 +9,7 @@ import NewTask from '../NewTask/NewTask'
 import MissionTimeline from '../MissionTimeline/MissionTimeline'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { Button, Form, Dropdown, Container, Col, Row } from 'react-bootstrap';
+import { Button, Form, Dropdown, Container, Col, Row, Toast, ListGroup } from 'react-bootstrap';
 import Editor from "@monaco-editor/react";
 
 //Toggle used by the Dropdown component when searching for simpleactions
@@ -71,6 +71,8 @@ class App extends Component {
     showTimeline: false,
     showEditor: false,
     editorContent: "",
+    showEditorToast: false,
+    editorToastBody: [],
   }
 
   componentDidMount() {
@@ -316,13 +318,28 @@ class App extends Component {
   }
 
   handleSendEditorContentClick = event => {
-    console.log(this.state.editorContent);
     let response = sendDslEditorContent(this.state);
+    response
+      .then(res => {
+        console.log(res.output);
+        this.toggleShowEditorToast();
+        this.setState({ editorToastBody: res.output });
+      })
     // TODO stopped here, perhaps implement it the same way as handleSubmitTaskAllocaiton()?
   }
 
   handleDeleteGeneratedRobots = event => {
-    deleteGeneratedRobots()
+    let response = deleteGeneratedRobots()
+    response
+      .then(res => {
+        console.log(res.output);
+        this.toggleShowEditorToast();
+        this.setState({ editorToastBody: res.output });
+      })
+  }
+
+  toggleShowEditorToast = () => {
+    this.setState({ showEditorToast: !this.state.showEditorToast });
   }
 
   //render function for the app, upper layer which ties together all components
@@ -416,7 +433,7 @@ class App extends Component {
                   {!this.state.showEditor ? "Show Editor" : "Hide Editor"}
                 </Button>
                 {this.state.showEditor && <div>
-                  Hello here comes the editor. Please use the DSL!
+                  Editor for using the Robot-Generator DSL
                   <Editor
                     height="20vh"
                     // defaultLanguage="javascript"
@@ -429,8 +446,24 @@ class App extends Component {
                   <Button type="submit" variant="outline-dark" onClick={this.handleDeleteGeneratedRobots}>
                     Delete generated robots
                   </Button>
-
                 </div>}
+                {/* <div style={{ minWidth: '300px' }}> */}
+                <Toast show={this.state.showEditorToast} onClose={this.toggleShowEditorToast}>
+                  <Toast.Header>
+                    <strong className="me-auto">Message(s) from the server:</strong>
+                  </Toast.Header>
+                  <Toast.Body>
+                    <ListGroup variant="flush">
+                      {this.state.editorToastBody.map((elem, idx) =>
+                        <ListGroup.Item>{elem}</ListGroup.Item>
+                      )}
+                    </ListGroup>
+                    {/* {this.state.editorToastBody.forEach(line => (
+                      console.log(line)
+                    ))} */}
+                  </Toast.Body>
+                </Toast>
+                {/* </div> */}
               </div>
             </div>
           </Col>
@@ -445,7 +478,7 @@ class App extends Component {
             </div>
           </Col>
         </Row>
-      </Container>
+      </Container >
     );
   }
 }
@@ -527,8 +560,11 @@ function sendDslEditorContent(state) {
     },
     body: JSON.stringify({ content: state.editorContent })
   })
-    .then(res => { return res.json() })
-    .catch(console.log)
+    .then(res => {
+      console.log(res);
+      return res.json();
+    })
+  // .catch(console.log)
   return res
 }
 

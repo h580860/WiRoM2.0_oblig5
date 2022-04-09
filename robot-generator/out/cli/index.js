@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNewFiles = exports.generateAction = void 0;
-const colors_1 = __importDefault(require("colors"));
+// import colors from 'colors';
 const commander_1 = require("commander");
 const module_1 = require("../language-server/generated/module");
 const robot_generator_module_1 = require("../language-server/robot-generator-module");
@@ -26,14 +23,17 @@ const generateAction = (fileName, opts) => __awaiter(void 0, void 0, void 0, fun
     // For each DSL command in the model, generate a JSON file and a controller
     model.dslCommands.forEach(command => {
         const generatedJSONFilePath = (0, generator_1.generateJson)(command, fileName, opts.destination);
-        console.log(colors_1.default.green(`JSON file generated successfully: ${generatedJSONFilePath}`));
+        // console.log(colors.green(`JSON file generated successfully: ${generatedJSONFilePath}`));
+        console.log(`JSON file generated successfully: ${generatedJSONFilePath}`);
         const generatedControllerFilePath = (0, generator_1.generateController)(command, fileName, opts.destination);
-        console.log(colors_1.default.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
+        // console.log(colors.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
+        console.log(`Controller file generated successfully: ${generatedControllerFilePath}`);
     });
 });
 exports.generateAction = generateAction;
 const deleteNewFiles = (fileName, opts) => __awaiter(void 0, void 0, void 0, function* () {
     (0, deleter_1.deleteAllNewFilesFromDSL)(fileName, opts.destination);
+    console.log(`Finished deleting files`);
 });
 exports.deleteNewFiles = deleteNewFiles;
 function default_1() {

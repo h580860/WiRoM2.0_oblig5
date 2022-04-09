@@ -54,12 +54,25 @@ export function generateController(dslCommand: DslCommand, filePath: string, des
 
     const fileNode = new CompositeGeneratorNode();
 
-    fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`)
+
+    // extract the variables we need
+    const robotType: string = dslCommand.robotType.value;
+    const robotTypeCapitalized: string = capitalizeType(robotType);
+    const robotName: string = dslCommand.robotName.name;
+    // TODO length of this line in the editor
+    const controllerTemplate: string = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_simpleactions_generator import ${robotTypeCapitalized}SimpleactionsGenerator\n${robotType}_simpleactions = ${robotTypeCapitalized}SimpleactionsGenerator(\"${robotName}\")\n${robotType}_simpleactions.initiate_threads()`;
+
+    // fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`)
+    fileNode.append(controllerTemplate);
 
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
     fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
     return generatedFilePath;
+}
+
+function capitalizeType(robotType: string) {
+    return robotType.charAt(0).toUpperCase() + robotType.slice(1);
 }
 

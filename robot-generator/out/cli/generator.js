@@ -38,7 +38,14 @@ function generateController(dslCommand, filePath, destination) {
     // const generatedFilePath = `${path.join(data.destination, data.name)}.py`;
     const generatedFilePath = `${path_1.default.join(data.destination, dslCommand.robotName.name)}.py`;
     const fileNode = new langium_1.CompositeGeneratorNode();
-    fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`);
+    // extract the variables we need
+    const robotType = dslCommand.robotType.value;
+    const robotTypeCapitalized = capitalizeType(robotType);
+    const robotName = dslCommand.robotName.name;
+    // TODO length of this line in the editor
+    const controllerTemplate = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_simpleactions_generator import ${robotTypeCapitalized}SimpleactionsGenerator\n${robotType}_simpleactions = ${robotTypeCapitalized}SimpleactionsGenerator(\"${robotName}\")\n${robotType}_simpleactions.initiate_threads()`;
+    // fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`)
+    fileNode.append(controllerTemplate);
     if (!fs_1.default.existsSync(data.destination)) {
         fs_1.default.mkdirSync(data.destination, { recursive: true });
     }
@@ -46,4 +53,7 @@ function generateController(dslCommand, filePath, destination) {
     return generatedFilePath;
 }
 exports.generateController = generateController;
+function capitalizeType(robotType) {
+    return robotType.charAt(0).toUpperCase() + robotType.slice(1);
+}
 //# sourceMappingURL=generator.js.map

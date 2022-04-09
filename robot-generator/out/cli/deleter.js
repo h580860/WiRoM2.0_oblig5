@@ -31,7 +31,6 @@ function deleteAllNewFilesFromDSL(filePath, destination) {
         console.log(colors_1.default.red(`${filePath} does not exist`));
         return;
     }
-    console.log(colors_1.default.green(`Finished deleting files in ${filePath}`));
 }
 exports.deleteAllNewFilesFromDSL = deleteAllNewFilesFromDSL;
 //# sourceMappingURL=deleter.js.map

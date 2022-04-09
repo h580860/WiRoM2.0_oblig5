@@ -1,5 +1,2 @@
-addRobot(moose, "TestMoose1", 3,3);
-addRobot(moose, "TestMoose2", 3,3);
-addRobot(moose, "TestMoose3", 3,3);
-addRobot(mavic2pro, "TestMavic1", 3,3);
-
+addRobot(moose, "MooseTheSecond", 3, 3);
+addRobot(mavic2pro, "MavicTheSecond", 3, 3);

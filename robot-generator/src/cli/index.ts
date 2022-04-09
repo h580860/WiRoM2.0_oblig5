@@ -1,4 +1,4 @@
-import colors from 'colors';
+// import colors from 'colors';
 import { Command } from 'commander';
 import { Model } from '../language-server/generated/ast';
 import { RobotGeneratorLanguageMetaData } from '../language-server/generated/module';
@@ -15,15 +15,18 @@ export const generateAction = async (fileName: string, opts: GenerateOptions): P
     model.dslCommands.forEach(
         command => {
             const generatedJSONFilePath = generateJson(command, fileName, opts.destination);
-            console.log(colors.green(`JSON file generated successfully: ${generatedJSONFilePath}`));
+            // console.log(colors.green(`JSON file generated successfully: ${generatedJSONFilePath}`));
+            console.log(`JSON file generated successfully: ${generatedJSONFilePath}`);
             const generatedControllerFilePath = generateController(command, fileName, opts.destination);
-            console.log(colors.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
+            // console.log(colors.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
+            console.log(`Controller file generated successfully: ${generatedControllerFilePath}`);
         }
     )
 };
 
 export const deleteNewFiles = async (fileName: string, opts: GenerateOptions): Promise<void> => {
     deleteAllNewFilesFromDSL(fileName, opts.destination);
+    console.log(`Finished deleting files`);
 
 }
 

@@ -301,18 +301,38 @@ def generate_dsl_code():
     generation_results = dsl_shell_commands.generate_dsl_code_command()
     print(f"generation_result = {generation_results}")
 
-    return "Success", 200
+    # Extract the output, split it up on newlines and filter out the empty elements
+    output = list(filter(lambda x: x != "",
+                  generation_results.stdout.split("\n")))
+
+    if generation_results.returncode == 1:
+        return jsonify({"success": False, "body": generation_results.stderr}), 400
+
+    else:
+        return jsonify({"output": output}), 200
 
 
-@app.route('/deleteGeneratedDSL', methods=['POST'])
+@ app.route('/deleteGeneratedDSL', methods=['POST'])
 def delete_dsl_code():
     print("Server received request to delete the generated DSL files")
     deletion_results = dsl_shell_commands.delete_generated_files_command()
 
+    # Extract the output, split it up on newlines and filter out the empty elements
+    output = list(filter(lambda x: x != "",
+                  deletion_results.stdout.split("\n")))
+
+    error_output = list(filter(lambda x: x != "",
+                               deletion_results.stderr.split("\n")))
+    if deletion_results.returncode == 1:
+        return jsonify({"success": False, "output": error_output}), 400
+
+    else:
+        return jsonify({"success": True, "output": output}), 200
+
     return "Success", 200
 
 
-@app.route('/ping')
+@ app.route('/ping')
 def ping():
     return 'Pong!'
 
@@ -347,10 +367,12 @@ def test_sending_one_message(sequence):
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
 
-    channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+    channel.exchange_declare(exchange='test_exchange',
+                             exchange_type='fanout')
     print(f'sequence: {sequence}')
     msg = "go_backward(2),turn_left(3)"
-    channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
+    channel.basic_publish(exchange='test_exchange',
+                          routing_key='', body=msg)
     connection.close()
 
 

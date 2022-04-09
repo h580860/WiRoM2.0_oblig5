@@ -22,8 +22,10 @@ class DSLShellCommands:
         # TODO this was written on Mac OS, there might be a different way to call
         # the ./bin/cli on another operating system
         # subprocess.run([".", "../../robot-generator/bin/cli"])
+        # res = subprocess.run(["./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
+        #                      "-d", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         res = subprocess.run(["./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
-                             "-d", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                             "-d", f"{self.filepath}/example/generated"], capture_output=True, text=True)
 
         # subprocess.run(["./../../robot-generator/bin/cli", "generate",
         #                f"{self.filepath}/example/testDsl.robotgenerator"])
