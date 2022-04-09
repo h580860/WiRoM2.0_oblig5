@@ -21,11 +21,11 @@ export async function extractDocument(fileName: string, services: LangiumService
 
     const validationErrors = (document.diagnostics ?? []).filter(e => e.severity === 1);
     if (validationErrors.length > 0) {
-        console.error(colors.red('There are validation errors:'));
+        console.error('There are validation errors:');
         for (const validationError of validationErrors) {
-            console.error(colors.red(
+            console.error(
                 `line ${validationError.range.start.line + 1}: ${validationError.message} [${document.textDocument.getText(validationError.range)}]`
-            ));
+            );
         }
         process.exit(1);
     }

@@ -4,7 +4,7 @@ import { Model } from '../language-server/generated/ast';
 import { RobotGeneratorLanguageMetaData } from '../language-server/generated/module';
 import { createRobotGeneratorServices } from '../language-server/robot-generator-module';
 import { extractAstNode } from './cli-util';
-import { generateJson, generateController } from './generator';
+import { generateJson, generateController, appendToNewRobotsFile } from './generator';
 import { deleteAllNewFilesFromDSL } from './deleter';
 
 export const generateAction = async (fileName: string, opts: GenerateOptions): Promise<void> => {
@@ -20,6 +20,8 @@ export const generateAction = async (fileName: string, opts: GenerateOptions): P
             const generatedControllerFilePath = generateController(command, fileName, opts.destination);
             // console.log(colors.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
             console.log(`Controller file generated successfully: ${generatedControllerFilePath}`);
+
+            appendToNewRobotsFile(command, fileName, opts.destination);
         }
     )
 };

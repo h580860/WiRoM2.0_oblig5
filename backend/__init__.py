@@ -286,7 +286,7 @@ def allocate_tasks_to_highest_bidder(tasks, bids):
 def generate_dsl_code():
     editor_content = request.get_json()
     commands = editor_content["content"].split("\n")
-    print(f"Received: {editor_content}. Command list = {commands}")
+    print(f"Received: {editor_content}.\nCommand list = {commands}")
 
     # Write the received commands to the proper .robotgenerator file
     # TODO hard coded file location
@@ -305,14 +305,19 @@ def generate_dsl_code():
     output = list(filter(lambda x: x != "",
                   generation_results.stdout.split("\n")))
 
+    error_output = list(filter(lambda x: x != "",
+                               generation_results.stderr.split("\n")))
+
     if generation_results.returncode == 1:
-        return jsonify({"success": False, "body": generation_results.stderr}), 400
+        return jsonify({"success": False, "output": error_output}), 400
 
     else:
-        return jsonify({"output": output}), 200
+        update_checker = UpdateChecker()
+        update_checker.update_everything_after_dsl_usage()
+        return jsonify({"success": True, "output": output}), 200
 
 
-@ app.route('/deleteGeneratedDSL', methods=['POST'])
+@app.route('/deleteGeneratedDSL', methods=['POST'])
 def delete_dsl_code():
     print("Server received request to delete the generated DSL files")
     deletion_results = dsl_shell_commands.delete_generated_files_command()
@@ -323,6 +328,7 @@ def delete_dsl_code():
 
     error_output = list(filter(lambda x: x != "",
                                deletion_results.stderr.split("\n")))
+    print(f"Error output = {error_output}")
     if deletion_results.returncode == 1:
         return jsonify({"success": False, "output": error_output}), 400
 

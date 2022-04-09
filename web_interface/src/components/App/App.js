@@ -564,7 +564,9 @@ function sendDslEditorContent(state) {
       console.log(res);
       return res.json();
     })
-  // .catch(console.log)
+    .catch(err => {
+      console.log(err);
+    })
   return res
 }
 

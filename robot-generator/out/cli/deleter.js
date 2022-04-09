@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAllNewFilesFromDSL = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const colors_1 = __importDefault(require("colors"));
+// import colors from 'colors';
 // // import { CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 // import { CompositeGeneratorNode, processGeneratorNode } from 'langium';
 // import path from 'path';
@@ -28,7 +28,7 @@ function deleteAllNewFilesFromDSL(filePath, destination) {
         });
     }
     else {
-        console.log(colors_1.default.red(`${filePath} does not exist`));
+        console.log(`${filePath} does not exist`);
         return;
     }
 }

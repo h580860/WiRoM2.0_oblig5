@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import colors from 'colors';
+// import colors from 'colors';
 // // import { CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 // import { CompositeGeneratorNode, processGeneratorNode } from 'langium';
 // import path from 'path';
@@ -23,7 +23,7 @@ export function deleteAllNewFilesFromDSL(filePath: string, destination: string |
         })
     }
     else {
-        console.log(colors.red(`${filePath} does not exist`));
+        console.log(`${filePath} does not exist`);
         return
     }
 

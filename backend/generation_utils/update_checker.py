@@ -20,17 +20,22 @@ class UpdateChecker:
         self.json_reader_writer = json_reader_writer()
 
         # C:\Users\Gunnar\Documents\WiRoM2.0\dsl_robotgenerator\org.gunnarkleiven.robotgenerator.parent\org.gunnarkleiven.robotgenerator\sample\src
-        self.generated_files_filepath = pathlib.Path.cwd() / "dsl_robotgenerator" \
-                                        / "org.gunnarkleiven.robotgenerator.parent" \
-                                        / "org.gunnarkleiven.robotgenerator" / "sample" / "src-gen" / "robotgenerator"
+        # self.generated_files_filepath = pathlib.Path.cwd() / "dsl_robotgenerator" \
+        #                                 / "org.gunnarkleiven.robotgenerator.parent" \
+        #                                 / "org.gunnarkleiven.robotgenerator" / "sample" / "src-gen" / "robotgenerator"
 
-        self.update_file = pathlib.Path.cwd() / 'backend' / "generation_utils" / "added_robots.json"
-        self.save_file_content = self.json_reader_writer.read_json(self.update_file)
+        self.generated_files_filepath = pathlib.Path().parent / "robot-generator" / \
+            "example" / "generated"
+        self.update_file = pathlib.Path.cwd() / 'backend' / "generation_utils" / \
+            "added_robots.json"
+        self.save_file_content = self.json_reader_writer.read_json(
+            self.update_file)
         self.prev_added_robots = self.save_file_content["previouslyAddedRobots"]
         self.new_added_robots = self.save_file_content["newAddedRobots"]
         self.controller_base_path = pathlib.Path.cwd() / "backend" / "controllers"
         self.current_portnumber = 5002
-        self.map_filepath = pathlib.Path.cwd() / "backend" / "worlds" / "delivery-missionUpdated.wbt"
+        self.map_filepath = pathlib.Path.cwd() / "backend" / "worlds" / \
+            "delivery-missionUpdated.wbt"
         self.map_reader = WbtJsonParser(filepath=self.map_filepath)
         self.configpath = pathlib.Path.cwd() / 'backend' / 'config.json'
         self.datapath = pathlib.Path.cwd() / 'web_interface' / 'src' / 'data.json'
@@ -121,10 +126,12 @@ class UpdateChecker:
 
         # Wrap the json object with with a capitalized key
         new_robot_node = {robot_type_capitalized: new_robot_node}
-        new_worldfile_content = self.map_reader.transform_from_json_to_world(new_robot_node)
+        new_worldfile_content = self.map_reader.transform_from_json_to_world(
+            new_robot_node)
         self.map_reader.append_to_world_file(new_worldfile_content)
 
-        print(f"Finished writing to the world file. New positions are: {new_positions}")
+        print(
+            f"Finished writing to the world file. New positions are: {new_positions}")
         return new_positions
 
     def get_translation(self, node):
@@ -153,7 +160,8 @@ class UpdateChecker:
         # Get the actual content from the config file, so we can modify it
         config_content = self.json_reader_writer.read_json(self.configpath)
         config_content["robots"][key_name] = updated_config_object
-        self.json_reader_writer.write_json(self.configpath, json.dumps(config_content, indent=4))
+        self.json_reader_writer.write_json(
+            self.configpath, json.dumps(config_content, indent=4))
         print(f"Finished writing to config")
 
     def add_robot_to_data(self, robot, robot_data, robot_type, data_template):
@@ -165,7 +173,8 @@ class UpdateChecker:
         # Get the actual content from the data file, so we can modify it
         data_content = self.json_reader_writer.read_json(self.datapath)
         data_content["robots"][key_name] = updated_data_object
-        self.json_reader_writer.write_json(self.datapath, json.dumps(data_content, indent=4))
+        self.json_reader_writer.write_json(
+            self.datapath, json.dumps(data_content, indent=4))
         print("Finished writing to data")
 
     def add_robot_controller(self, robot, controller_name):
@@ -183,9 +192,10 @@ class UpdateChecker:
         # print(f"Copied simpleactions implementations for {robot}")
 
         new_controller_filename = f"{robot}_controller.py"
-        controller_source_filepath = self.generated_files_filepath / robot / new_controller_filename
+        controller_source_filepath = self.generated_files_filepath / new_controller_filename
         controller_destination_filepath = controller_dir / new_controller_filename
-        shutil.copy(controller_source_filepath, controller_destination_filepath)
+        shutil.copy(controller_source_filepath,
+                    controller_destination_filepath)
         print(f"Copied controller implementation for {robot}")
 
         # key lookup table no longer in use
@@ -200,7 +210,8 @@ class UpdateChecker:
         # while robot in self.save_file_content
         self.save_file_content["previouslyAddedRobots"] = self.prev_added_robots
         self.save_file_content["newAddedRobots"] = []
-        self.json_reader_writer.write_json(self.update_file, json.dumps(self.save_file_content))
+        self.json_reader_writer.write_json(
+            self.update_file, json.dumps(self.save_file_content))
         print(f"finished updating the save file")
 
     def count_robots_in_config(self, type, content):
@@ -214,7 +225,8 @@ class UpdateChecker:
         """
 
         # Check if there has been generated any new files in the Eclipse run configuration workspace
-        find_new_gen_robots = FindNewGenRobots(self.prev_added_robots, self.controller_base_path)
+        find_new_gen_robots = FindNewGenRobots(
+            self.prev_added_robots, self.controller_base_path)
         self.new_added_robots = find_new_gen_robots.find_new_generated_robots()
 
         if not self.new_added_robots:
@@ -226,7 +238,8 @@ class UpdateChecker:
                 print(f"Skipping adding duplicate of {robot}")
                 continue
             # read the generated json file to fetch the data
-            robot_data = self.json_reader_writer.read_json(self.generated_files_filepath / robot / f"{robot}.json")
+            robot_data = self.json_reader_writer.read_json(
+                self.generated_files_filepath / robot / f"{robot}.json")
             # print(f"Robot data: {robot_data}")
             robot_type = robot_data["addRobot"]["type"]
             robot_template = self.json_reader_writer.read_json(
@@ -239,14 +252,51 @@ class UpdateChecker:
                                                     robot_controller_name)
             self.current_portnumber += 1
             config_template = robot_template["config"][robot_type]
-            self.add_robot_to_config(robot, robot_data, robot_type, new_positions, config_template)
+            self.add_robot_to_config(
+                robot, robot_data, robot_type, new_positions, config_template)
 
             data_template = robot_template["data"][robot_type]
-            self.add_robot_to_data(robot, robot_data, robot_type, data_template)
+            self.add_robot_to_data(
+                robot, robot_data, robot_type, data_template)
             self.add_robot_controller(robot, robot_controller_name)
 
             self.prev_added_robots.append(robot)
             # We remove this robot from the "queue", just in case it has been added multiple times
+
+        self.update_added_robots_json()
+
+    def update_everything_after_dsl_usage(self):
+        with open((self.generated_files_filepath / "newRobots.txt"), 'r') as f:
+            robots = set([x.strip() for x in f.readlines()])
+
+        for robot in robots:
+            if robot in self.prev_added_robots:
+                print(f"Skipping adding duplicate of {robot}")
+                continue
+            # read the generated json file to fetch the data
+            robot_data = self.json_reader_writer.read_json(
+                self.generated_files_filepath / f"{robot}.json")
+            # print(f"Robot data: {robot_data}")
+            robot_type = robot_data["robotType"]
+            robot_template = self.json_reader_writer.read_json(
+                pathlib.Path.cwd() / "backend" / "generation_utils" / f"{robot_type}_template.json")
+
+            robot_controller_name = f"{robot}_controller"
+            world_template = robot_template["webots_world"]
+
+            new_positions = self.add_robot_to_world(robot, robot_data, robot_type, world_template,
+                                                    robot_controller_name)
+            self.current_portnumber += 1
+            config_template = robot_template["config"][robot_type]
+            self.add_robot_to_config(
+                robot, robot_data, robot_type, new_positions, config_template)
+
+            data_template = robot_template["data"][robot_type]
+            self.add_robot_to_data(
+                robot, robot_data, robot_type, data_template)
+            self.add_robot_controller(robot, robot_controller_name)
+
+            self.prev_added_robots.append(robot)
 
         self.update_added_robots_json()
 

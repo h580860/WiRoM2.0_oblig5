@@ -28,6 +28,7 @@ const generateAction = (fileName, opts) => __awaiter(void 0, void 0, void 0, fun
         const generatedControllerFilePath = (0, generator_1.generateController)(command, fileName, opts.destination);
         // console.log(colors.green(`Controller file generated successfully: ${generatedControllerFilePath}`));
         console.log(`Controller file generated successfully: ${generatedControllerFilePath}`);
+        (0, generator_1.appendToNewRobotsFile)(command, fileName, opts.destination);
     });
 });
 exports.generateAction = generateAction;

@@ -50,7 +50,7 @@ export function generateController(dslCommand: DslCommand, filePath: string, des
     const data = extractDestinationAndName(filePath, destination);
     // const generatedFilePath = `${path.join(data.destination, data.name)}.js`;
     // const generatedFilePath = `${path.join(data.destination, data.name)}.py`;
-    const generatedFilePath = `${path.join(data.destination, dslCommand.robotName.name)}.py`;
+    const generatedFilePath = `${path.join(data.destination, `${dslCommand.robotName.name}_`)}.py`;
 
     const fileNode = new CompositeGeneratorNode();
 
@@ -70,6 +70,22 @@ export function generateController(dslCommand: DslCommand, filePath: string, des
     }
     fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
     return generatedFilePath;
+}
+
+export function appendToNewRobotsFile(dslCommand: DslCommand, filePath: string, destination: string | undefined): void {
+    const data = extractDestinationAndName(filePath, destination);
+    const newRobotsListFilePath = `${path.join(data.destination, "newRobots")}.txt`;
+    const fileNode = new CompositeGeneratorNode();
+
+    const robotName: string = dslCommand.robotName.name;
+    fileNode.append(robotName + '\n');
+
+    if (!fs.existsSync(newRobotsListFilePath)) {
+        fs.writeFileSync(newRobotsListFilePath, processGeneratorNode(fileNode));
+    }
+    else {
+        fs.appendFileSync(newRobotsListFilePath, processGeneratorNode(fileNode));
+    }
 }
 
 function capitalizeType(robotType: string) {

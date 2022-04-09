@@ -33,9 +33,9 @@ function extractDocument(fileName, services) {
         yield services.shared.workspace.DocumentBuilder.build([document], { validationChecks: 'all' });
         const validationErrors = ((_a = document.diagnostics) !== null && _a !== void 0 ? _a : []).filter(e => e.severity === 1);
         if (validationErrors.length > 0) {
-            console.error(colors_1.default.red('There are validation errors:'));
+            console.error('There are validation errors:');
             for (const validationError of validationErrors) {
-                console.error(colors_1.default.red(`line ${validationError.range.start.line + 1}: ${validationError.message} [${document.textDocument.getText(validationError.range)}]`));
+                console.error(`line ${validationError.range.start.line + 1}: ${validationError.message} [${document.textDocument.getText(validationError.range)}]`);
             }
             process.exit(1);
         }
