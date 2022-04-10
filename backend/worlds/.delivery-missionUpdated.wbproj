@@ -15,5 +15,9 @@ renderingDevicePerspectives: PR2:l_forearm_cam_sensor;0;1;0;0
 renderingDevicePerspectives: PR2:r_forearm_cam_sensor;0;1;0;0
 renderingDevicePerspectives: PR2:wide_stereo_l_stereo_camera_sensor;0;1;0;0
 renderingDevicePerspectives: PR2:wide_stereo_r_stereo_camera_sensor;0;1;0;0
-renderingDevicePerspectives: SurveyorSrv1:camera;1;1;0;0
 renderingDevicePerspectives: op2:Camera;1;0.266667;0;0
+renderingDevicePerspectives: pr2TheSecond:high_def_sensor;0;1.35784;0;0
+renderingDevicePerspectives: pr2TheSecond:l_forearm_cam_sensor;0;1;0;0
+renderingDevicePerspectives: pr2TheSecond:r_forearm_cam_sensor;0;1;0;0
+renderingDevicePerspectives: pr2TheSecond:wide_stereo_l_stereo_camera_sensor;0;1;0;0
+renderingDevicePerspectives: pr2TheSecond:wide_stereo_r_stereo_camera_sensor;0;1;0;0

@@ -10,7 +10,7 @@
     },
     {
       "name": "keyword.control.robot-generator",
-      "match": "\\b(addRobot|bb8|Hello|mavic2pro|moose|op2|person|removeRobot)\\b"
+      "match": "\\b(addRobot|bb8|Hello|mavic2pro|moose|op2|person|pr2|removeRobot)\\b"
     },
     {
       "name": "string.quoted.double.robot-generator",

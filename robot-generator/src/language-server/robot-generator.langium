@@ -20,7 +20,7 @@ Greeting:
 // ;
 
 RobotType:
-    value = ("moose" | "mavic2pro" | "op2" | "bb8")
+    value = ("moose" | "mavic2pro" | "op2" | "bb8" | "pr2")
 ;
 
 PositionValue:

@@ -1,1 +1,1 @@
-addRobot(moose, "Stig2", 3, 3);
+addRobot(pr2, "pr2TheSecond", 3, 3);

@@ -91,7 +91,7 @@ export function isRobotName(item: unknown): item is RobotName {
 
 export interface RobotType extends AstNode {
     readonly $container: DslCommand;
-    value: 'bb8' | 'mavic2pro' | 'moose' | 'op2'
+    value: 'bb8' | 'mavic2pro' | 'moose' | 'op2' | 'pr2'
 }
 
 export const RobotType = 'RobotType';

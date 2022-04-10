@@ -159,6 +159,10 @@ const RobotGeneratorGrammar = () => loadedRobotGeneratorGrammar || (loadedRobotG
             {
               "$type": "Keyword",
               "value": "bb8"
+            },
+            {
+              "$type": "Keyword",
+              "value": "pr2"
             }
           ]
         },

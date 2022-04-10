@@ -44,7 +44,8 @@ class UpdateChecker:
             "moose": "Moose",
             "mavic2pro": "Mavic2Pro",
             "op2": "RobotisOp2",
-            "bb8": "BB-8"
+            "bb8": "BB-8",
+            "pr2": "Pr2"
         }
 
     # def read_template(self, robotType):

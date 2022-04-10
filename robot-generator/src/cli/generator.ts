@@ -50,7 +50,7 @@ export function generateController(dslCommand: DslCommand, filePath: string, des
     const data = extractDestinationAndName(filePath, destination);
     // const generatedFilePath = `${path.join(data.destination, data.name)}.js`;
     // const generatedFilePath = `${path.join(data.destination, data.name)}.py`;
-    const generatedFilePath = `${path.join(data.destination, `${dslCommand.robotName.name}_`)}.py`;
+    const generatedFilePath = `${path.join(data.destination, `${dslCommand.robotName.name}_controller`)}.py`;
 
     const fileNode = new CompositeGeneratorNode();
 

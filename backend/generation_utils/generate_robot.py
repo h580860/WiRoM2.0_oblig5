@@ -19,7 +19,9 @@ class GenerateRobot:
         self.robot_type_capital_lookup = {
             "moose": "Moose",
             "mavic2pro": "Mavic2Pro",
-            "op2": "RobotisOp2"
+            "op2": "RobotisOp2",
+            "bb8": "BB-8",
+            "pr2": "Pr2"
         }
         # self.robot_type_capital = f"{self.robot_type[0].upper()}{self.robot_type[1:]}"
         self.robot_type_capital = self.robot_type_capital_lookup[self.robot_type]
@@ -27,21 +29,26 @@ class GenerateRobot:
         self.json_reader_writer = json_reader_writer()
         self.robot_template = self.read_template()
         self.configpath = pathlib.Path.cwd().parent / 'config.json'
-        self.datapath = pathlib.Path.cwd().parent.parent / 'web_interface' / 'src' / 'data.json'
+        self.datapath = pathlib.Path.cwd().parent.parent / 'web_interface' / \
+            'src' / 'data.json'
         self.new_positions = []
-        self.config_content = self.json_reader_writer.read_json(self.configpath)
+        self.config_content = self.json_reader_writer.read_json(
+            self.configpath)
         self.robot_count = self.count_robot(self.config_content["robots"])
         self.new_robot_number = self.robot_count + 1
-        self.new_port_number = self.find_next_port_number(self.config_content["robots"])
+        self.new_port_number = self.find_next_port_number(
+            self.config_content["robots"])
         self.new_robot_name = f"{self.robot_type}{self.new_robot_number}"
         self.new_robot_controller_name = f"{self.robot_type}_controller{self.new_robot_number}"
         # self.new_dir_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller{self.new_robot_number}'
-        self.new_dir_filepath = pathlib.Path.cwd().parent / 'controllers' / self.new_robot_controller_name
-        self.next_port_number = self.find_next_port_number(self.config_content["robots"])
-        self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / 'routing_keys_lookup.json'
-        self.save_file = pathlib.Path.cwd().parent / 'generation_utils' / 'configurations_savefile.txt'
-
-
+        self.new_dir_filepath = pathlib.Path.cwd().parent / 'controllers' / \
+            self.new_robot_controller_name
+        self.next_port_number = self.find_next_port_number(
+            self.config_content["robots"])
+        self.routing_key_lookup_filepath = pathlib.Path.cwd().parent / \
+            'routing_keys_lookup.json'
+        self.save_file = pathlib.Path.cwd().parent / 'generation_utils' / \
+            'configurations_savefile.txt'
 
     def read_template(self):
         template = self.json_reader_writer.read_json(
@@ -53,7 +60,8 @@ class GenerateRobot:
         new_robot_node = self.robot_template["webots_world"][self.robot_type_capital]
 
         self.map_reader.read_file()
-        all_robots = self.map_reader.get_all_of_robot_type(self.robot_type_capital)
+        all_robots = self.map_reader.get_all_of_robot_type(
+            self.robot_type_capital)
         all_translations = []
 
         # The lowest transformation we are looking for will depend on which robot type we have
@@ -92,7 +100,8 @@ class GenerateRobot:
         new_robot_node["controller"] = f"\"{self.new_robot_controller_name}\""
         new_robot_node = {f"{self.robot_type_capital}": new_robot_node}
 
-        new_file_content = self.map_reader.transform_from_json_to_world(new_robot_node)
+        new_file_content = self.map_reader.transform_from_json_to_world(
+            new_robot_node)
         self.map_reader.append_to_world_file(new_file_content)
 
     def get_translation(self, node):
@@ -105,7 +114,8 @@ class GenerateRobot:
 
         robot_config_from_template = self.robot_template["config"][self.robot_type]
         if not self.new_positions:
-            print("Haven't fetched the positions from the world file yet. Setting them to default 0, 0")
+            print(
+                "Haven't fetched the positions from the world file yet. Setting them to default 0, 0")
             new_x, new_y = 0, 0
         else:
             new_x = self.new_positions[0]
@@ -130,7 +140,8 @@ class GenerateRobot:
         self.config_content["robots"][key_name] = robot_config_from_template
         # Print it to output file
         # self.json_reader_writer.write_json("test_config.json", json.dumps(config_content, indent=2))
-        self.json_reader_writer.write_json(self.configpath, json.dumps(self.config_content, indent=2))
+        self.json_reader_writer.write_json(
+            self.configpath, json.dumps(self.config_content, indent=2))
 
     def add_robot_to_data(self):
         data_content = self.json_reader_writer.read_json(self.datapath)
@@ -173,7 +184,8 @@ class GenerateRobot:
         data_content["missions"]["Testmission"]["tasks"].append(new_mission)
 
         # self.json_reader_writer.write_json("test_data.json", json.dumps(data_content, indent=4))
-        self.json_reader_writer.write_json(self.datapath, json.dumps(data_content, indent=4))
+        self.json_reader_writer.write_json(
+            self.datapath, json.dumps(data_content, indent=4))
 
     def find_next_port_number(self, content):
         '''
@@ -201,7 +213,9 @@ class GenerateRobot:
         os.mkdir(self.new_dir_filepath)
 
         new_simpleactions_filename = f'{self.robot_type}_simpleactions{self.new_robot_number}.py'
-        source_filepath = pathlib.Path.cwd().parent / 'controllers' / f'{self.robot_type}_controller' / f'{self.robot_type}_simpleactions.py'
+        source_filepath = pathlib.Path.cwd().parent / 'controllers' / \
+            f'{self.robot_type}_controller' / \
+            f'{self.robot_type}_simpleactions.py'
 
         destination_filepath = self.new_dir_filepath / new_simpleactions_filename
         shutil.copy(source_filepath, destination_filepath)
@@ -209,12 +223,15 @@ class GenerateRobot:
         with open(self.new_dir_filepath / f'{self.robot_type}_controller{self.new_robot_number}.py', 'w') as writer:
             # remove .py
             writer.write(f"from {new_simpleactions_filename[:-3]} import *\n")
-            writer.write(f"init({self.next_port_number}, \"{self.new_robot_name}\")\n")
+            writer.write(
+                f"init({self.next_port_number}, \"{self.new_robot_name}\")\n")
 
         # Update the routing key lookup table
-        routing_keys = self.json_reader_writer.read_json(self.routing_key_lookup_filepath)
+        routing_keys = self.json_reader_writer.read_json(
+            self.routing_key_lookup_filepath)
         routing_keys[self.next_port_number] = f'{self.new_robot_name}_queue'
-        self.json_reader_writer.write_json(self.routing_key_lookup_filepath, json.dumps(routing_keys, indent=4))
+        self.json_reader_writer.write_json(
+            self.routing_key_lookup_filepath, json.dumps(routing_keys, indent=4))
 
         # Save the configurations
         with open(self.save_file, 'a') as file_appender:
@@ -230,21 +247,28 @@ class GenerateRobot:
 
         # Reset the world file
         # reset_map_reader = WbtJsonParser(filepath='default_templates/delivery-missionUpdatedTemplate.wbt')
-        reset_world_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
-        reset_world_destination_filepath = pathlib.Path.cwd().parent / 'worlds' / 'delivery-missionUpdated.wbt'
-        shutil.copy(reset_world_source_filepath, reset_world_destination_filepath)
+        reset_world_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / \
+            'default_templates' / 'delivery-missionUpdatedTemplate.wbt'
+        reset_world_destination_filepath = pathlib.Path.cwd().parent / 'worlds' / \
+            'delivery-missionUpdated.wbt'
+        shutil.copy(reset_world_source_filepath,
+                    reset_world_destination_filepath)
         print("world reset finished")
 
         # Reset the config file
-        reset_config_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_config.json'
+        reset_config_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / \
+            'default_templates' / 'default_config.json'
         reset_config_destination_filepath = self.configpath
-        shutil.copy(reset_config_source_filepath, reset_config_destination_filepath)
+        shutil.copy(reset_config_source_filepath,
+                    reset_config_destination_filepath)
         print("config reset finished")
 
         # Reset the data file
-        reset_data_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / 'default_templates' / 'default_data.json'
+        reset_data_source_filepath = pathlib.Path.cwd().parent / 'generation_utils' / \
+            'default_templates' / 'default_data.json'
         reset_data_destination_filepath = self.datapath
-        shutil.copy(reset_data_source_filepath, reset_data_destination_filepath)
+        shutil.copy(reset_data_source_filepath,
+                    reset_data_destination_filepath)
         print("config reset finished")
 
         # Reset the routing_keys_lookup file
@@ -260,7 +284,8 @@ class GenerateRobot:
                 save_file_content = reader.readlines()
             # Delete the controllers
             for controller in save_file_content:
-                current_controller_filepath = pathlib.Path.cwd().parent / 'controllers' / controller.strip()
+                current_controller_filepath = pathlib.Path.cwd().parent / 'controllers' / \
+                    controller.strip()
                 if current_controller_filepath.is_dir():
                     shutil.rmtree(current_controller_filepath)
                     print(f'Deleted directory: {current_controller_filepath}')
@@ -272,9 +297,11 @@ class GenerateRobot:
 
         # Delete controllers created by the DSL generator
         added_robots_filepath = pathlib.Path.cwd() / "added_robots.json"
-        added_robots_file = self.json_reader_writer.read_json(added_robots_filepath)
+        added_robots_file = self.json_reader_writer.read_json(
+            added_robots_filepath)
         for robot in added_robots_file["previouslyAddedRobots"]:
-            current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / f"{robot}_controller"
+            current_controller_filepath = pathlib.Path.cwd().parent / "controllers" / \
+                f"{robot}_controller"
 
             if current_controller_filepath.is_dir():
                 shutil.rmtree(current_controller_filepath)
@@ -283,7 +310,8 @@ class GenerateRobot:
                 print(f"No controller in {current_controller_filepath}")
 
         added_robots_file["previouslyAddedRobots"] = []
-        self.json_reader_writer.write_json(added_robots_filepath, json.dumps(added_robots_file))
+        self.json_reader_writer.write_json(
+            added_robots_filepath, json.dumps(added_robots_file))
 
         print(f'Finished reset')
 

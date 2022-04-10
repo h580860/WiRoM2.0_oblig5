@@ -158,6 +158,10 @@ export const RobotGeneratorGrammar = (): Grammar => loadedRobotGeneratorGrammar 
             {
               "$type": "Keyword",
               "value": "bb8"
+            },
+            {
+              "$type": "Keyword",
+              "value": "pr2"
             }
           ]
         },

@@ -1,0 +1,43 @@
+{
+    "webots_world": {
+        "filename": "delivery-missionUpdated.wbt",
+        "Pr2": {
+            "translation": "407.852 -0.787076 -404.987",
+            "rotation": "-3.3891510791584073e-09 0.7068252250641434 0.7073882252434113 3.14159",
+            "controller": "\"void\""
+        }
+    },
+    "config": {
+        "pr2": {
+            "language": "python",
+            "location": {
+                "x": 408.852,
+                "y": -404
+            },
+            "port": "5012",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "quality": 0.975,
+                    "cost": 0.1
+                }
+            ]
+        }
+    },
+    "data": {
+        "pr2": {
+            "language": "python",
+            "port": "5012",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                }
+            ]
+        }
+    }
+}
