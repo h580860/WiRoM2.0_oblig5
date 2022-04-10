@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.05753117580182639 -0.9944696391790451 -0.08786524092016836 4.2959517449396545
-  position 433.64721507710294 5.699199901059388 -417.7802602505707
+  orientation 0.08006650016983409 -0.9851263406255693 -0.15203765506028005 4.098725257128941
+  position 423.7167294715717 6.289076306521882 -415.4042450836579
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -70,24 +70,6 @@ SolidBox {
     }
     roughness 0.5
     metalness 0
-  }
-}
-SolidBox {
-  translation 408.973 0.32117 -398.768
-  name "CarryBox1"
-  size 1 0.5 1
-  appearance PBRAppearance {
-    baseColorMap ImageTexture {
-      url [
-        "https://raw.githubusercontent.com/cyberbotics/webots/R2021b/projects/default/worlds/textures/wood.jpg"
-      ]
-    }
-    roughness 0.5
-    metalness 0
-  }
-  physics Physics {
-    density -1
-    mass 2
   }
 }
 AdvertisingBoard {
@@ -197,6 +179,11 @@ AdvertisingBoard {
   poleHeight 3
   poleThickness 0.2
 }
+Pr2 {
+  translation 407.852 -0.78778 -404.107
+  rotation -3.3891510791584073e-09 0.7068252250641434 0.7073882252434113 3.14159
+  controller "test_pr2_controller"
+}
 Pedestrian {
   translation 387.56 0.59 -364.59
 }
@@ -213,57 +200,4 @@ SpeedLimitSign {
   translation 408.231 -0.71 -395.966
   rotation 0 1 0 -1.5708003061004252
   name "DEFAULT_TRANSLATION"
-}
-Mavic2Pro {
-  translation 407.939 0.127252 -401.225
-  rotation -3.3905113482557537e-09 0.707108281185553 0.70710528118436 3.14159
-  controller "mavic2pro_controller"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-  ]
-  cameraSlot [
-    Camera {
-      rotation 1 0 0 -0.13090030610042527
-      rotationStep 0.261812
-      recognitionColors [
-        0 0 0
-      ]
-      width 400
-      height 240
-      recognition Recognition {
-        maxRange 5
-      }
-    }
-  ]
-}
-Moose {
-  translation 408.503 -0.37 -398.745
-  rotation 0 1 0 3.14
-  controller "moose_controller"
-  bodySlot [
-    Compass {
-      rotation 1 0 0 1.5708
-    }
-    GPS {
-      rotation 1 0 0 1.5708
-    }
-  ]
-}
-RobotisOp2 {
-  translation 408.184 0.28 -402
-  rotation 1.0406396779735382e-06 0.7071077811851482 0.7071057811857672 3.14159
-  name "op2"
-  controller "op2_controller"
-}
-BB-8 {
-  translation 408 -0.81 -403.52
-  rotation 0 1 0 -1.5707953071795862
-  controller "bb8_controller"
-}
-Pr2 {
-  translation 407.852 -0.787076 -404.987
-  rotation -3.3891510791584073e-09 0.7068252250641434 0.7073882252434113 3.14159
-  controller "pr2_controller"
 }
