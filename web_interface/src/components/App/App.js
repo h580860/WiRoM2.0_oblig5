@@ -9,7 +9,8 @@ import NewTask from '../NewTask/NewTask'
 import MissionTimeline from '../MissionTimeline/MissionTimeline'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { Button, Form, Dropdown, Container, Col, Row } from 'react-bootstrap';
+import { Button, Form, Dropdown, Container, Col, Row, Toast, ListGroup } from 'react-bootstrap';
+import Editor from "@monaco-editor/react";
 
 //Toggle used by the Dropdown component when searching for simpleactions
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -67,7 +68,11 @@ class App extends Component {
     missions: data.missions,
     currentMission: data.defaultCurrentMission,
     graphData: { nodes: [{ id: "robot" }], links: [] },
-    showTimeline: false
+    showTimeline: false,
+    showEditor: false,
+    editorContent: "",
+    showEditorToast: false,
+    editorToastBody: [],
   }
 
   componentDidMount() {
@@ -302,6 +307,41 @@ class App extends Component {
     event.preventDefault();
   }
 
+  handleEditorClick = event => {
+    // let response = sendDslEditorContent(this.state)
+    this.setState({ showEditor: !this.state.showEditor })
+
+  }
+
+  handleEditorChange = (value, event) => {
+    this.setState({ editorContent: value })
+  }
+
+  handleSendEditorContentClick = event => {
+    let response = sendDslEditorContent(this.state);
+    response
+      .then(res => {
+        console.log(res.output);
+        this.toggleShowEditorToast();
+        this.setState({ editorToastBody: res.output });
+      })
+    // TODO stopped here, perhaps implement it the same way as handleSubmitTaskAllocaiton()?
+  }
+
+  handleDeleteGeneratedRobots = event => {
+    let response = deleteGeneratedRobots()
+    response
+      .then(res => {
+        console.log(res.output);
+        this.toggleShowEditorToast();
+        this.setState({ editorToastBody: res.output });
+      })
+  }
+
+  toggleShowEditorToast = () => {
+    this.setState({ showEditorToast: !this.state.showEditorToast });
+  }
+
   //render function for the app, upper layer which ties together all components
   render() {
     return (
@@ -322,6 +362,7 @@ class App extends Component {
                     handleAddNewMission={(missionName) => this.handleAddNewMission(missionName)}
                   >
                   </NewMission>
+
                 </Row>
               </div>
 
@@ -366,6 +407,7 @@ class App extends Component {
                       </div>
                   }
                 </Col>
+
               </Row>
 
               <Row >
@@ -379,11 +421,50 @@ class App extends Component {
                   <Button type="submit" variant="outline-dark" onClick={this.handleSubmitTaskAllocation}>
                     Automatic task allocation
                   </Button>
-                  <Button type="submit"variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
+                  <Button type="submit" variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
                     Test CBAA
                   </Button>
                 </Col>
               </Row>
+            </div>
+            <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
+              <div className="shadow p-3 mb-5 bg-white rounded">
+                <Button type="submit" variant="outline-dark" onClick={this.handleEditorClick}>
+                  {!this.state.showEditor ? "Show Editor" : "Hide Editor"}
+                </Button>
+                {this.state.showEditor && <div>
+                  Editor for using the Robot-Generator DSL
+                  <Editor
+                    height="20vh"
+                    // defaultLanguage="javascript"
+                    // defaultValue="// some comment"
+                    onChange={this.handleEditorChange}
+                  />
+                  <Button type="submit" variant="outline-dark" onClick={this.handleSendEditorContentClick}>
+                    Send
+                  </Button>
+                  <Button type="submit" variant="outline-dark" onClick={this.handleDeleteGeneratedRobots}>
+                    Delete generated robots
+                  </Button>
+                </div>}
+                {/* <div style={{ minWidth: '300px' }}> */}
+                <Toast show={this.state.showEditorToast} onClose={this.toggleShowEditorToast}>
+                  <Toast.Header>
+                    <strong className="me-auto">Message(s) from the server:</strong>
+                  </Toast.Header>
+                  <Toast.Body>
+                    <ListGroup variant="flush">
+                      {this.state.editorToastBody.map((elem, idx) =>
+                        <ListGroup.Item>{elem}</ListGroup.Item>
+                      )}
+                    </ListGroup>
+                    {/* {this.state.editorToastBody.forEach(line => (
+                      console.log(line)
+                    ))} */}
+                  </Toast.Body>
+                </Toast>
+                {/* </div> */}
+              </div>
             </div>
           </Col>
 
@@ -393,10 +474,11 @@ class App extends Component {
                 state={this.state}
                 handleRobotClick={(name) => this.handleRobotClick(name)}>
               </Robot>
+
             </div>
           </Col>
         </Row>
-      </Container>
+      </Container >
     );
   }
 }
@@ -465,6 +547,41 @@ function sendMission(state) {
   })
     .then(res => console.log(res))
     .catch(console.log)
+}
+
+function sendDslEditorContent(state) {
+  console.log('Sending DSL Editor Test Data')
+  // let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
+  let res = fetch('http://localhost:5000/robot-generator', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ content: state.editorContent })
+  })
+    .then(res => {
+      console.log(res);
+      return res.json();
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  return res
+}
+
+function deleteGeneratedRobots() {
+  console.log("Deleting generated robots");
+  let res = fetch('http://localhost:5000/deleteGeneratedDSL', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  })
+    .then(res => { return res.json() })
+    .catch(console.log)
+  return res
 }
 
 export default App;

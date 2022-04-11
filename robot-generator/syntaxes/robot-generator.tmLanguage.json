@@ -1,0 +1,57 @@
+{
+  "name": "robot-generator",
+  "scopeName": "source.robot-generator",
+  "fileTypes": [
+    ".robotgenerator"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "name": "keyword.control.robot-generator",
+      "match": "\\b(addRobot|bb8|Hello|mavic2pro|moose|op2|person|pr2|removeRobot)\\b"
+    },
+    {
+      "name": "string.quoted.double.robot-generator",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "string.quoted.single.robot-generator",
+      "begin": "'",
+      "end": "'"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.robot-generator",
+          "begin": "/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.robot-generator"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.robot-generator"
+            }
+          }
+        },
+        {
+          "begin": "//",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.robot-generator"
+            }
+          },
+          "end": "(?=$)",
+          "name": "comment.line.robot-generator"
+        }
+      ]
+    }
+  }
+}

@@ -152,7 +152,7 @@
           "numArgs": 1,
           "type": "move",
           "quality": 0.975,
-          "cost": 0.001
+          "cost": 0.1
         }
       ]
     },
@@ -191,6 +191,44 @@
           "type": "move",
           "quality": 0.9,
           "cost": 0.05
+        }
+      ]
+    },
+    "pr2": {
+      "language": "python",
+      "location": {
+        "x": 408.852,
+        "y": -404
+      },
+      "port": "5012",
+      "simpleactions": [
+        {
+          "name": "go_forward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        },
+        {
+          "name": "go_backward",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        },
+        {
+          "name": "turn_left",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        },
+        {
+          "name": "turn_right",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
         }
       ]
     }
