@@ -165,6 +165,24 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot starts rolling forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling backwards"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
                 }
             ]
         }

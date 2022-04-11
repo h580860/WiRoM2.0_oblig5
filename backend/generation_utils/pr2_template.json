@@ -22,6 +22,27 @@
                     "type": "move",
                     "quality": 0.975,
                     "cost": 0.1
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "quality": 0.975,
+                    "cost": 0.1
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "quality": 0.975,
+                    "cost": 0.1
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "quality": 0.975,
+                    "cost": 0.1
                 }
             ]
         }
@@ -31,6 +52,24 @@
             "language": "python",
             "port": "5012",
             "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling backward"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                },
                 {
                     "name": "go_forward",
                     "numArgs": 1,
