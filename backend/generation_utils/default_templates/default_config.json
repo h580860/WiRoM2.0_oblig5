@@ -229,6 +229,13 @@
           "type": "move",
           "quality": 0.975,
           "cost": 0.1
+        },
+        {
+          "name": "rotate_angle",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
         }
       ]
     }

@@ -183,6 +183,12 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "rotate_angle",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot rotates given an angle [rad]"
                 }
             ]
         }

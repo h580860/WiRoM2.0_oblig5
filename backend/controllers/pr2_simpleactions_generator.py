@@ -1,5 +1,5 @@
 """moose_controller simpleactions."""
-from controller import Robot, Motor
+from controller import Robot, Motor, PositionSensor
 import threading
 import time
 from math import pi
@@ -43,6 +43,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
 
         self.wheel_motors = {}
         self.n_wheel_motors = 8
+        self.wheel_position_sensors = {}
         # Get the wheel devices and initiate the motors
         for i in range(self.n_wheel_motors):
             wheel_name = self.wheel_names[i]
@@ -50,6 +51,12 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
                 self.wheel_device_names[i])
             self.wheel_motors[wheel_name].setPosition(float('inf'))
             self.wheel_motors[wheel_name].setVelocity(0.0)
+            # self.wheel_position_sensors[wheel_name] = self.robot.getPositionSensor()
+            self.wheel_position_sensors[wheel_name] = self.wheel_motors[wheel_name].getPositionSensor(
+            )
+
+            # Enable the sensors as well
+            self.wheel_position_sensors[wheel_name].enable(self.timestep)
 
         self.add_all_simpleactions()
 
@@ -58,6 +65,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.add_available_simpleaction("go_backward", self.go_backward)
         self.add_available_simpleaction("turn_right", self.turn_right)
         self.add_available_simpleaction("turn_left", self.turn_left)
+        self.add_available_simpleaction("rotate_angle", self.rotate_angle)
 
     def initiate_threads(self):
         main = threading.Thread(target=self.pr2_main)
@@ -88,7 +96,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         M_PI_2 = pi / 2
         M_PI_4 = pi / 4
 
-        self.set_rotation_wheel_angles(
+        self.set_rotation_wheels_angles(
             3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
 
         if angle < 0:
@@ -97,10 +105,10 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
             self.set_wheel_speed(-self.max_wheel_speed)
         if duration != 0:
             time.sleep(duration)
-            self.set_rotation_wheel_angles(0.0, 0.0, 0.0, 0.0)
+            self.set_rotation_wheels_angles(0.0, 0.0, 0.0, 0.0)
             self.set_wheel_speed(0.0)
 
-    def set_rotation_wheel_angles(self, front_left, front_right, back_left, back_right):
+    def set_rotation_wheels_angles(self, front_left, front_right, back_left, back_right):
 
         self.rotation_motors[self.rotation_names[0]].setPosition(front_left)
         self.rotation_motors[self.rotation_names[1]].setPosition(front_right)
@@ -131,7 +139,55 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
             time.sleep(duration)
             self.set_wheel_speed(0.0)
 
+    def rotate_angle(self, angle):
+        """
+        Rotate the robot around itself given an angle in radian
+        """
+        angle = float(angle)
+        # pi variables used to calculate the rotations
+        PI = pi
+        M_PI_2 = pi / 2
+        M_PI_4 = pi / 4
+
+        self.set_rotation_wheels_angles(
+            3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
+        self.set_wheel_speed(
+            (self.max_wheel_speed if angle > 0 else -self.max_wheel_speed))
+
+        initial_wheel0_position = self.wheel_position_sensors[self.wheel_names[0]].getValue(
+        )
+        expected_travel_distance = abs(
+            angle * 0.5 * self.wheels_distance + self.sub_wheels_distance)
+
+        while True:
+            wheel0_position = self.wheel_position_sensors[self.wheel_names[0]].getValue(
+            )
+            wheel0_travel_distance = abs(
+                self.wheel_radius * (wheel0_position - initial_wheel0_position))
+
+            if wheel0_travel_distance > expected_travel_distance:
+                break
+
+            # Reduce the speed before reaching the target
+            if expected_travel_distance - wheel0_travel_distance < 0.025:
+                self.set_wheel_speed(0.1 * self.max_wheel_speed)
+
+            # self.step()
+
+        # Reset the wheels
+        self.set_rotation_wheels_angles(0.0, 0.0, 0.0, 0.0)
+        self.set_wheel_speed(0.0)
+        print("done rotating")
+
+    def step(self):
+        """
+        This particular robot type needs its own step method
+        """
+        return self.robot.step(self.timestep) != -1
+
     def pr2_main(self):
         step_count = 0
-        while self.robot.step(self.timestep) != -1:
+        # while self.robot.step(self.timestep) != -1:
+        while self.step():
             step_count += 1
+            # print(f"{self.robot_name} step count = {step_count}")
