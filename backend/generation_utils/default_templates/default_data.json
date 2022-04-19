@@ -189,6 +189,24 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot rotates given an angle [rad]"
+                },
+                {
+                    "name": "extend_arms",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot extend its arms, enabling it to grab something"
+                },
+                {
+                    "name": "retract_arms",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot retracts its arms"
+                },
+                {
+                    "name": "grab_box",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot grabs a box in front of it"
                 }
             ]
         }

@@ -236,6 +236,27 @@
           "type": "move",
           "quality": 0.975,
           "cost": 0.1
+        },
+        {
+          "name": "extend_arms",
+          "numArgs": 0,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        },
+        {
+          "name": "retract_arms",
+          "numArgs": 0,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
+        },
+        {
+          "name": "grab_box",
+          "numArgs": 0,
+          "type": "move",
+          "quality": 0.975,
+          "cost": 0.1
         }
       ]
     }

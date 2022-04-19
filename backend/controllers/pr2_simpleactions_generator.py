@@ -21,6 +21,11 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.sub_wheels_distance = 0.098
         self.wheel_radius = 0.08             # wheel radius
 
+        # Math variables
+        self.PI = pi
+        self.M_PI_2 = pi / 2
+        self.M_PI_4 = pi / 4
+
         # list of device names
         self.wheel_names = ["FLL_WHEEL", "FLR_WHEEL", "FRL_WHEEL",
                             "FRR_WHEEL", "BLL_WHEEL", "BLR_WHEEL", "BRL_WHEEL", "BRR_WHEEL"]
@@ -32,6 +37,25 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.rotation_device_names = [
             "fl_caster_rotation_joint", "fr_caster_rotation_joint", "bl_caster_rotation_joint", "br_caster_rotation_joint"]
 
+        self.arm_motor_names = [
+            "SHOULDER_ROLL", "SHOULDER_LIFT", "UPPER_ARM_ROLL", "ELBOW_LIFT", "WRIST_ROLL"]
+
+        # These names originally starts with either an l or an r, depending on if it's the left or the right arm
+        self.arm_motor_device_names = ["_shoulder_pan_joint", "_shoulder_lift_joint",
+                                       "_upper_arm_roll_joint", "_elbow_flex_joint", "_wrist_roll_joint"]
+
+        self.left_arm_motors = {}
+        self.left_arm_sensors = {}
+        self.right_arm_motors = {}
+        self.n_arm_motor_names = 5
+        # Initiate the arm motors
+        for i in range(self.n_arm_motor_names):
+            name = self.arm_motor_names[i]
+            self.left_arm_motors[name] = self.robot.getDevice(
+                "l" + self.arm_motor_device_names[i])
+            self.right_arm_motors[name] = self.robot.getDevice(
+                "r" + self.arm_motor_device_names[i])
+
         self.rotation_motors = {}
         self.n_rotation_motors = 4
         # Get all the rotation devices and initiate the motors
@@ -40,6 +64,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
             self.rotation_motors[rotation_name] = self.robot.getDevice(
                 self.rotation_device_names[i])
             # self.rotation_motors[rotation_name]
+            # TODO set the rotation motors position to float(inf)?
 
         self.wheel_motors = {}
         self.n_wheel_motors = 8
@@ -58,6 +83,22 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
             # Enable the sensors as well
             self.wheel_position_sensors[wheel_name].enable(self.timestep)
 
+        # Initiate the torso motor
+        self.torso_motor = self.robot.getDevice("torso_lift_joint")
+        self.torso_motor.setPosition(float('inf'))
+
+        # Get the forearm motors and initiate them
+        self.left_forearm_motor = self.robot.getDevice("l_forearm_roll_joint")
+        self.right_forearm_motor = self.robot.getDevice("r_forearm_roll_joint")
+
+        # Arm positions
+        self.initial_arm_position = (0.0, 1.35, 0.0, -2.2, 0.0)
+        self.extended_arm_positions = (0.0, 0.5, 0.0, -0.5, 0.0)
+        self.left_open_grab_arm_positions = (0.25, 0.5, -1.0, -0.5, 0.0)
+        self.right_open_grab_arm_positions = (-0.25, 0.5, -1.0, -0.5, 0.0)
+        self.left_closed_grab_arm_positions = (0.0, 0.5, -1.0, -1.0, 0.0)
+        self.right_closed_grab_arm_positions = (0.0, 0.5, -1.0, -1.0, 0.0)
+
         self.add_all_simpleactions()
 
     def add_all_simpleactions(self):
@@ -66,6 +107,9 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.add_available_simpleaction("turn_right", self.turn_right)
         self.add_available_simpleaction("turn_left", self.turn_left)
         self.add_available_simpleaction("rotate_angle", self.rotate_angle)
+        self.add_available_simpleaction("extend_arms", self.extend_arms)
+        self.add_available_simpleaction("retract_arms", self.retract_arms)
+        self.add_available_simpleaction("grab_box", self.grab_box)
 
     def initiate_threads(self):
         main = threading.Thread(target=self.pr2_main)
@@ -76,6 +120,32 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         main.start()
         communication.start()
         # communication.start()
+
+    def set_initial_position(self):
+        self.set_left_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
+        self.set_right_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
+
+        self.set_torso_height(0.2)
+
+    def set_left_arm_position(self, shoulder_roll, shoulder_lift, upper_arm_roll, elbow_lift, wrist_roll):
+        self.left_arm_motors[self.arm_motor_names[0]
+                             ].setPosition(shoulder_roll)
+        self.left_arm_motors[self.arm_motor_names[1]
+                             ].setPosition(shoulder_lift)
+        self.left_arm_motors[self.arm_motor_names[2]
+                             ].setPosition(upper_arm_roll)
+        self.left_arm_motors[self.arm_motor_names[3]].setPosition(elbow_lift)
+        self.left_arm_motors[self.arm_motor_names[4]].setPosition(wrist_roll)
+
+    def set_right_arm_position(self, shoulder_roll, shoulder_lift, upper_arm_roll, elbow_lift, wrist_roll):
+        self.right_arm_motors[self.arm_motor_names[0]
+                              ].setPosition(shoulder_roll)
+        self.right_arm_motors[self.arm_motor_names[1]
+                              ].setPosition(shoulder_lift)
+        self.right_arm_motors[self.arm_motor_names[2]
+                              ].setPosition(upper_arm_roll)
+        self.right_arm_motors[self.arm_motor_names[3]].setPosition(elbow_lift)
+        self.right_arm_motors[self.arm_motor_names[4]].setPosition(wrist_roll)
 
     def go_forward(self, duration):
         self.set_wheel_speed(self.max_wheel_speed)
@@ -92,12 +162,9 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
 
     def rotate(self, angle, duration):
         # pi variables used to calculate the rotations
-        PI = pi
-        M_PI_2 = pi / 2
-        M_PI_4 = pi / 4
 
         self.set_rotation_wheels_angles(
-            3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
+            3.0 * self.M_PI_4, self.M_PI_4, -3.0 * self.M_PI_4, -self.M_PI_4)
 
         if angle < 0:
             self.set_wheel_speed(self.max_wheel_speed)
@@ -139,18 +206,43 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
             time.sleep(duration)
             self.set_wheel_speed(0.0)
 
+    def extend_arms(self):
+        # using * to unpack the tuple argument into separate variables
+        self.set_left_arm_position(*self.extended_arm_positions)
+        self.set_right_arm_position(*self.extended_arm_positions)
+
+    def retract_arms(self):
+        self.set_left_arm_position(*self.initial_arm_position)
+        self.set_right_arm_position(*self.initial_arm_position)
+
+    def grab_box(self):
+        # Extend the arms
+        self.set_left_arm_position(*self.left_open_grab_arm_positions)
+        self.set_right_arm_position(*self.right_open_grab_arm_positions)
+        # self.extend_arms()
+
+        # Rotate the forearms
+        self.left_forearm_motor.setPosition(self.M_PI_2)
+        self.right_forearm_motor.setPosition(-self.M_PI_2)
+
+        # Move slightly forward
+        self.go_forward(2)
+
+        # Grab the box
+        self.set_left_arm_position(*self.left_closed_grab_arm_positions)
+        self.set_right_arm_position(*self.right_closed_grab_arm_positions)
+
+        self.go_backward(5)
+
     def rotate_angle(self, angle):
         """
         Rotate the robot around itself given an angle in radian
         """
         angle = float(angle)
         # pi variables used to calculate the rotations
-        PI = pi
-        M_PI_2 = pi / 2
-        M_PI_4 = pi / 4
 
         self.set_rotation_wheels_angles(
-            3.0 * M_PI_4, M_PI_4, -3.0 * M_PI_4, -M_PI_4)
+            3.0 * self.M_PI_4, self.M_PI_4, -3.0 * self.M_PI_4, -self.M_PI_4)
         self.set_wheel_speed(
             (self.max_wheel_speed if angle > 0 else -self.max_wheel_speed))
 
@@ -179,6 +271,9 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.set_wheel_speed(0.0)
         print("done rotating")
 
+    def set_torso_height(self, height):
+        self.torso_motor.setPosition(height)
+
     def step(self):
         """
         This particular robot type needs its own step method
@@ -187,6 +282,9 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
 
     def pr2_main(self):
         step_count = 0
+
+        self.set_initial_position()
+
         # while self.robot.step(self.timestep) != -1:
         while self.step():
             step_count += 1
