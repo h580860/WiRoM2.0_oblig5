@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { Button, Form, Dropdown, Container, Col, Row, Toast, ListGroup } from 'react-bootstrap';
 import Editor from "@monaco-editor/react";
+import algorithmEditorTemplateFile from '../EditorTemplates/algorithmEditorTemplate.txt';
 
 //Toggle used by the Dropdown component when searching for simpleactions
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -69,15 +70,31 @@ class App extends Component {
     currentMission: data.defaultCurrentMission,
     graphData: { nodes: [{ id: "robot" }], links: [] },
     showTimeline: false,
-    showEditor: false,
+    showEditor: false,  // The DSL editor
     editorContent: "",
     showEditorToast: false,
     editorToastBody: [],
+    showAlgorithmEditor: false,    // Editor for adding new task allocation algorithm
+    addedTaskAllocationAlgorithms: [],
+    algorithmEditorContent: "",
+    algorithmEditorTemplate: "",
   }
 
   componentDidMount() {
     this.handleMissionChange()
     this.handleAvailableSimpleactionsChange()
+    // Read the template for the default value of the algorithm editor
+    this.readTemplate(algorithmEditorTemplateFile);
+  }
+
+  readTemplate = (filename) => {
+    fetch(filename)
+      .then(r => r.text()
+        .then(text => {
+          console.log("Text from template: ", text)
+          this.setState({ algorithmEditorTemplate: text });
+        })
+      );
   }
 
   //Create new current mission, called everytime the missions changes in the ui
@@ -290,6 +307,7 @@ class App extends Component {
     event.preventDefault();
   }
   handleCBAATaskAllocation = event => {
+    console.log("Clicked handleCBAATaskAllocation")
     let response = sendCBAAInitiation(this.state);
     response
       .then(res => {
@@ -316,6 +334,9 @@ class App extends Component {
   handleEditorChange = (value, event) => {
     this.setState({ editorContent: value })
   }
+  handleAlgorithmEditorChange = (value, event) => {
+    this.setState({ algorithmEditorContent: value })
+  }
 
   handleSendEditorContentClick = event => {
     let response = sendDslEditorContent(this.state);
@@ -340,6 +361,11 @@ class App extends Component {
 
   toggleShowEditorToast = () => {
     this.setState({ showEditorToast: !this.state.showEditorToast });
+  }
+
+  toggleShowAlgorithmEditor = () => {
+    console.log(this.state.algorithmEditorTemplate)
+    this.setState({ showAlgorithmEditor: !this.state.showAlgorithmEditor });
   }
 
   //render function for the app, upper layer which ties together all components
@@ -422,11 +448,37 @@ class App extends Component {
                     Automatic task allocation
                   </Button>
                   <Button type="submit" variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
-                    Test CBAA
+                    CBAA
+                  </Button>
+                  {this.state.addedTaskAllocationAlgorithms.map((elem, idx) => (
+                    <Button type="submit" variant="outline-dark" key={idx}>
+                      {elem.name}
+                    </Button>
+                  ))}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button style={{ marginTop: "10px" }} type="submit" variant="outline-dark" onClick={this.toggleShowAlgorithmEditor}>
+                    {!this.state.showAlgorithmEditor ? "Show Algorithm Editor" : "Hide Alorithm Editor"}
                   </Button>
                 </Col>
               </Row>
             </div>
+            {this.state.showAlgorithmEditor && <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
+              <div className="shadow p-3 mb-5 bg-white rounded">
+                Editor for creating adding a custom task allocation algorithm
+                <Editor
+                  height="20vh"
+                  defaultLanguage="python"
+                  //defaultValue="# some comment"
+                  defaultValue={this.state.algorithmEditorTemplate}
+                  onChange={this.handleAlgorithmEditorChange}
+                />
+              </div>
+
+            </div>
+            }
             <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
               <div className="shadow p-3 mb-5 bg-white rounded">
                 <Button type="submit" variant="outline-dark" onClick={this.handleEditorClick}>
@@ -437,7 +489,7 @@ class App extends Component {
                   <Editor
                     height="20vh"
                     // defaultLanguage="javascript"
-                    // defaultValue="// some comment"
+                    defaultValue="// some comment"
                     onChange={this.handleEditorChange}
                   />
                   <Button type="submit" variant="outline-dark" onClick={this.handleSendEditorContentClick}>
