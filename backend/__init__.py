@@ -10,12 +10,14 @@ import pika
 import sys
 import pathlib
 import pprint
+import importlib
 
 # sys.path.insert(1, pathlib.Path.cwd().parent.__str__())
 # from backend.generation_utils.update_checker import UpdateChecker
 from backend.generation_utils.update_checker import UpdateChecker
 from backend.controllers.message_subscriber import MessageSubscriber
 from backend.generation_utils.dsl_shellcommands import DSLShellCommands
+from backend.new_task_allocation_algorithms import *
 
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
@@ -23,6 +25,10 @@ from backend.generation_utils.dsl_shellcommands import DSLShellCommands
 app = Flask(__name__)
 app.debug = True
 CORS(app)
+
+# A dictionary to keep track of the added algorithm names
+# The keys are the algorithm names, and the values are the corresponding function call
+added_algorithms = {}
 
 
 # The location of the script used to run the DSL code generation
@@ -204,9 +210,11 @@ def receive_mission():
 def receive_tasks_for_allocation():
     # wirom_logger.info("receive_tasks_for_allocation")
     tasks = request.get_json()
-    print(f"tasks:\n{tasks}")
-    for t in tasks:
-        print(t)
+    # print(f"tasks:\n{tasks}")
+    # for t in tasks:
+    #     print(t)
+    print("Tasks received:")
+    pp.pprint(tasks)
     tasks = task_allocation(tasks, robots)
     return jsonify(tasks)
 
@@ -288,6 +296,10 @@ def generate_dsl_code():
     commands = editor_content["content"].split("\n")
     print(f"Received: {editor_content}.\nCommand list = {commands}")
 
+    if len(commands) == 1 and commands[0] == '':
+        print(f"No commands!")
+        return jsonify({"success": True, "output": ["No content sent"]}), 400
+
     # Write the received commands to the proper .robotgenerator file
     # TODO hard coded file location
     file_location = pathlib.Path().parent / "robot-generator" / \
@@ -343,26 +355,55 @@ def ping():
     return 'Pong!'
 
 
-# def test_communication_messages(msg):
-#     # Test. Send 10 messages, with a time interval of 3 seconds between each message
+@app.route('/new-algorithm', methods=['POST'])
+def add_new_algorithm():
+    name = request.get_json()["algorithm_name"]
+    editor_content = request.get_json()["content"]
+    print(f"Algorithm name: {name}")
+    print(f"Editor content:\n{editor_content}")
 
-#     # inititate message communication
-#     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-#     channel = connection.channel()
+    code_lines = editor_content.split("\n")
+    new_filepath = pathlib.Path().parent / "backend" / \
+        "new_task_allocation_algorithms" / f"{name}.py"
+    print(f"newfilepath = {new_filepath}")
+    with open(new_filepath, 'w') as writer:
+        for l in code_lines:
+            writer.write(l + "\n")
 
-#     channel.exchange_declare(exchange='test_exchange', exchange_type='fanout')
+    # TEST call function
+    # source: https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
 
-#     count = 0
-#     while count < 10:
-#         msg = "Test message number " + str(count)
-#         # message = "This is a test message"
-#         channel.basic_publish(exchange='test_exchange', routing_key='', body=msg)
-#         wirom_logger.info("(app) sent message %r" % msg)
-#         print("(app) sent message %r" % msg)
+    # test_filename = "backend/new_task_allocation_algorithms/test"
+    # function_name = "func"
+    # module = __import__(test_filename)
+    # func = getattr(module, function_name)
+    # func()
 
-#         time.sleep(3)
-#         count += 1
-#     connection.close()
+    # Source: https://stackoverflow.com/questions/301134/how-to-import-a-module-given-its-name-as-string
+    # Also source directly from the question at:
+    # https://stackoverflow.com/questions/44492803/python-dynamic-import-how-to-import-from-module-name-from-variable/44492879#44492879
+    # my_module = importlib.import_module(
+    #     "backend.new_task_allocation_algorithms.test")
+    # my_module.func()
+
+    test_module = importlib.import_module(
+        f"backend.new_task_allocation_algorithms.{name}")
+    method_to_call = getattr(test_module, name)
+    added_algorithms[name] = method_to_call
+    # method_to_call()
+    # print(f"added_algorithms dictionary: {added_algorithms}")
+
+    return jsonify({"success": True, "name": name}), 200
+
+
+@app.route('/execute-algorithm', methods=['POST'])
+def execute_new_task_allocation_algorithm():
+    name = request.get_json()["name"]
+    print(f"Server received function name: {name}")
+
+    added_algorithms[name]()
+
+    return jsonify({"success": True, "message": f"Successfully executed the fucntion {name}"}), 200
 
 
 def test_sending_one_message(sequence):

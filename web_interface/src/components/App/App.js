@@ -78,6 +78,7 @@ class App extends Component {
     addedTaskAllocationAlgorithms: [],
     algorithmEditorContent: "",
     algorithmEditorTemplate: "",
+    algorithmEditorFormValue: "",
   }
 
   componentDidMount() {
@@ -85,6 +86,7 @@ class App extends Component {
     this.handleAvailableSimpleactionsChange()
     // Read the template for the default value of the algorithm editor
     this.readTemplate(algorithmEditorTemplateFile);
+    this.setState({ algorithmEditorContent: this.state.algorithmEditorTemplate })
   }
 
   readTemplate = (filename) => {
@@ -306,6 +308,21 @@ class App extends Component {
 
     event.preventDefault();
   }
+
+  handleSubmitNewAlgorithm = event => {
+    // let response = sendNewAlgorithm(this.state);
+    let response = "";
+    response
+      .then(res => {
+        if (res === undefined)
+          throw 'Could not connect to server'
+
+      })
+      .catch(console.log)
+
+    event.preventDefault();
+  }
+
   handleCBAATaskAllocation = event => {
     console.log("Clicked handleCBAATaskAllocation")
     let response = sendCBAAInitiation(this.state);
@@ -349,6 +366,17 @@ class App extends Component {
     // TODO stopped here, perhaps implement it the same way as handleSubmitTaskAllocaiton()?
   }
 
+  handleSendAlgorithmEditorContentClick = event => {
+    let response = sendAlgorithmEditorContent(this.state)
+    response
+      .then(res => {
+        console.log(`res.name=${res.name}`)
+        let new_list = this.state.addedTaskAllocationAlgorithms
+        new_list.push(res.name)
+        this.setState({ addedTaskAllocationAlgorithms: new_list })
+      })
+  }
+
   handleDeleteGeneratedRobots = event => {
     let response = deleteGeneratedRobots()
     response
@@ -366,6 +394,19 @@ class App extends Component {
   toggleShowAlgorithmEditor = () => {
     console.log(this.state.algorithmEditorTemplate)
     this.setState({ showAlgorithmEditor: !this.state.showAlgorithmEditor });
+  }
+
+  handleEditorFormChange = event => {
+    this.setState({ algorithmEditorFormValue: event.target.value })
+  }
+
+  handleExecuteNewAlgorithm = (val) => {
+    console.log(`Wants to execute ${val}`)
+    let response = executeNewAlgorithm(val)
+    response
+      .then(res => {
+        console.log(res.message)
+      });
   }
 
   //render function for the app, upper layer which ties together all components
@@ -451,8 +492,8 @@ class App extends Component {
                     CBAA
                   </Button>
                   {this.state.addedTaskAllocationAlgorithms.map((elem, idx) => (
-                    <Button type="submit" variant="outline-dark" key={idx}>
-                      {elem.name}
+                    <Button type="submit" variant="outline-dark" key={idx} onClick={() => this.handleExecuteNewAlgorithm(elem)}>
+                      {elem}
                     </Button>
                   ))}
                 </Col>
@@ -460,7 +501,7 @@ class App extends Component {
               <Row>
                 <Col>
                   <Button style={{ marginTop: "10px" }} type="submit" variant="outline-dark" onClick={this.toggleShowAlgorithmEditor}>
-                    {!this.state.showAlgorithmEditor ? "Show Algorithm Editor" : "Hide Alorithm Editor"}
+                    {!this.state.showAlgorithmEditor ? "Show Algorithm Editor" : "Hide Algorithm Editor"}
                   </Button>
                 </Col>
               </Row>
@@ -468,6 +509,12 @@ class App extends Component {
             {this.state.showAlgorithmEditor && <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
               <div className="shadow p-3 mb-5 bg-white rounded">
                 Editor for creating adding a custom task allocation algorithm
+                <Form>
+                  <Form.Group className="mb-3" controlId="formFileName">
+                    <Form.Label>Algorithm Name</Form.Label>
+                    <Form.Control placeholder='Enter the algorithm name' onChange={this.handleEditorFormChange} />
+                  </Form.Group>
+                </Form>
                 <Editor
                   height="20vh"
                   defaultLanguage="python"
@@ -475,6 +522,9 @@ class App extends Component {
                   defaultValue={this.state.algorithmEditorTemplate}
                   onChange={this.handleAlgorithmEditorChange}
                 />
+                <Button type="submit" variant="outline-dark" onClick={this.handleSendAlgorithmEditorContentClick}>
+                  Send new task allocation
+                </Button>
               </div>
 
             </div>
@@ -489,7 +539,7 @@ class App extends Component {
                   <Editor
                     height="20vh"
                     // defaultLanguage="javascript"
-                    defaultValue="// some comment"
+                    // defaultValue="// some comment"
                     onChange={this.handleEditorChange}
                   />
                   <Button type="submit" variant="outline-dark" onClick={this.handleSendEditorContentClick}>
@@ -602,7 +652,6 @@ function sendMission(state) {
 }
 
 function sendDslEditorContent(state) {
-  console.log('Sending DSL Editor Test Data')
   // let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
   let res = fetch('http://localhost:5000/robot-generator', {
     method: 'POST',
@@ -622,6 +671,31 @@ function sendDslEditorContent(state) {
   return res
 }
 
+function sendAlgorithmEditorContent(state) {
+  console.log('Sending algorithm editor content:\n', state.algorithmEditorContent);
+  // let testData = { content: "addRobot(moose, \"Stig\", 3, 4);" }
+  let res = fetch('http://localhost:5000/new-algorithm', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+      {
+        algorithm_name: state.algorithmEditorFormValue,
+        content: state.algorithmEditorContent,
+      })
+  })
+    .then(res => {
+      console.log(res);
+      return res.json();
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  return res
+}
+
 function deleteGeneratedRobots() {
   console.log("Deleting generated robots");
   let res = fetch('http://localhost:5000/deleteGeneratedDSL', {
@@ -630,6 +704,24 @@ function deleteGeneratedRobots() {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
+  })
+    .then(res => { return res.json() })
+    .catch(console.log)
+  return res
+}
+
+function executeNewAlgorithm(algorithmName) {
+  console.log(`executing function ${algorithmName}`);
+  let res = fetch('http://localhost:5000/execute-algorithm', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+      {
+        name: algorithmName
+      }),
   })
     .then(res => { return res.json() })
     .catch(console.log)
