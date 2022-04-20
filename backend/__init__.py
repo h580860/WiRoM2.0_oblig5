@@ -18,6 +18,7 @@ from backend.generation_utils.update_checker import UpdateChecker
 from backend.controllers.message_subscriber import MessageSubscriber
 from backend.generation_utils.dsl_shellcommands import DSLShellCommands
 from backend.new_task_allocation_algorithms import *
+from backend.new_task_allocation_algorithms.random_allocation import random_allocation
 
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
@@ -28,7 +29,7 @@ CORS(app)
 
 # A dictionary to keep track of the added algorithm names
 # The keys are the algorithm names, and the values are the corresponding function call
-added_algorithms = {}
+added_algorithms = {"random_allocation": random_allocation}
 
 
 # The location of the script used to run the DSL code generation
@@ -275,6 +276,7 @@ def calculate_utility(robot_simpleaction):
 
 # Sorting bids and allocates tasks to robots based on highest bid
 def allocate_tasks_to_highest_bidder(tasks, bids):
+    print(f"")
     for bid in bids:
         highest_bidder = '--'
         for robot in bids[bid]:
@@ -399,9 +401,10 @@ def add_new_algorithm():
 @app.route('/execute-algorithm', methods=['POST'])
 def execute_new_task_allocation_algorithm():
     name = request.get_json()["name"]
+    tasks = request.get_json()["tasks"]
     print(f"Server received function name: {name}")
 
-    added_algorithms[name]()
+    added_algorithms[name](tasks, robots)
 
     return jsonify({"success": True, "message": f"Successfully executed the fucntion {name}"}), 200
 

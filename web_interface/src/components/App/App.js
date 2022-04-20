@@ -75,7 +75,7 @@ class App extends Component {
     showEditorToast: false,
     editorToastBody: [],
     showAlgorithmEditor: false,    // Editor for adding new task allocation algorithm
-    addedTaskAllocationAlgorithms: [],
+    addedTaskAllocationAlgorithms: ["random_allocation"],
     algorithmEditorContent: "",
     algorithmEditorTemplate: "",
     algorithmEditorFormValue: "",
@@ -309,20 +309,6 @@ class App extends Component {
     event.preventDefault();
   }
 
-  handleSubmitNewAlgorithm = event => {
-    // let response = sendNewAlgorithm(this.state);
-    let response = "";
-    response
-      .then(res => {
-        if (res === undefined)
-          throw 'Could not connect to server'
-
-      })
-      .catch(console.log)
-
-    event.preventDefault();
-  }
-
   handleCBAATaskAllocation = event => {
     console.log("Clicked handleCBAATaskAllocation")
     let response = sendCBAAInitiation(this.state);
@@ -400,13 +386,26 @@ class App extends Component {
     this.setState({ algorithmEditorFormValue: event.target.value })
   }
 
-  handleExecuteNewAlgorithm = (val) => {
+
+  handleExecuteNewAlgorithm = (val, event) => {
     console.log(`Wants to execute ${val}`)
-    let response = executeNewAlgorithm(val)
+    // TODO got here  ons.20 april 17.06. The problem is the undefined event here
+    console.log("Event: ", event);
+    let response = executeNewAlgorithm(val, this.state);
     response
       .then(res => {
-        console.log(res.message)
-      });
+        if (res === undefined)
+          throw 'Could not connect to server'
+        console.log("Received res = ", res)
+        let missions = this.state.missions
+        missions[this.state.selectedMission].tasks = res
+        console.log(res)
+        this.setState({ missions: missions })
+        this.handleMissionChange();
+      })
+      .catch(console.log)
+
+    event.preventDefault();
   }
 
   //render function for the app, upper layer which ties together all components
@@ -687,7 +686,6 @@ function sendAlgorithmEditorContent(state) {
       })
   })
     .then(res => {
-      console.log(res);
       return res.json();
     })
     .catch(err => {
@@ -710,8 +708,10 @@ function deleteGeneratedRobots() {
   return res
 }
 
-function executeNewAlgorithm(algorithmName) {
+function executeNewAlgorithm(algorithmName, state) {
   console.log(`executing function ${algorithmName}`);
+  console.log("tasks:");
+  console.log(state.missions[state.selectedMission].tasks);
   let res = fetch('http://localhost:5000/execute-algorithm', {
     method: 'POST',
     headers: {
@@ -720,7 +720,8 @@ function executeNewAlgorithm(algorithmName) {
     },
     body: JSON.stringify(
       {
-        name: algorithmName
+        name: algorithmName,
+        tasks: state.missions[state.selectedMission].tasks,
       }),
   })
     .then(res => { return res.json() })
