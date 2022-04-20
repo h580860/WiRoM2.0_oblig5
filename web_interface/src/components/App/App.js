@@ -390,13 +390,12 @@ class App extends Component {
   handleExecuteNewAlgorithm = (val, event) => {
     console.log(`Wants to execute ${val}`)
     // TODO got here  ons.20 april 17.06. The problem is the undefined event here
-    console.log("Event: ", event);
+    // console.log("Event: ", event);
     let response = executeNewAlgorithm(val, this.state);
     response
       .then(res => {
         if (res === undefined)
           throw 'Could not connect to server'
-        console.log("Received res = ", res)
         let missions = this.state.missions
         missions[this.state.selectedMission].tasks = res
         console.log(res)
@@ -491,7 +490,7 @@ class App extends Component {
                     CBAA
                   </Button>
                   {this.state.addedTaskAllocationAlgorithms.map((elem, idx) => (
-                    <Button type="submit" variant="outline-dark" key={idx} onClick={() => this.handleExecuteNewAlgorithm(elem)}>
+                    <Button type="submit" variant="outline-dark" key={idx} onClick={(event) => this.handleExecuteNewAlgorithm(elem, event)}>
                       {elem}
                     </Button>
                   ))}

@@ -25,9 +25,28 @@ def random_allocation(tasks, robots):
                 robot_set.remove(assigned_robot)
     print(f"tasks")
     pp.pprint(tasks)
+    return tasks
 
 
 # TODO this function needs to be automatically inserted into each generated file. At least
 # that would make it much easier to implement
+# def valid_task(task, robot_name, robots):
+#     return any([simpleaction["name"] not in robots[robot_name]["simpleactions"] for simpleaction in task["simpleactions"]])
+
 def valid_task(task, robot_name, robots):
-    return any([simpleaction not in robots[robot_name]["simpleactions"] for simpleaction in task["simpleactions"]])
+    """
+    Check if a task is valid for a given robot name
+    Checks every simpleaction in the task to see if the robot is capable of performing this simpleaction
+    """
+    robot_simpleactions = robots[robot_name]["simpleactions"]
+    robot_simpleactions_names = [x["name"] for x in robot_simpleactions]
+    
+    for x in task["simpleactions"]:
+        task_name = x["name"]    
+        if task_name not in robot_simpleactions_names:
+            print(f"{robot_name} CANNOT perform {task_name}")
+            return False
+        else:
+            print(f"{robot_name} can perform {task_name}")
+
+    return True

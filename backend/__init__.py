@@ -403,10 +403,14 @@ def execute_new_task_allocation_algorithm():
     name = request.get_json()["name"]
     tasks = request.get_json()["tasks"]
     print(f"Server received function name: {name}")
+    print(f"Server received tasks:")
+    pp.pprint(tasks)
 
-    added_algorithms[name](tasks, robots)
+    allocated_tasks = added_algorithms[name](tasks, robots)
 
-    return jsonify({"success": True, "message": f"Successfully executed the fucntion {name}"}), 200
+    # return jsonify({"success": True, "message": f"Successfully executed the fucntion {name}"}), 200
+    return jsonify(allocated_tasks)
+
 
 
 def test_sending_one_message(sequence):
