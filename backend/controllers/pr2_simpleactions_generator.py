@@ -255,17 +255,19 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         # self.go_backward(5)
 
     def release_box(self):
+        # Retrieve SHOULDER_ROLL 
+        name = self.arm_motor_names[0]
+        self.left_arm_motors[name].setPosition(0)
+        self.right_arm_motors[name].setPosition(0)
+
+        time.sleep(0.5)
           # Retrieve UPPER_ARM_ROLL
         name = self.arm_motor_names[2]
         self.left_arm_motors[name].setPosition(0)
         self.right_arm_motors[name].setPosition(0)
 
-        time.sleep(1)
 
-        # Retrieve SHOULDER_ROLL 
-        name = self.arm_motor_names[0]
-        self.left_arm_motors[name].setPosition(0)
-        self.right_arm_motors[name].setPosition(0)
+        
 
     def rotate_angle(self, angle):
         """
