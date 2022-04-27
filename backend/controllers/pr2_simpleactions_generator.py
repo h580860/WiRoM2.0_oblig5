@@ -47,7 +47,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.left_arm_motors = {}
         self.left_arm_sensors = {}
         self.right_arm_motors = {}
-        self.n_arm_motor_names = 5
+        self.n_arm_motor_names = len(self.arm_motor_names)
         # Initiate the arm motors
         for i in range(self.n_arm_motor_names):
             name = self.arm_motor_names[i]
@@ -110,6 +110,7 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.add_available_simpleaction("extend_arms", self.extend_arms)
         self.add_available_simpleaction("retract_arms", self.retract_arms)
         self.add_available_simpleaction("grab_box", self.grab_box)
+        self.add_available_simpleaction("release_box", self.release_box)
 
     def initiate_threads(self):
         main = threading.Thread(target=self.pr2_main)
@@ -122,10 +123,13 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         # communication.start()
 
     def set_initial_position(self):
-        self.set_left_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
-        self.set_right_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
+        # self.set_left_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
+        # self.set_right_arm_position(0.0, 1.35, 0.0, -2.2, 0.0)
 
-        self.set_torso_height(0.2)
+        self.set_torso_height(0.3)
+        # self.extend_arms()
+        
+        
 
     def set_left_arm_position(self, shoulder_roll, shoulder_lift, upper_arm_roll, elbow_lift, wrist_roll):
         self.left_arm_motors[self.arm_motor_names[0]
@@ -217,22 +221,51 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
 
     def grab_box(self):
         # Extend the arms
-        self.set_left_arm_position(*self.left_open_grab_arm_positions)
-        self.set_right_arm_position(*self.right_open_grab_arm_positions)
+        # self.set_left_arm_position(*self.left_open_grab_arm_positions)
+        # self.set_right_arm_position(*self.right_open_grab_arm_positions)
         # self.extend_arms()
 
         # Rotate the forearms
-        self.left_forearm_motor.setPosition(self.M_PI_2)
-        self.right_forearm_motor.setPosition(-self.M_PI_2)
+        # self.left_forearm_motor.setPosition(self.M_PI_2)
+        # self.right_forearm_motor.setPosition(-self.M_PI_2)
+        
+       
+
+        # Rotate the upper arm roll
+        # Retrieve UPPER_ARM_ROLL
+        name = self.arm_motor_names[2]
+        self.left_arm_motors[name].setPosition(1.55)
+        self.right_arm_motors[name].setPosition(-1.55)
 
         # Move slightly forward
-        self.go_forward(2)
+        # self.go_forward(2)
+
+        time.sleep(1)
+
+        # Retrieve SHOULDER_ROLL 
+        name = self.arm_motor_names[0]
+        self.left_arm_motors[name].setPosition(-0.15)
+        self.right_arm_motors[name].setPosition(0.15)
 
         # Grab the box
-        self.set_left_arm_position(*self.left_closed_grab_arm_positions)
-        self.set_right_arm_position(*self.right_closed_grab_arm_positions)
+        # self.set_left_arm_position(*self.left_closed_grab_arm_positions)
+        # self.set_right_arm_position(*self.right_closed_grab_arm_positions)
 
-        self.go_backward(5)
+
+        # self.go_backward(5)
+
+    def release_box(self):
+          # Retrieve UPPER_ARM_ROLL
+        name = self.arm_motor_names[2]
+        self.left_arm_motors[name].setPosition(0)
+        self.right_arm_motors[name].setPosition(0)
+
+        time.sleep(1)
+
+        # Retrieve SHOULDER_ROLL 
+        name = self.arm_motor_names[0]
+        self.left_arm_motors[name].setPosition(0)
+        self.right_arm_motors[name].setPosition(0)
 
     def rotate_angle(self, angle):
         """

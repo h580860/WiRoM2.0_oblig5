@@ -207,6 +207,12 @@
                     "numArgs": 0,
                     "type": "move",
                     "information": "Robot grabs a box in front of it"
+                },
+                {
+                    "name": "release_box",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot releases the box"
                 }
             ]
         }
