@@ -213,6 +213,18 @@
                     "numArgs": 0,
                     "type": "move",
                     "information": "Robot releases the box"
+                },
+                {
+                    "name": "set_message_target",
+                    "numArgs": 1,
+                    "type": "set_property",
+                    "information": "Set target of messages from this robot"
+                },
+                {
+                    "name": "send_given_location",
+                    "numArgs": 1,
+                    "type": "notify",
+                    "information": "Send the location [x, y] to the set target"
                 }
             ]
         }

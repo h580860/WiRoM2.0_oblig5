@@ -2,6 +2,8 @@
 from controller import Robot, Motor, PositionSensor
 import threading
 import time
+import json
+import pika
 from math import pi
 from simpleactions_superclass import SimpleactionsSuperclass
 from message_subscriber import MessageSubscriber
@@ -20,6 +22,10 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         # distance between 2 sub wheels of a caster wheel [m]
         self.sub_wheels_distance = 0.098
         self.wheel_radius = 0.08             # wheel radius
+
+        # sending location variables for the PR2
+
+        self.message_recipient = ''
 
         # Math variables
         self.PI = pi
@@ -111,6 +117,8 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.add_available_simpleaction("retract_arms", self.retract_arms)
         self.add_available_simpleaction("grab_box", self.grab_box)
         self.add_available_simpleaction("release_box", self.release_box)
+        self.add_available_simpleaction("set_message_target", self.set_message_target)
+        self.add_available_simpleaction("send_given_location", self.send_given_location)
 
     def initiate_threads(self):
         main = threading.Thread(target=self.pr2_main)
@@ -265,6 +273,22 @@ class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
         name = self.arm_motor_names[2]
         self.left_arm_motors[name].setPosition(0)
         self.right_arm_motors[name].setPosition(0)
+
+    def set_message_target(self, target):
+            print(f"{self.robot_name} is setting {target} as the message target")
+            self.message_recipient = target
+
+    def send_given_location(self, target_location):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
+
+        channel.exchange_declare(exchange='location_exchange', exchange_type='direct')
+
+        # publish the moose message
+        channel.basic_publish(exchange='location_exchange', routing_key=f"{self.message_recipient}_location_queue",
+                              body=json.dumps({"location": [target_location[0], target_location[1]]}))
+        print(f"[{self.robot_name} send location] sent location to {self.message_recipient}")
+        connection.close()
 
 
         
