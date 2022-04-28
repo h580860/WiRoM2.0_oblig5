@@ -24,7 +24,7 @@ class DSLShellCommands:
         # subprocess.run([".", "../../robot-generator/bin/cli"])
         # res = subprocess.run(["./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
         #                      "-d", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        res = subprocess.run(["./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
+        res = subprocess.run(["node", "./robot-generator/bin/cli", "generate", f"{self.filepath}/example/testDsl.robotgenerator",
                              "-d", f"{self.filepath}/example/generated"], capture_output=True, text=True)
 
         # subprocess.run(["./../../robot-generator/bin/cli", "generate",
@@ -39,7 +39,7 @@ class DSLShellCommands:
         # subprocess.run([f"./{self.filepath}/bin/cli", "generate", f"{self.filepath}example/testDsl.robotgenerator"])
 
     def delete_generated_files_command(self):
-        res = subprocess.run(["./robot-generator/bin/cli",
+        res = subprocess.run(["node", "./robot-generator/bin/cli",
                               "delete", f"{self.filepath}/example/generated"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         # subprocess.run(["./../../robot-generator/bin/cli", "delete"])
         print(f"stdout: {res.stdout}")

@@ -10,17 +10,26 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "robot-generator",
-            "aliases": ["RobotGenerator", "robot-generator"],
-            "extensions": [".robotgenerator"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "robot-generator",
-            "scopeName": "source.robot-generator",
-            "path": "./syntaxes/robot-generator.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "robot-generator",
+                "aliases": [
+                    "RobotGenerator",
+                    "robot-generator"
+                ],
+                "extensions": [
+                    ".robotgenerator"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "robot-generator",
+                "scopeName": "source.robot-generator",
+                "path": "./syntaxes/robot-generator.tmLanguage.json"
+            }
+        ]
     },
     "activationEvents": [
         "onLanguage:robot-generator"
