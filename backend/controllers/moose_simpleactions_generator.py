@@ -208,8 +208,8 @@ class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
     #     channel.start_consuming()
     #
     def receive_location_callback(self, ch, method, properties, body):
-        print(f"{self.robot_name} received locations")
-
         new_location = json.loads(body.decode('utf-8'))
+        print(f"{self.robot_name} received locations: {new_location}, type: {type(new_location)}")
+
         # print(f"new location={new_location}, type = {type(new_location)}")
         self.location.append(new_location['location'])

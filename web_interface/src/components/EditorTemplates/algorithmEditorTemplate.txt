@@ -1,0 +1,4 @@
+# This is a comment
+# Enter the algorithm here, on the form
+# def algorithm_name(tasks, robots):
+#   implementation here
