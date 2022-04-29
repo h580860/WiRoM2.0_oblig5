@@ -39,6 +39,20 @@ To run the system, you need to run 3 processes:
 -	The backend Server
 -	Webots simulator
 
+## Setting up the DSL (optional)
+This step is for the users who wish to use the Domain Specific Language to generate new robots, either through the provided editor in the web interface or by using VC Code. \
+Navigate into the *robot-generator* folder:
+```
+cd Wirom2.0/robot-generator
+```
+and run
+```
+npm install
+```
+For a longer walkthrough of the Robot-Generator DSL, see the documentation in *Wirom2.0/Documentation*
+
+
+
 ## Running the web interface 
 Navigate to the *web_interface* folder:
 ```
@@ -58,14 +72,14 @@ Navigate to the proper folder by the command
 ```
 cd Wirom2.0/backend
 ```
-To help manage the different dependencies, it is useful to create a Python virtual environment. When you install it for the first time, run the following command on **Windows**
+To help manage the different dependencies, it is useful to create a Python virtual environment. When you install it for the first time, run the following command \
+on **Windows**:
 ```
 python -m venv .venv
 ```
 or on **macOS/Linux**:
 ```
 python3 -m venv .venv
-
 ```
 The last argument is the name of the directory of the environment, in this case *".venv"* \
 \
@@ -77,6 +91,11 @@ On **Windows**
 on **Mac**
 ```
 source .venv/bin/activate
+```
+You should see the name of your virtual environment displayed somewhere at the bottom of your terminal window, depending on your settings for the CLI. \
+To exit the virtual environment, use the command
+```
+deactivate
 ```
 
 After this, you need to install the dependencies. This is done with the command
@@ -102,5 +121,23 @@ And then start the server
 flask run
 ```
 
+## Running Webots
+To run Webots in the streaming mode, you need to start it with the **--stream** option. \
+It is recommended to do this, to get the full application displayed in the web interface. However, it is also possible to run Webots as a normal program/application, without having it stream directly to the browser.\
+First, navigate to the Webots folder. This location depends both on the operating system as well as the user settings chosen when installing it. For *Windows* it is commonly located at *'\Program Files\Webots\msys64\mingw64\bin\'*. On *MacOS* *TODO double check the location for mac* *\AppData\Local\Programs\Webots\msys64\mingw64\bin*. \
 
+To start Webots on Windows, run
+```
+./webots.exe --stream
+```
+or on Mac:
+```
+./webots --stream
+```
+
+Finally, open the world file **delivery-missionUpdated.wbt** located at *Wirom2.0/backend/worlds/delivery-missionUpdated.wbt*
+
+
+## Exiting the processes
+To stop any of the processes running, simply press **"Ctrl + c"** for Windows or **"control + c"** for Mac in their respective terminal windows.
 
