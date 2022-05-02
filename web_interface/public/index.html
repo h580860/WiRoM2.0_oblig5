@@ -86,11 +86,19 @@
 
         <input id="ConnectButton" type="button" value="Connect" />
       </p>
+      <div class="webots-view-container">
+        <webots-streaming></webots-streaming>
+    </div>
+    <script type="module" src="https://cyberbotics.com/wwi/R2021b/WebotsStreaming.js"></script>
+    <script src="setup_viewer.js"></script>
     </div>
   </div>
-  <webots-streaming style="height:100%;padding:20px;"></webots-streaming>
-  <script type="module" src="https://cyberbotics.com/wwi/R2021b/WebotsStreaming.js"></script>
-  <script src="setup_viewer.js"></script>
+  <!-- <div class="webots-view-container">
+    <webots-view></webots-view>
+  </div>
+  <script type="module" src="https://cyberbotics.com/wwi/R2021b/WebotsView.js"></script>
+  <script src="setup_viewer.js"></script> -->
+  
 
 
   <!--  <header>
