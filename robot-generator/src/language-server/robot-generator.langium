@@ -1,23 +1,8 @@
 grammar RobotGenerator
 
 entry Model:
-    (persons+=Person | greetings+=Greeting | dslCommands+=DslCommand)*;
+    (dslCommands+=DslCommand)*;
 
-Person:
-    'person' name=ID;
-
-Greeting:
-    'Hello' person=[Person:ID] '!';
-
-// entry Model:
-//     (commands += Command)*;
-
-// RobotType:
-// 	MOOSE="moose" |
-// 	MAVIC2PRO="mavic2pro" |
-// 	OP2="op2" |
-// 	BB8="bb8"
-// ;
 
 RobotType:
     value = ("moose" | "mavic2pro" | "op2" | "bb8" | "pr2")
@@ -32,10 +17,6 @@ RobotName:
 ;
 
 CommandType:
-	// {AddRobot} value="addRobot" |
-	// {RemoveRobot} value="removeRobot"
-    // addRobot = "addRobot" |
-	// removeRobot ="removeRobot"
     value = ("addRobot" | "removeRobot")
 ;
 

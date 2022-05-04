@@ -58,6 +58,10 @@ const CustomMenu = React.forwardRef(
   },
 );
 
+const buttonPaddingStyle = {
+  margin: "10px 5px 10px 0",
+}
+
 //App class holds the parent state of the system, child-components this state and update it via the functions in this class
 class App extends Component {
   state = {
@@ -79,7 +83,9 @@ class App extends Component {
     algorithmEditorContent: "",
     algorithmEditorTemplate: "",
     algorithmEditorFormValue: "",
+    commonSimpleactionNames : new Set(),
   }
+
 
   componentDidMount() {
     this.handleMissionChange()
@@ -87,16 +93,69 @@ class App extends Component {
     // Read the template for the default value of the algorithm editor
     this.readTemplate(algorithmEditorTemplateFile);
     this.setState({ algorithmEditorContent: this.state.algorithmEditorTemplate })
+    this.createListOfCommonSimpleactions();
   }
 
   readTemplate = (filename) => {
     fetch(filename)
       .then(r => r.text()
         .then(text => {
-          console.log("Text from template: ", text)
+          // console.log("Text from template: ", text);
           this.setState({ algorithmEditorTemplate: text });
         })
       );
+  }
+
+  createListOfCommonSimpleactions = () => {
+    // Create a list of the common simpleactions, to be used when displaying the list of robots.
+    // const commonNames = new Set();
+    const commonNames = new Set();
+    // this.state.robots.entries.forEach((robot) => {
+    //   console.log(robot);
+    //   robot.simpleactions.O.forEach((simpleaction) => {
+    //     commonNames.add(simpleaction.name);
+    //   })
+    // });
+
+    console.log(this.state.robots);
+    for (const [key, value] of Object.entries(this.state.robots)) {
+      console.log(key,  value)
+      value.simpleactions.forEach(action => {
+        // commonNames.add(action.name);
+        for (const [other_key, other_value] of Object.entries(this.state.robots)) {
+          // const actionIsCommon = true;
+          const otherSimpleactions = other_value.simpleactions.map(x => x.name);
+          // console.log("other simpleactions: ", otherSimpleactions);
+          if (key !== other_key&& other_key !== "op2" && !otherSimpleactions.includes(action.name)) {
+            // actionIsCommon = false
+            // console.log(`${action.name} not in simpleactions of ${other_key}`);
+            return;
+          }
+        }
+        // commonNames.push(action.name);
+        commonNames.add(action.name);
+      })
+    }
+    this.setState({ commonSimpleactionNames: commonNames});
+    console.log("Common simpleaction names: ", commonNames);
+
+    // Create a "Dummy" robot with containing the list of robotnames
+    const dummyRobotCommonSimpleactions = {
+      Common: {
+        language: "python",
+        port: "0",
+        simpleactions: [...commonNames].map(x => ({ name: x }))
+      }
+    }
+    console.log(dummyRobotCommonSimpleactions);
+    // this.setState(prevState => ({
+    //   robots: [...prevState.robots, dummyRobotCommonSimpleactions]
+    // }));
+    // this.setState({...this.state.robots, dummyRobotCommonSimpleactions});
+    const prevRobotState = Object.assign(dummyRobotCommonSimpleactions, this.state.robots);
+    console.log(prevRobotState);
+    this.setState({robots: prevRobotState});
+    // console.log(this.state.robots);
   }
 
   //Create new current mission, called everytime the missions changes in the ui
@@ -479,18 +538,14 @@ class App extends Component {
                 <Col>
                   <MissionTimeline state={this.state}></MissionTimeline>
 
-                  <Button type="submit" variant="outline-dark" onClick={this.handleSubmitMission}>
-                    Send mission
-                  </Button>
-
-                  <Button type="submit" variant="outline-dark" onClick={this.handleSubmitTaskAllocation}>
+                  <Button style={buttonPaddingStyle} type="submit" variant="outline-dark" onClick={this.handleSubmitTaskAllocation}>
                     Automatic task allocation
                   </Button>
-                  <Button type="submit" variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
+                  <Button style={buttonPaddingStyle} type="submit" variant="outline-dark" onClick={this.handleCBAATaskAllocation}>
                     CBAA
                   </Button>
                   {this.state.addedTaskAllocationAlgorithms.map((elem, idx) => (
-                    <Button type="submit" variant="outline-dark" key={idx} onClick={(event) => this.handleExecuteNewAlgorithm(elem, event)}>
+                    <Button style={buttonPaddingStyle} type="submit" variant="outline-dark" key={idx} onClick={(event) => this.handleExecuteNewAlgorithm(elem, event)}>
                       {elem}
                     </Button>
                   ))}
@@ -498,39 +553,44 @@ class App extends Component {
               </Row>
               <Row>
                 <Col>
-                  <Button style={{ marginTop: "10px" }} type="submit" variant="outline-dark" onClick={this.toggleShowAlgorithmEditor}>
-                    {!this.state.showAlgorithmEditor ? "Show Algorithm Editor" : "Hide Algorithm Editor"}
+                <Button style={{ marginTop: "10px", marginBottom: "10px" }} type="submit" variant="outline-dark" onClick={this.handleSubmitMission}>
+                    Send mission
                   </Button>
                 </Col>
               </Row>
             </div>
-            {this.state.showAlgorithmEditor && <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
+            <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
               <div className="shadow p-3 mb-5 bg-white rounded">
-                Editor for creating adding a custom task allocation algorithm
-                <Form>
-                  <Form.Group className="mb-3" controlId="formFileName">
-                    <Form.Label>Algorithm Name</Form.Label>
-                    <Form.Control placeholder='Enter the algorithm name' onChange={this.handleEditorFormChange} />
-                  </Form.Group>
-                </Form>
-                <Editor
-                  height="20vh"
-                  defaultLanguage="python"
-                  //defaultValue="# some comment"
-                  defaultValue={this.state.algorithmEditorTemplate}
-                  onChange={this.handleAlgorithmEditorChange}
-                />
-                <Button type="submit" variant="outline-dark" onClick={this.handleSendAlgorithmEditorContentClick}>
-                  Send new task allocation
+                <Button style={{ marginTop: "10px" }} type="submit" variant="outline-dark" onClick={this.toggleShowAlgorithmEditor}>
+                    {!this.state.showAlgorithmEditor ? "Show Algorithm Editor" : "Hide Algorithm Editor"}
                 </Button>
+                {this.state.showAlgorithmEditor && <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
+                  <div className="shadow p-3 mb-5 bg-white rounded">
+                  Editor for creating adding a custom task allocation algorithm
+                  <Form>
+                    <Form.Group className="mb-3" controlId="formFileName">
+                      <Form.Label>Algorithm Name</Form.Label>
+                      <Form.Control placeholder='Enter the algorithm name' onChange={this.handleEditorFormChange} />
+                    </Form.Group>
+                  </Form>
+                  <Editor
+                    height="20vh"
+                    defaultLanguage="python"
+                    //defaultValue="# some comment"
+                    defaultValue={this.state.algorithmEditorTemplate}
+                    onChange={this.handleAlgorithmEditorChange}
+                  />
+                  <Button type="submit" variant="outline-dark" onClick={this.handleSendAlgorithmEditorContentClick}>
+                    Send new task allocation
+                  </Button>
+                  </div>
+                  </div>}
               </div>
-
             </div>
-            }
             <div className="shadow p-3 mb-5 rounded" style={{ backgroundColor: "#f2f2f2" }}>
               <div className="shadow p-3 mb-5 bg-white rounded">
                 <Button type="submit" variant="outline-dark" onClick={this.handleEditorClick}>
-                  {!this.state.showEditor ? "Show Editor" : "Hide Editor"}
+                  {!this.state.showEditor ? "Show DSL Editor" : "Hide DSL Editor"}
                 </Button>
                 {this.state.showEditor && <div>
                   Editor for using the Robot-Generator DSL

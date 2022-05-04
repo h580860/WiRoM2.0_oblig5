@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { AstNode, AstReflection, Reference, isAstNode } from 'langium';
+import { AstNode, AstReflection, isAstNode } from 'langium';
 
 export interface CommandType extends AstNode {
     readonly $container: DslCommand;
@@ -33,38 +33,14 @@ export function isDslCommand(item: unknown): item is DslCommand {
     return reflection.isInstance(item, DslCommand);
 }
 
-export interface Greeting extends AstNode {
-    readonly $container: Model;
-    person: Reference<Person>
-}
-
-export const Greeting = 'Greeting';
-
-export function isGreeting(item: unknown): item is Greeting {
-    return reflection.isInstance(item, Greeting);
-}
-
 export interface Model extends AstNode {
     dslCommands: Array<DslCommand>
-    greetings: Array<Greeting>
-    persons: Array<Person>
 }
 
 export const Model = 'Model';
 
 export function isModel(item: unknown): item is Model {
     return reflection.isInstance(item, Model);
-}
-
-export interface Person extends AstNode {
-    readonly $container: Model;
-    name: string
-}
-
-export const Person = 'Person';
-
-export function isPerson(item: unknown): item is Person {
-    return reflection.isInstance(item, Person);
 }
 
 export interface PositionValue extends AstNode {
@@ -100,14 +76,14 @@ export function isRobotType(item: unknown): item is RobotType {
     return reflection.isInstance(item, RobotType);
 }
 
-export type RobotGeneratorAstType = 'CommandType' | 'DslCommand' | 'Greeting' | 'Model' | 'Person' | 'PositionValue' | 'RobotName' | 'RobotType';
+export type RobotGeneratorAstType = 'CommandType' | 'DslCommand' | 'Model' | 'PositionValue' | 'RobotName' | 'RobotType';
 
-export type RobotGeneratorAstReference = 'Greeting:person';
+export type RobotGeneratorAstReference = never;
 
 export class RobotGeneratorAstReflection implements AstReflection {
 
     getAllTypes(): string[] {
-        return ['CommandType', 'DslCommand', 'Greeting', 'Model', 'Person', 'PositionValue', 'RobotName', 'RobotType'];
+        return ['CommandType', 'DslCommand', 'Model', 'PositionValue', 'RobotName', 'RobotType'];
     }
 
     isInstance(node: unknown, type: string): boolean {
@@ -127,9 +103,6 @@ export class RobotGeneratorAstReflection implements AstReflection {
 
     getReferenceType(referenceId: RobotGeneratorAstReference): string {
         switch (referenceId) {
-            case 'Greeting:person': {
-                return Person;
-            }
             default: {
                 throw new Error(`${referenceId} is not a valid reference id.`);
             }

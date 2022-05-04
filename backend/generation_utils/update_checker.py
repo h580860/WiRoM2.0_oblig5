@@ -127,6 +127,7 @@ class UpdateChecker:
 
         # Wrap the json object with with a capitalized key
         new_robot_node = {robot_type_capitalized: new_robot_node}
+        print(f"new robot node: {new_robot_node}")
         new_worldfile_content = self.map_reader.transform_from_json_to_world(
             new_robot_node)
         self.map_reader.append_to_world_file(new_worldfile_content)

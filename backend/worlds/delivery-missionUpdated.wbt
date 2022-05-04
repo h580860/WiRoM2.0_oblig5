@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.08983912011187858 -0.9877927946230434 -0.1272569345392287 4.359476081973363
-  position 430.8059524641008 9.861496626818234 -409.03088018036425
+  orientation 0.08171491783719208 -0.9908354555863754 -0.10755357807065656 4.432170322211394
+  position 437.8774614654394 7.455663018367919 -414.5850095791754
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -24,13 +24,6 @@ UnevenTerrain {
     textureTransform TextureTransform {
       scale 1000 1000
     }
-  }
-}
-Floor {
-  translation 407.852 -0.76 -405
-  size 7 20
-  appearance Asphalt {
-    IBLStrength 5
   }
 }
 SimpleTwoFloorsHouse {
