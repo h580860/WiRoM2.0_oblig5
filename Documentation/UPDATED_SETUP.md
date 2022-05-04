@@ -49,7 +49,7 @@ and run
 ```
 npm install
 ```
-For a longer walkthrough of the Robot-Generator DSL, see the documentation in *Wirom2.0/Documentation*
+For a longer walkthrough of the Robot-Generator DSL, see the documentation in *Wirom2.0/Documentation/dsl_usage_guide.md*
 
 
 
@@ -71,10 +71,6 @@ npm start
 Navigate to the proper folder by the command
 ```
 cd Wirom2.0/backend
-```
-To ensure that Webots can aquire the required libraries, a few of them will have to be downloaded globally. This is done with the command
-```
-pip install -r global_requirements.txt
 ```
 To help manage the different dependencies, it is useful to create a Python virtual environment. When you install it for the first time, run the following command \
 on **Windows**:
