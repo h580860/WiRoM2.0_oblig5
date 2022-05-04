@@ -30,6 +30,7 @@ class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.accelerometer = self.robot.getDevice('Accelerometer')
         self.accelerometer.enable(self.timestep)
         self.x_amplitude_forward = 0.0
+        self.a_amplitude_sideways = 0.0
         self.left_speed = 0
         self.right_speed = 0
 
@@ -51,11 +52,15 @@ class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
         self.target_reached = False
         self.navigate = False
         self.location = []
+        self.is_turning = False
 
         self.add_all_simpleactions()
 
     def add_all_simpleactions(self):
         self.add_available_simpleaction("go_forward", self.go_forward)
+        self.add_available_simpleaction("go_backward", self.go_backwards)
+        self.add_available_simpleaction("turn_right", self.turn_right)
+        self.add_available_simpleaction("turn_left", self.turn_left)
 
     # Initialize which sets the target altitude as well as start the main loop
     def initiate_threads(self):
@@ -112,6 +117,25 @@ class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
             time.sleep(duration)
             self.x_amplitude_forward = 0.0
 
+    def go_backwards(self, duration): 
+        self.x_amplitude_forward = -1.0
+        if duration != 0:
+            time.sleep(duration)
+            self.x_amplitude_forward = 0.0
+    
+    def turn_right(self, duration):
+        self.a_amplitude_sideways = -0.5 
+        if duration != 0:
+            time.sleep(duration)
+            self.a_amplitude_sideways = 0.0
+
+    def turn_left(self, duration):
+        self.a_amplitude_sideways = 0.5 
+        if duration != 0:
+            time.sleep(duration)
+            self.a_amplitude_sideways = 0.0
+
+
     def stop_movement(self):
         self.left_speed = 0
         self.right_speed = 0
@@ -129,6 +153,11 @@ class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
         while self.robot.step(self.timestep) != -1:
             self.check_if_fallen()
 
+            # if self.is_turning:
+            #     self.gait_manager.setXAmplitude
+            #     self.gait_manager.setAAmplitude(self.a_amplitude_sideways)
+            # else:
+            self.gait_manager.setAAmplitude(self.a_amplitude_sideways)
             self.gait_manager.setXAmplitude(self.x_amplitude_forward)
             self.gait_manager.step(self.timestep)
             step_count += 1

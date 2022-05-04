@@ -123,6 +123,24 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot starts walking forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot backward for x amount of seconds"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot right for x amout of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot left for x amount of seconds"
                 }
             ]
         },

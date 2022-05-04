@@ -126,7 +126,7 @@ class App extends Component {
           // const actionIsCommon = true;
           const otherSimpleactions = other_value.simpleactions.map(x => x.name);
           // console.log("other simpleactions: ", otherSimpleactions);
-          if (key !== other_key&& other_key !== "op2" && !otherSimpleactions.includes(action.name)) {
+          if (key !== other_key && !otherSimpleactions.includes(action.name)) {
             // actionIsCommon = false
             // console.log(`${action.name} not in simpleactions of ${other_key}`);
             return;
