@@ -20,17 +20,22 @@ class Task extends Component {
     let select = [<option> {"--"} </option>]
     let robots = this.state.robots
     let target = task.simpleactions.length
-    
+
     Object.keys(robots).forEach(robot => {
+      // Skip the dummy robot "Common", so that it cannot be chosen for a task
+      if (robot == "Common") {
+        return;
+      }
+
       let saCount = 0
       robots[robot].simpleactions.forEach(simpleaction => {
         for (let sa in task.simpleactions) {
-          if (task.simpleactions[sa].name === simpleaction.name){
+          if (task.simpleactions[sa].name === simpleaction.name) {
             saCount = saCount + 1
           }
         }
       })
-      
+
       if (saCount === target)
         select.push(<option> {robot} </option>)
     })
@@ -42,7 +47,7 @@ class Task extends Component {
       <div>
         <h3>
           Tasks
-          </h3>
+        </h3>
 
         <ReactSortable
           list={this.state.list}
@@ -60,14 +65,14 @@ class Task extends Component {
               </Button>
 
               <Form>
-                  <Form.Control
-                    as="select"
-                    value={task.robot ? task.robot : "--"}
-                    onChange={this.props.handleTaskAllocationChange(task)}
-                    style={{ marginLeft: "5px", width: "120px" }}>
-                    {this.robotsThatCanExecute(task)}
-                  </Form.Control>
-                </Form>
+                <Form.Control
+                  as="select"
+                  value={task.robot ? task.robot : "--"}
+                  onChange={this.props.handleTaskAllocationChange(task)}
+                  style={{ marginLeft: "5px", width: "120px" }}>
+                  {this.robotsThatCanExecute(task)}
+                </Form.Control>
+              </Form>
 
               <Button
                 style={{ marginLeft: "5px" }}
@@ -75,7 +80,7 @@ class Task extends Component {
                 variant="outline-danger"
               >
                 X
-                </Button>
+              </Button>
             </div>
           ))}
         </ReactSortable>
