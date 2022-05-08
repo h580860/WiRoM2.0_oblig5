@@ -23,7 +23,7 @@ class Task extends Component {
 
     Object.keys(robots).forEach(robot => {
       // Skip the dummy robot "Common", so that it cannot be chosen for a task
-      if (robot == "Common") {
+      if (robot === "Common") {
         return;
       }
 
