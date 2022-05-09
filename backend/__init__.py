@@ -406,11 +406,13 @@ def execute_new_task_allocation_algorithm():
     print(f"Server received tasks:")
     pp.pprint(tasks)
 
+    print("Robots:")
+    pp.pprint(robots)
+
     allocated_tasks = added_algorithms[name](tasks, robots)
 
     # return jsonify({"success": True, "message": f"Successfully executed the fucntion {name}"}), 200
     return jsonify(allocated_tasks)
-
 
 
 def test_sending_one_message(sequence):
