@@ -1,0 +1,5 @@
+addRobot(pr2, "pr2-2", 3, 3);
+addRobot(moose, "Stig1", 3, 3);
+addRobot(moose, "Stig2", 3, 3);
+addRobot(moose, "Stig3", 3, 3);
+addRobot(moose, "Stig4", 3, 3);
