@@ -1,11 +1,15 @@
 # Documentation for adding a new task allocation algorithm
 
-One of the expandable features of Wirom2.0 is the possibility of adding custom task allocation algorithm.
+One of the expandable features of Wirom2.0 is the possibility of adding custom task allocation algorithm. This guide shows the user how to add a custom task allocation algorithm through the web interface. \
+This task is best suited for "intermediate developers" to "domain expert". 
 
 ## Structure
 In the web interface, the user has to provide two things:
 1. The name of the new algorithm (input *above* the editor)
 2. The implementation of the new algorithm (input *in* the code editor)
+
+To toggle the web editor, press the *"Show algorithm editor"* button. A form and an editor will show up. The user has to enter the algorithm name and the Python implementation of the algorithm. The *name* and the Python *function name* has to correspond, or else it will not be possible to execute the algorithm afterwards. \
+After implementing the algorithm and sending it to the server by pressing *Send new task allocation*, the website will automatically refresh and a button for the new algorithm will appear next to the other included task allocation algorithms.
 
 
 ## Running example
@@ -24,7 +28,7 @@ There are two required parameters for the functions:
 
 
 The *task* list is a list of Python Dictionary objects, and with the **go forward mission** in the running example the task format is: 
-```python
+```json
 [
     {
         "chosen": False,
