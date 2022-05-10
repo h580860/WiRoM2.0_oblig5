@@ -245,6 +245,270 @@
                     "information": "Send the location [x, y] to the set target"
                 }
             ]
+        },
+        "Pr2-2": {
+            "language": "python",
+            "port": "5003",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling forward"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot starts rolling backwards"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "rotate_angle",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot rotates given an angle [rad]"
+                },
+                {
+                    "name": "extend_arms",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot extend its arms, enabling it to grab something"
+                },
+                {
+                    "name": "retract_arms",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot retracts its arms"
+                },
+                {
+                    "name": "grab_box",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot grabs a box in front of it"
+                },
+                {
+                    "name": "release_box",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Robot releases the box"
+                },
+                {
+                    "name": "set_message_target",
+                    "numArgs": 1,
+                    "type": "set_property",
+                    "information": "Set target of messages from this robot"
+                },
+                {
+                    "name": "send_given_location",
+                    "numArgs": 1,
+                    "type": "notify",
+                    "information": "Send the location [x, y] to the set target"
+                }
+            ]
+        },
+        "Stig1": {
+            "language": "python",
+            "port": "5004",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot forward for x amount of seconds"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot backward for x amount of seconds"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot right for x amout of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot left for x amount of seconds"
+                },
+                {
+                    "name": "go_to_location",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
+                },
+                {
+                    "name": "stop_movement",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Stop all movement"
+                },
+                {
+                    "name": "receive_location_from_robot",
+                    "numArgs": 0,
+                    "type": "wait",
+                    "information": "Wait for location from another robot"
+                }
+            ]
+        },
+        "Stig2": {
+            "language": "python",
+            "port": "5005",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot forward for x amount of seconds"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot backward for x amount of seconds"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot right for x amout of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot left for x amount of seconds"
+                },
+                {
+                    "name": "go_to_location",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
+                },
+                {
+                    "name": "stop_movement",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Stop all movement"
+                },
+                {
+                    "name": "receive_location_from_robot",
+                    "numArgs": 0,
+                    "type": "wait",
+                    "information": "Wait for location from another robot"
+                }
+            ]
+        },
+        "Stig3": {
+            "language": "python",
+            "port": "5006",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot forward for x amount of seconds"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot backward for x amount of seconds"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot right for x amout of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot left for x amount of seconds"
+                },
+                {
+                    "name": "go_to_location",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
+                },
+                {
+                    "name": "stop_movement",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Stop all movement"
+                },
+                {
+                    "name": "receive_location_from_robot",
+                    "numArgs": 0,
+                    "type": "wait",
+                    "information": "Wait for location from another robot"
+                }
+            ]
+        },
+        "Stig4": {
+            "language": "python",
+            "port": "5007",
+            "simpleactions": [
+                {
+                    "name": "go_forward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot forward for x amount of seconds"
+                },
+                {
+                    "name": "go_backward",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Move robot backward for x amount of seconds"
+                },
+                {
+                    "name": "turn_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot right for x amout of seconds"
+                },
+                {
+                    "name": "turn_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Turn robot left for x amount of seconds"
+                },
+                {
+                    "name": "go_to_location",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
+                },
+                {
+                    "name": "stop_movement",
+                    "numArgs": 0,
+                    "type": "move",
+                    "information": "Stop all movement"
+                },
+                {
+                    "name": "receive_location_from_robot",
+                    "numArgs": 0,
+                    "type": "wait",
+                    "information": "Wait for location from another robot"
+                }
+            ]
         }
     },
     "missions": {
@@ -748,13 +1012,88 @@
                             "name": "go_forward",
                             "args": "7",
                             "id": 23
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 24
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "37",
+                            "id": 25
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.8",
+                            "id": 26
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "7",
+                            "id": 27
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 28
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 29
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "1.0",
+                            "id": 30
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "56",
+                            "id": 31
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 32
+                        },
+                        {
+                            "name": "set_message_target",
+                            "args": "moose",
+                            "id": 33
+                        },
+                        {
+                            "name": "send_given_location",
+                            "args": "[330, -450]",
+                            "id": 34
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "1.0",
+                            "id": 35
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "7",
+                            "id": 36
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 37
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "59",
+                            "id": 38
                         }
                     ]
                 },
                 {
                     "name": "Pr2-2 package lifting",
                     "id": 1,
-                    "robot": "pr2-2",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "go_forward",
@@ -780,7 +1119,8 @@
                             "name": "go_forward",
                             "args": "10",
                             "id": 4
-                        },{
+                        },
+                        {
                             "name": "grab_box",
                             "args": "",
                             "id": 5
@@ -852,7 +1192,7 @@
                         },
                         {
                             "name": "go_backward",
-                            "args": "3",
+                            "args": "2",
                             "id": 19
                         },
                         {
@@ -862,15 +1202,50 @@
                         },
                         {
                             "name": "go_forward",
-                            "args": "45",
+                            "args": "48",
                             "id": 21
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 22
+                        },
+                        {
+                            "name": "set_message_target",
+                            "args": "Stig4",
+                            "id": 23
+                        },
+                        {
+                            "name": "send_given_location",
+                            "args": "[330, -419]",
+                            "id": 24
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 25
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "4",
+                            "id": 26
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 27
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "48",
+                            "id": 28
                         }
                     ]
                 },
                 {
                     "name": "Stig1 Wait and Deliver",
                     "id": 2,
-                    "robot": "Stig1",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -887,7 +1262,7 @@
                 {
                     "name": "Stig2 Wait and Deliver",
                     "id": 3,
-                    "robot": "Stig2",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -904,7 +1279,7 @@
                 {
                     "name": "Stig3 Wait and Deliver",
                     "id": 4,
-                    "robot": "Stig3",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -921,7 +1296,7 @@
                 {
                     "name": "Stig4 Wait and Deliver",
                     "id": 5,
-                    "robot": "Stig4",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -932,6 +1307,48 @@
                             "name": "go_to_location",
                             "args": "[]",
                             "id": 1
+                        }
+                    ]
+                },
+                {
+                    "name": "Moose the Default joins",
+                    "id": 6,
+                    "robot": "moose",
+                    "simpleactions": [
+                        {
+                            "name": "go_backward",
+                            "args": "17",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "9",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "8",
+                            "id": 2
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "8",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "receive_location_from_robot",
+                            "args": "",
+                            "id": 5
+                        },
+                        {
+                            "name": "go_to_location",
+                            "args": "[]",
+                            "id": 6
                         }
                     ]
                 }

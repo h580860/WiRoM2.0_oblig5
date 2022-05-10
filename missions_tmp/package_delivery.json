@@ -134,15 +134,80 @@
                         },
                         {
                             "name": "go_forward",
-                            "args": "14",
+                            "args": "37",
                             "id": 25
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.8",
+                            "id": 26
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "7",
+                            "id": 27
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 28
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 29
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "1.0",
+                            "id": 30
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "56",
+                            "id": 31
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 32
+                        },
+                        {
+                            "name": "set_message_target",
+                            "args": "moose",
+                            "id": 33
+                        },
+                        {
+                            "name": "send_given_location",
+                            "args": "[330, -450]",
+                            "id": 34
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "1.0",
+                            "id": 35
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "7",
+                            "id": 36
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 37
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "50",
+                            "id": 38
                         }
                     ]
                 },
                 {
                     "name": "Pr2-2 package lifting",
                     "id": 1,
-                    "robot": "pr2-2",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "go_forward",
@@ -168,7 +233,8 @@
                             "name": "go_forward",
                             "args": "10",
                             "id": 4
-                        },{
+                        },
+                        {
                             "name": "grab_box",
                             "args": "",
                             "id": 5
@@ -240,7 +306,7 @@
                         },
                         {
                             "name": "go_backward",
-                            "args": "3",
+                            "args": "2",
                             "id": 19
                         },
                         {
@@ -250,7 +316,7 @@
                         },
                         {
                             "name": "go_forward",
-                            "args": "45",
+                            "args": "48",
                             "id": 21
                         },
                         {
@@ -267,13 +333,33 @@
                             "name": "send_given_location",
                             "args": "[330, -419]",
                             "id": 24
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 25
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "4",
+                            "id": 26
+                        },
+                        {
+                            "name": "rotate_angle",
+                            "args": "0.9",
+                            "id": 27
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "48",
+                            "id": 28
                         }
                     ]
                 },
                 {
                     "name": "Stig1 Wait and Deliver",
                     "id": 2,
-                    "robot": "Stig1",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -290,7 +376,7 @@
                 {
                     "name": "Stig2 Wait and Deliver",
                     "id": 3,
-                    "robot": "Stig2",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -307,7 +393,7 @@
                 {
                     "name": "Stig3 Wait and Deliver",
                     "id": 4,
-                    "robot": "Stig3",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -324,7 +410,7 @@
                 {
                     "name": "Stig4 Wait and Deliver",
                     "id": 5,
-                    "robot": "Stig4",
+                    "robot": "--",
                     "simpleactions": [
                         {
                             "name": "receive_location_from_robot",
@@ -339,23 +425,38 @@
                     ]
                 },
                 {
-                    "name": "BB8 Strolling",
+                    "name": "Moose the Default joins",
                     "id": 6,
-                    "robot": "bb8",
+                    "robot": "moose",
                     "simpleactions": [
                         {
-                            "name": "turn_right",
-                            "args": "4",
+                            "name": "go_backward",
+                            "args": "17",
                             "id": 0
                         },
                         {
-                            "name": "go_to_location",
-                            "args": "[]",
+                            "name": "turn_right",
+                            "args": "9",
                             "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "8",
+                            "id": 2
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "8",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 4
                         }
+                        
                     ]
-                },
-
+                }
             ]
         }
     },
