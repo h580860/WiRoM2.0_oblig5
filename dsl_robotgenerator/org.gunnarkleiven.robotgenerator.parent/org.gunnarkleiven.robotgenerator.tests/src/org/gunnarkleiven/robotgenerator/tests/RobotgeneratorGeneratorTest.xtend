@@ -27,8 +27,8 @@ class RobotgeneratorGeneratorTest {
 //			'''
 //			# package robotgenerator;
 //			
-//			import MooseSimpleactionsGenerator
-//			MooseSimpleactionsGenerator(port_number_placeholder, 'testName')
+//			import MooseControllerGenerator
+//			MooseControllerGenerator(port_number_placeholder, 'testName')
 //			'''
 //		)
 //	}
@@ -43,8 +43,8 @@ class RobotgeneratorGeneratorTest {
 //			'''
 //			# package robotgenerator;
 //			
-//			import Mavic2proSimpleactionsGenerator
-//			Mavic2proSimpleactionsGenerator(port_number_placeholder, 'mavicname')
+//			import Mavic2ProControllerGenerator
+//			Mavic2ProControllerGenerator(port_number_placeholder, 'mavicname')
 //			'''
 //		)
 //	}
@@ -57,8 +57,8 @@ class RobotgeneratorGeneratorTest {
 			'''
 			# package robotgenerator;
 						
-			import MooseSimpleactionsGenerator
-			MooseSimpleactionsGenerator(port_number_placeholder, 'mooseName')
+			import MooseControllerGenerator
+			MooseControllerGenerator(port_number_placeholder, 'mooseName')
 			'''.toString.assertEquals(
 				getAllGeneratedResources.get("testMoose.py")
 			)

@@ -18,7 +18,7 @@ sys.path.insert(0, cbaa_path)
 from task_allocation.cbaa import CBAA
 
 
-class SimpleactionsSuperclass:
+class ControllerSuperclass:
     def __init__(self, name, robot_type):
         '''
         Super class for the simpleactions generators, with the most common functionalities. Each robot type
@@ -72,7 +72,7 @@ class SimpleactionsSuperclass:
 
 
         # TODO this should somehow be dynamic
-        self.n_robots = 4
+        # self.n_robots = 4
         self.consensus_based_auction_algorithm = CBAA(
             # self.robot_name, self.test_avail_simpleactions, self.n_robots
             self.robot_name, self.config_simpleactions_names_cost, self.n_robots
@@ -86,6 +86,7 @@ class SimpleactionsSuperclass:
         """
         with open(pathlib.Path.cwd().parent.parent / 'config.json') as json_config_file:
             data = json.load(json_config_file)
+            self.n_robots = len(data["robots"])
             for x in data["robots"][self.robot_type]["simpleactions"]:
                 self.config_simpleactions_names_cost[x["name"]] = float(x["cost"])
 

@@ -8,10 +8,10 @@ import json
 import logging
 import os
 import pika
-from simpleactions_superclass import SimpleactionsSuperclass
+from controller_superclass import ControllerSuperclass
 
 
-class Bb8SimpleactionsGenerator(SimpleactionsSuperclass):
+class Bb8ControllerGenerator(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "bb8")
 

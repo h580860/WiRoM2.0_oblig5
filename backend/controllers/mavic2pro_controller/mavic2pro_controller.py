@@ -8,6 +8,6 @@ import os
 controller_path = os.path.join(os.getcwd(), os.pardir)
 sys.path.insert(0, controller_path)
 
-from mavic2pro_simpleactions_generator import Mavic2proSimpleactionsGenerator
-mavic2pro_simpleactions = Mavic2proSimpleactionsGenerator("mavic2pro")
-mavic2pro_simpleactions.initiate_threads()
+from mavic2pro_controller_generator import Mavic2ProControllerGenerator
+mavic2pro_controller = Mavic2ProControllerGenerator("mavic2pro")
+mavic2pro_controller.initiate_threads()

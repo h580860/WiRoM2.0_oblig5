@@ -8,11 +8,11 @@ import json
 import logging
 import os
 import pika
-from simpleactions_superclass import SimpleactionsSuperclass
+from controller_superclass import ControllerSuperclass
 from message_subscriber import MessageSubscriber
 
 
-class MooseSimpleactionsGenerator(SimpleactionsSuperclass):
+class MooseControllerGenerator(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "moose")
         # create the Robot instance.

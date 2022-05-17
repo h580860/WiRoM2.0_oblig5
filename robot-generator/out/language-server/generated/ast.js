@@ -4,7 +4,7 @@
  * DO NOT EDIT MANUALLY!
  ******************************************************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reflection = exports.RobotGeneratorAstReflection = exports.isRobotType = exports.RobotType = exports.isRobotName = exports.RobotName = exports.isPositionValue = exports.PositionValue = exports.isPerson = exports.Person = exports.isModel = exports.Model = exports.isGreeting = exports.Greeting = exports.isDslCommand = exports.DslCommand = exports.isCommandType = exports.CommandType = void 0;
+exports.reflection = exports.RobotGeneratorAstReflection = exports.isRobotType = exports.RobotType = exports.isRobotName = exports.RobotName = exports.isPositionValue = exports.PositionValue = exports.isModel = exports.Model = exports.isDslCommand = exports.DslCommand = exports.isCommandType = exports.CommandType = void 0;
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 const langium_1 = require("langium");
@@ -18,21 +18,11 @@ function isDslCommand(item) {
     return exports.reflection.isInstance(item, exports.DslCommand);
 }
 exports.isDslCommand = isDslCommand;
-exports.Greeting = 'Greeting';
-function isGreeting(item) {
-    return exports.reflection.isInstance(item, exports.Greeting);
-}
-exports.isGreeting = isGreeting;
 exports.Model = 'Model';
 function isModel(item) {
     return exports.reflection.isInstance(item, exports.Model);
 }
 exports.isModel = isModel;
-exports.Person = 'Person';
-function isPerson(item) {
-    return exports.reflection.isInstance(item, exports.Person);
-}
-exports.isPerson = isPerson;
 exports.PositionValue = 'PositionValue';
 function isPositionValue(item) {
     return exports.reflection.isInstance(item, exports.PositionValue);
@@ -50,7 +40,7 @@ function isRobotType(item) {
 exports.isRobotType = isRobotType;
 class RobotGeneratorAstReflection {
     getAllTypes() {
-        return ['CommandType', 'DslCommand', 'Greeting', 'Model', 'Person', 'PositionValue', 'RobotName', 'RobotType'];
+        return ['CommandType', 'DslCommand', 'Model', 'PositionValue', 'RobotName', 'RobotType'];
     }
     isInstance(node, type) {
         return (0, langium_1.isAstNode)(node) && this.isSubtype(node.$type, type);
@@ -67,9 +57,6 @@ class RobotGeneratorAstReflection {
     }
     getReferenceType(referenceId) {
         switch (referenceId) {
-            case 'Greeting:person': {
-                return exports.Person;
-            }
             default: {
                 throw new Error(`${referenceId} is not a valid reference id.`);
             }

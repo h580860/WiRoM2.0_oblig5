@@ -16,10 +16,10 @@ libraryPath = os.path.join(os.environ.get("WEBOTS_HOME"), 'projects', 'robots', 
 libraryPath = libraryPath.replace('/', os.sep)
 sys.path.append(libraryPath)
 from managers import RobotisOp2MotionManager, RobotisOp2GaitManager
-from simpleactions_superclass import SimpleactionsSuperclass
+from controller_superclass import ControllerSuperclass
 
 
-class Op2SimpleactionsGenerator(SimpleactionsSuperclass):
+class Op2ControllerGenerator(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "op2")
 

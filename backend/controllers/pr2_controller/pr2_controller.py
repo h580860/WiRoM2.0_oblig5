@@ -6,6 +6,6 @@ import os
 controller_path = os.path.join(os.getcwd(), os.pardir)
 sys.path.insert(0, controller_path)
 
-from pr2_simpleactions_generator import Pr2SimpleactionsGenerator
-pr2_simpleactions = Pr2SimpleactionsGenerator("pr2")
-pr2_simpleactions.initiate_threads()
+from pr2_controller_generator import Pr2ControllerGenerator
+pr2_controller = Pr2ControllerGenerator("pr2")
+pr2_controller.initiate_threads()

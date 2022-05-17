@@ -19,6 +19,6 @@ sys.path.insert(0, controller_path)
 # init(5002, "moose")
 
 
-from moose_simpleactions_generator import MooseSimpleactionsGenerator
-moose_simpleactions = MooseSimpleactionsGenerator("moose")
-moose_simpleactions.initiate_threads()
+from moose_controller_generator import MooseControllerGenerator
+moose_controller = MooseControllerGenerator("moose")
+moose_controller.initiate_threads()

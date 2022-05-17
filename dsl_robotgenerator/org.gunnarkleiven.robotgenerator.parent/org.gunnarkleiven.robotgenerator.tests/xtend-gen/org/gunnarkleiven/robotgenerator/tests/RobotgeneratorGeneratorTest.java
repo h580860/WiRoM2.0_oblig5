@@ -34,9 +34,9 @@ public class RobotgeneratorGeneratorTest {
         _builder_1.newLine();
         _builder_1.append("\t\t\t");
         _builder_1.newLine();
-        _builder_1.append("import MooseSimpleactionsGenerator");
+        _builder_1.append("import MooseControllerGenerator");
         _builder_1.newLine();
-        _builder_1.append("MooseSimpleactionsGenerator(port_number_placeholder, \'mooseName\')");
+        _builder_1.append("MooseControllerGenerator(port_number_placeholder, \'mooseName\')");
         _builder_1.newLine();
         Assert.assertEquals(_builder_1.toString(), 
           it.getAllGeneratedResources().get("testMoose.py"));

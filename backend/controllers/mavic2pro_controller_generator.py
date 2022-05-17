@@ -10,10 +10,10 @@ import sys
 import os
 import logging
 import pika
-from simpleactions_superclass import SimpleactionsSuperclass
+from controller_superclass import ControllerSuperclass
 
 
-class Mavic2proSimpleactionsGenerator(SimpleactionsSuperclass):
+class Mavic2ProControllerGenerator(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "mavic2pro")
 

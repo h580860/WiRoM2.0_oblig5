@@ -5,11 +5,11 @@ import time
 import json
 import pika
 from math import pi
-from simpleactions_superclass import SimpleactionsSuperclass
+from controller_superclass import ControllerSuperclass
 from message_subscriber import MessageSubscriber
 
 
-class Pr2SimpleactionsGenerator(SimpleactionsSuperclass):
+class Pr2ControllerGenerator(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "pr2")
         # create the Robot instance.

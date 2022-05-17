@@ -6,7 +6,7 @@ import sys
 controller_path = os.path.join(os.getcwd(), os.pardir)
 sys.path.insert(0, controller_path)
 
-from op2_simpleactions_generator import Op2SimpleactionsGenerator
+from op2_controller_generator import Op2ControllerGenerator
 
-op2_simpleactions = Op2SimpleactionsGenerator("op2")
-op2_simpleactions.initiate_threads()
+op2_controller = Op2ControllerGenerator("op2")
+op2_controller.initiate_threads()

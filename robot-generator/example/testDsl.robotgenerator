@@ -1,6 +1,1 @@
-addRobot(moose, "Almli1", 3, 3);
-addRobot(moose, "Almli2", 3, 3);
-addRobot(moose, "Almli3", 3, 3);
-addRobot(moose, "Almli4", 3, 3);
-addRobot(moose, "Almli5", 3, 3);
-addRobot(moose, "Almli6", 3, 3);
+addRobot(moose, "Stig1", 3, 3);

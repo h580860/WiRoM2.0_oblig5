@@ -1,5 +1,6 @@
-import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { RobotGeneratorAstType, Person } from './generated/ast';
+// import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
+import { ValidationCheck, ValidationRegistry } from 'langium';
+import { RobotGeneratorAstType } from './generated/ast';
 import type { RobotGeneratorServices } from './robot-generator-module';
 
 /**
@@ -15,7 +16,7 @@ export class RobotGeneratorValidationRegistry extends ValidationRegistry {
         super(services);
         const validator = services.validation.RobotGeneratorValidator;
         const checks: RobotGeneratorChecks = {
-            Person: validator.checkPersonStartsWithCapital
+            // Person: validator.checkPersonStartsWithCapital
         };
         this.register(checks, validator);
     }
@@ -26,14 +27,14 @@ export class RobotGeneratorValidationRegistry extends ValidationRegistry {
  */
 export class RobotGeneratorValidator {
 
-    checkPersonStartsWithCapital(person: Person, accept: ValidationAcceptor): void {
-        if (person.name) {
-            const firstChar = person.name.substring(0, 1);
-            if (firstChar.toUpperCase() !== firstChar) {
-                accept('warning', 'Person name should start with a capital.', { node: person, property: 'name' });
-            }
-        }
-    }
+    // checkPersonStartsWithCapital(person: Person, accept: ValidationAcceptor): void {
+    //     if (person.name) {
+    //         const firstChar = person.name.substring(0, 1);
+    //         if (firstChar.toUpperCase() !== firstChar) {
+    //             accept('warning', 'Person name should start with a capital.', { node: person, property: 'name' });
+    //         }
+    //     }
+    // }
 
     // checkValidRobotType
 
