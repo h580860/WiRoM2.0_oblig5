@@ -43,6 +43,20 @@
               "type": "move",
               "quality": 0.9,
               "cost": 0.05
+            },
+            {
+              "name": "go_slightly_right",
+              "numArgs": 1,
+              "type": "move",
+              "quality": 0.9,
+              "cost": 0.05
+            },
+            {
+              "name": "go_slightly_left",
+              "numArgs": 1,
+              "type": "move",
+              "quality": 0.9,
+              "cost": 0.05
             }
           ]
         }
@@ -75,7 +89,19 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot turns right for x amount of seconds"
-                }
+                },
+                {
+                  "name": "go_slightly_right",
+                  "numArgs": 1,
+                  "type": "move",
+                  "information": "Robot moves slightly to the right for x amount of seconds"
+              },
+              {
+                  "name": "go_slightly_left",
+                  "numArgs": 1,
+                  "type": "move",
+                  "information": "Robot moves slightly to the left for x amount of seconds"
+              }
             ]
         }
     }

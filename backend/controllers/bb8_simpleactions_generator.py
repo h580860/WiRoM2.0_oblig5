@@ -42,6 +42,8 @@ class Bb8SimpleactionsGenerator(SimpleactionsSuperclass):
         self.add_available_simpleaction("go_backward", self.go_backward)
         self.add_available_simpleaction("turn_left", self.turn_left)
         self.add_available_simpleaction("turn_right", self.turn_right)
+        self.add_available_simpleaction("go_slightly_right", self.go_slightly_right)
+        self.add_available_simpleaction("go_slightly_left", self.go_slightly_left)
 
 
     def initiate_threads(self):
@@ -80,6 +82,24 @@ class Bb8SimpleactionsGenerator(SimpleactionsSuperclass):
 
         if duration != 0:
             time.sleep(duration)
+            self.yaw_speed = 0
+
+    def go_slightly_right(self, duration):
+        self.pitch_speed = self.max_speed
+        self.yaw_speed = (-self.max_speed * 0.75)
+
+        if duration != 0:
+            time.sleep(duration)
+            self.pitch_speed = 0
+            self.yaw_speed = 0
+
+    def go_slightly_left(self, duration):
+        self.pitch_speed = self.max_speed
+        self.yaw_speed = (self.max_speed * 0.75 )
+
+        if duration != 0:
+            time.sleep(duration)
+            self.pitch_speed = 0
             self.yaw_speed = 0
 
     def bb8_main(self):

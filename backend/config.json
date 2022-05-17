@@ -212,6 +212,20 @@
           "type": "move",
           "quality": 0.9,
           "cost": 0.05
+        },
+        {
+          "name": "go_slightly_right",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
+        },
+        {
+          "name": "go_slightly_left",
+          "numArgs": 1,
+          "type": "move",
+          "quality": 0.9,
+          "cost": 0.05
         }
       ]
     },

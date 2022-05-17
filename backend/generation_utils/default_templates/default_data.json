@@ -171,6 +171,18 @@
                     "numArgs": 1,
                     "type": "move",
                     "information": "Robot turns right for x amount of seconds"
+                },
+                {
+                    "name": "go_slighty_right",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot moves slightly to the right for x amount of seconds"
+                },
+                {
+                    "name": "go_slighty_left",
+                    "numArgs": 1,
+                    "type": "move",
+                    "information": "Robot moves slightly to the left for x amount of seconds"
                 }
             ]
         },
@@ -243,270 +255,6 @@
                     "numArgs": 1,
                     "type": "notify",
                     "information": "Send the location [x, y] to the set target"
-                }
-            ]
-        },
-        "Pr2-2": {
-            "language": "python",
-            "port": "5003",
-            "simpleactions": [
-                {
-                    "name": "go_forward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Robot starts rolling forward"
-                },
-                {
-                    "name": "go_backward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Robot starts rolling backwards"
-                },
-                {
-                    "name": "turn_right",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Robot turns right for x amount of seconds"
-                },
-                {
-                    "name": "turn_left",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Robot turns right for x amount of seconds"
-                },
-                {
-                    "name": "rotate_angle",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Robot rotates given an angle [rad]"
-                },
-                {
-                    "name": "extend_arms",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Robot extend its arms, enabling it to grab something"
-                },
-                {
-                    "name": "retract_arms",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Robot retracts its arms"
-                },
-                {
-                    "name": "grab_box",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Robot grabs a box in front of it"
-                },
-                {
-                    "name": "release_box",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Robot releases the box"
-                },
-                {
-                    "name": "set_message_target",
-                    "numArgs": 1,
-                    "type": "set_property",
-                    "information": "Set target of messages from this robot"
-                },
-                {
-                    "name": "send_given_location",
-                    "numArgs": 1,
-                    "type": "notify",
-                    "information": "Send the location [x, y] to the set target"
-                }
-            ]
-        },
-        "Stig1": {
-            "language": "python",
-            "port": "5004",
-            "simpleactions": [
-                {
-                    "name": "go_forward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot forward for x amount of seconds"
-                },
-                {
-                    "name": "go_backward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot backward for x amount of seconds"
-                },
-                {
-                    "name": "turn_right",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot right for x amout of seconds"
-                },
-                {
-                    "name": "turn_left",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot left for x amount of seconds"
-                },
-                {
-                    "name": "go_to_location",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
-                },
-                {
-                    "name": "stop_movement",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Stop all movement"
-                },
-                {
-                    "name": "receive_location_from_robot",
-                    "numArgs": 0,
-                    "type": "wait",
-                    "information": "Wait for location from another robot"
-                }
-            ]
-        },
-        "Stig2": {
-            "language": "python",
-            "port": "5005",
-            "simpleactions": [
-                {
-                    "name": "go_forward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot forward for x amount of seconds"
-                },
-                {
-                    "name": "go_backward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot backward for x amount of seconds"
-                },
-                {
-                    "name": "turn_right",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot right for x amout of seconds"
-                },
-                {
-                    "name": "turn_left",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot left for x amount of seconds"
-                },
-                {
-                    "name": "go_to_location",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
-                },
-                {
-                    "name": "stop_movement",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Stop all movement"
-                },
-                {
-                    "name": "receive_location_from_robot",
-                    "numArgs": 0,
-                    "type": "wait",
-                    "information": "Wait for location from another robot"
-                }
-            ]
-        },
-        "Stig3": {
-            "language": "python",
-            "port": "5006",
-            "simpleactions": [
-                {
-                    "name": "go_forward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot forward for x amount of seconds"
-                },
-                {
-                    "name": "go_backward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot backward for x amount of seconds"
-                },
-                {
-                    "name": "turn_right",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot right for x amout of seconds"
-                },
-                {
-                    "name": "turn_left",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot left for x amount of seconds"
-                },
-                {
-                    "name": "go_to_location",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
-                },
-                {
-                    "name": "stop_movement",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Stop all movement"
-                },
-                {
-                    "name": "receive_location_from_robot",
-                    "numArgs": 0,
-                    "type": "wait",
-                    "information": "Wait for location from another robot"
-                }
-            ]
-        },
-        "Stig4": {
-            "language": "python",
-            "port": "5007",
-            "simpleactions": [
-                {
-                    "name": "go_forward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot forward for x amount of seconds"
-                },
-                {
-                    "name": "go_backward",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Move robot backward for x amount of seconds"
-                },
-                {
-                    "name": "turn_right",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot right for x amout of seconds"
-                },
-                {
-                    "name": "turn_left",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Turn robot left for x amount of seconds"
-                },
-                {
-                    "name": "go_to_location",
-                    "numArgs": 1,
-                    "type": "move",
-                    "information": "Choose a location [x, y] for the robot to go to, if empty go to stored location"
-                },
-                {
-                    "name": "stop_movement",
-                    "numArgs": 0,
-                    "type": "move",
-                    "information": "Stop all movement"
-                },
-                {
-                    "name": "receive_location_from_robot",
-                    "numArgs": 0,
-                    "type": "wait",
-                    "information": "Wait for location from another robot"
                 }
             ]
         }
@@ -1349,6 +1097,578 @@
                             "name": "go_to_location",
                             "args": "[]",
                             "id": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        "Giga Mission (!)": {
+            "tasks": [
+                {
+                    "name": "task for moose0",
+                    "id": 0,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "12",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "10",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "task for moose1",
+                    "id": 1,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "12",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "8",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "task for moose2",
+                    "id": 2,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "12",
+                            "id": 0
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "5",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "task for moose3",
+                    "id": 3,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "12",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "8",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "task for moose4",
+                    "id": 4,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "12",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "10",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "task for bb8-0",
+                    "id": 5,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_slightly_right",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "1",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "7",
+                            "id": 2
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "3",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "30",
+                            "id": 4
+                        }
+                    ]
+                },
+                {
+                    "name": "task for bb8-1",
+                    "id": 6,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "15",
+                            "id": 0
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "4",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "3",
+                            "id": 2
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "8",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "5",
+                            "id": 4
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "10",
+                            "id": 5
+                        }
+                    ]
+                },
+                {
+                    "name": "task for bb8-2",
+                    "id": 7,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "3",
+                            "id": 0
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "4",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "4",
+                            "id": 2
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "8",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "6",
+                            "id": 5
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "3",
+                            "id": 6
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "14",
+                            "id": 7
+                        }
+                    ]
+                },
+                {
+                    "name": "task for bb8-3",
+                    "id": 8,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_forward",
+                            "args": "9",
+                            "id": 0
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "3",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "3",
+                            "id": 2
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "25",
+                            "id": 4
+                        }
+                    ]
+                },
+                {
+                    "name": "task for bb8-4",
+                    "id": 9,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "go_slightly_left",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "1",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "8",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_slightly_right",
+                            "args": "4",
+                            "id": 4
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 5
+                        },
+                        {
+                            "name": "go_slightly_left",
+                            "args": "4",
+                            "id": 6
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "20",
+                            "id": 7
+                        }
+                    ]
+                },
+                {
+                    "name": "task for pr2-0",
+                    "id": 10,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 5
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 5
+                        }
+                    ]
+                },
+                {
+                    "name": "task for pr2-1",
+                    "id": 11,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 5
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 5
+                        }
+                    ]
+                },
+                {
+                    "name": "task for pr2-2",
+                    "id": 12,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 5
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 5
+                        }
+                    ]
+                },
+                {
+                    "name": "task for pr2-3",
+                    "id": 13,
+                    "robot": "--",
+                    "simpleactions": [
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 5
+                        },
+                        {
+                            "name": "turn_left",
+                            "args": "7",
+                            "id": 0
+                        },
+                        {
+                            "name": "grab_box",
+                            "args": "",
+                            "id": 1
+                        },
+                        {
+                            "name": "go_forward",
+                            "args": "2",
+                            "id": 2
+                        },
+                        {
+                            "name": "release_box",
+                            "args": "",
+                            "id": 3
+                        },
+                        {
+                            "name": "go_backward",
+                            "args": "2",
+                            "id": 4
+                        },
+                        {
+                            "name": "turn_right",
+                            "args": "7",
+                            "id": 5
                         }
                     ]
                 }

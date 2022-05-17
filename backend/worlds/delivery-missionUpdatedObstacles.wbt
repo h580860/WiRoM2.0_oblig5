@@ -51,6 +51,10 @@ OilBarrel {
   name "oil barrel(10)"
 }
 OilBarrel {
+  translation 398.83 -0.37 -427.6
+  name "oil barrel(1)"
+}
+OilBarrel {
   translation 398.85 -0.37 -429.59
   name "oil barrel(11)"
 }

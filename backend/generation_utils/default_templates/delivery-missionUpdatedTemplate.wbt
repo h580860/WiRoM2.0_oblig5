@@ -8,8 +8,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.08171491783719208 -0.9908354555863754 -0.10755357807065656 4.432170322211394
-  position 437.8774614654394 7.455663018367919 -414.5850095791754
+  orientation -0.13429747770327327 0.9756981594056816 0.17313950795501287 1.8459185394880837
+  position 453.2029674842018 22.25868605071193 -425.9532234085596
 }
 TexturedBackground {
   texture "noon_cloudy_countryside"
@@ -26,8 +26,81 @@ UnevenTerrain {
     }
   }
 }
+OilBarrel {
+  translation 402.69 -0.37 -424.32
+  name "oil barrel(6)"
+}
+OilBarrel {
+  translation 403.15 -0.37 -425.87
+  name "oil barrel(7)"
+}
+OilBarrel {
+  translation 402.69 -0.37 -422.52
+  name "oil barrel(8)"
+}
+OilBarrel {
+  translation 402.69 -0.37 -428.6
+  name "oil barrel(9)"
+}
+OilBarrel {
+  translation 402.69 -0.37 -430.48
+  name "oil barrel(17)"
+}
+OilBarrel {
+  translation 400.82 -0.37 -427.1
+  name "oil barrel(10)"
+}
+OilBarrel {
+  translation 398.85 -0.37 -429.59
+  name "oil barrel(11)"
+}
+OilBarrel {
+  translation 397.22 -0.37 -429.82
+  name "oil barrel(4)"
+}
+OilBarrel {
+  translation 399.43 -0.37 -423.9
+  name "oil barrel(2)"
+}
+OilBarrel {
+  translation 396.79 -0.37 -423.61
+  name "oil barrel(3)"
+}
 SimpleTwoFloorsHouse {
   translation 377.6 -0.68 -363.59
+}
+Floor {
+  translation 398 -0.815 -426
+  size 16 10
+  appearance Asphalt {
+  }
+}
+OilBarrel {
+  translation 395.28 -0.37 -425.86
+  name "oil barrel(13)"
+}
+OilBarrel {
+  translation 393.58 -0.37 -427.15
+  name "oil barrel(5)"
+}
+OilBarrel {
+  translation 395.26 -0.37 -429.26
+  name "oil barrel(14)"
+}
+OilBarrel {
+  translation 393.93 -0.37 -422.03
+  name "oil barrel(12)"
+}
+OilBarrel {
+  translation 392.12 -0.37 -422.99
+  name "oil barrel(16)"
+}
+OilBarrel {
+  translation 393.93 -0.37 -424.36
+  name "oil barrel(15)"
+}
+OilBarrel {
+  translation 398 -0.37 -426
 }
 SimpleTwoFloorsHouse {
   translation 403.75 -0.68 -363.59
