@@ -107,7 +107,7 @@ To see the whole content, the reader is adviced to check that file. However, an 
 
 
 ## Required return value
-
+The server expects a list of task at the same format as defined futher above, but with the values of **task["robots"]** 
 
 
 ## Example algorithm: Random Allocation
