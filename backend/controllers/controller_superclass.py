@@ -17,7 +17,6 @@ cbaa_path = os.path.join(cbaa_path, os.pardir)
 sys.path.insert(0, cbaa_path)
 from task_allocation.cbaa import CBAA
 
-
 class ControllerSuperclass:
     def __init__(self, name, robot_type):
         '''
@@ -75,7 +74,7 @@ class ControllerSuperclass:
         # self.n_robots = 4
         self.consensus_based_auction_algorithm = CBAA(
             # self.robot_name, self.test_avail_simpleactions, self.n_robots
-            self.robot_name, self.config_simpleactions_names_cost, self.n_robots
+            "cbaa",self.robot_name, self.config_simpleactions_names_cost, self.n_robots
         )
 
         print(f"Super class initiated. {self.robot_name}")
