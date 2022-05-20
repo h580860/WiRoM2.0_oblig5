@@ -17,6 +17,7 @@ cbaa_path = os.path.join(cbaa_path, os.pardir)
 sys.path.insert(0, cbaa_path)
 from task_allocation.cbaa import CBAA
 
+
 class ControllerSuperclass:
     def __init__(self, name, robot_type):
         '''
