@@ -12,7 +12,7 @@ from controller_superclass import ControllerSuperclass
 from message_subscriber import MessageSubscriber
 
 
-class MooseControllerGenerator(ControllerSuperclass):
+class MooseControllerClass(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "moose")
         # create the Robot instance.

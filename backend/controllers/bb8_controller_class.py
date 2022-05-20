@@ -11,7 +11,7 @@ import pika
 from controller_superclass import ControllerSuperclass
 
 
-class Bb8ControllerGenerator(ControllerSuperclass):
+class Bb8ControllerClass(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "bb8")
 

@@ -13,7 +13,7 @@ import pika
 from controller_superclass import ControllerSuperclass
 
 
-class Mavic2ProControllerGenerator(ControllerSuperclass):
+class Mavic2ProControllerClass(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "mavic2pro")
 

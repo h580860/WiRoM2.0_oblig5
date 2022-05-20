@@ -19,7 +19,7 @@ from managers import RobotisOp2MotionManager, RobotisOp2GaitManager
 from controller_superclass import ControllerSuperclass
 
 
-class Op2ControllerGenerator(ControllerSuperclass):
+class Op2ControllerClass(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "op2")
 
