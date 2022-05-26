@@ -60,7 +60,7 @@ export function generateController(dslCommand: DslCommand, filePath: string, des
     const robotTypeCapitalized: string = capitalizeType(robotType);
     const robotName: string = dslCommand.robotName.name;
     // TODO length of this line in the editor
-    const controllerTemplate: string = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_controller_generator import ${robotTypeCapitalized}ControllerGenerator\n${robotType}_controller = ${robotTypeCapitalized}ControllerGenerator(\"${robotName}\")\n${robotType}_controller.initiate_threads()`;
+    const controllerTemplate: string = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_controller_class import ${robotTypeCapitalized}ControllerClass\n${robotType}_controller = ${robotTypeCapitalized}ControllerClass(\"${robotName}\")\n${robotType}_controller.initiate_threads()`;
 
     // fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`)
     fileNode.append(controllerTemplate);

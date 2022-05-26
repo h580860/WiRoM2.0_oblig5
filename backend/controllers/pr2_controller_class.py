@@ -9,7 +9,7 @@ from controller_superclass import ControllerSuperclass
 from message_subscriber import MessageSubscriber
 
 
-class Pr2ControllerGenerator(ControllerSuperclass):
+class Pr2ControllerClass(ControllerSuperclass):
     def __init__(self, name):
         super().__init__(name, "pr2")
         # create the Robot instance.

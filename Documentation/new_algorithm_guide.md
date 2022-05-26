@@ -21,7 +21,8 @@ A screenshot from the web interface of the current mission:
 
 
 ## Parameter formats
-There are two required parameters for the functions: 
+There are three required parameters for the functions: 
+- *self*: Since this is a method belonging to a class, it is required to include the self parameter. 
 - *Tasks*: A list of the tasks to be allocated
 - *Robots*: A list of the robots
 

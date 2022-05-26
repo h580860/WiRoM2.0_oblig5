@@ -43,7 +43,7 @@ function generateController(dslCommand, filePath, destination) {
     const robotTypeCapitalized = capitalizeType(robotType);
     const robotName = dslCommand.robotName.name;
     // TODO length of this line in the editor
-    const controllerTemplate = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_controller_generator import ${robotTypeCapitalized}ControllerGenerator\n${robotType}_controller = ${robotTypeCapitalized}ControllerGenerator(\"${robotName}\")\n${robotType}_controller.initiate_threads()`;
+    const controllerTemplate = `import sys\nimport os\n\ncontroller_path = os.path.join(os.getcwd(), os.pardir)\nsys.path.insert(0, controller_path)\n\nfrom ${robotType}_controller_class import ${robotTypeCapitalized}ControllerClass\n${robotType}_controller = ${robotTypeCapitalized}ControllerClass(\"${robotName}\")\n${robotType}_controller.initiate_threads()`;
     // fileNode.append(`print(f"Hello '${dslCommand.robotName.name}'!")`)
     fileNode.append(controllerTemplate);
     if (!fs_1.default.existsSync(data.destination)) {

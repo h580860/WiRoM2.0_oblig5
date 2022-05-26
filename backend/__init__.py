@@ -18,7 +18,9 @@ from backend.generation_utils.update_checker import UpdateChecker
 from backend.controllers.message_subscriber import MessageSubscriber
 from backend.generation_utils.dsl_shellcommands import DSLShellCommands
 from backend.new_task_allocation_algorithms import *
-from backend.new_task_allocation_algorithms.random_allocation import random_allocation
+# from backend.new_task_allocation_algorithms.random_allocation import random_allocation
+from backend.new_task_allocation_algorithms.random_allocation import RandomAllocation
+from backend.task_allocation.original_task_allocation import OriginalTaskAllocation
 
 # from .generation_utils.update_checker import UpdateChecker
 # import backend.generation_utils.update_checker
@@ -29,7 +31,9 @@ CORS(app)
 
 # A dictionary to keep track of the added algorithm names
 # The keys are the algorithm names, and the values are the corresponding function call
-added_algorithms = {"random_allocation": random_allocation}
+# UPDATED: The keys are the algorithm names, and the values are the corresponding classes
+added_algorithms = {"random_allocation": RandomAllocation(
+    "random_allocation").random_allocation}
 
 
 # The location of the script used to run the DSL code generation
@@ -58,6 +62,9 @@ allowed to call this request once before waiting for it to finish
 https://stackoverflow.com/questions/32815451/are-global-variables-thread-safe-in-flask-how-do-i-share-data-between-requests
 """
 cbaa_results = []
+
+# Initiate task allocation classes
+original_task_allocation = OriginalTaskAllocation("task_allocation")
 
 # routing_key lookup
 # with open(pathlib.Path.cwd() / 'backend' / 'routing_keys_lookup.json') as reader_file:
@@ -216,80 +223,9 @@ def receive_tasks_for_allocation():
     #     print(t)
     print("Tasks received:")
     pp.pprint(tasks)
-    tasks = task_allocation(tasks, robots)
+    # tasks = task_allocation(tasks, robots)
+    tasks = original_task_allocation.task_allocation(tasks, robots)
     return jsonify(tasks)
-
-
-# automatic task allocation algorithm, auction-based solution
-# allocates tasks to robots based on highest bid
-def task_allocation(tasks, robots):
-    # wirom_logger.info("task_allocation")
-    bids = {}
-    for task in tasks:
-        bids[task["name"]] = {}
-        for robot in robots:
-            bids[task["name"]][robot] = {}
-            bid = 1
-            for simpleaction in task["simpleactions"]:
-                robot_simpleaction = list(filter(
-                    lambda robot_simpleaction: robot_simpleaction["name"] == simpleaction["name"],
-                    robots[robot]["simpleactions"]))
-                if robot_simpleaction != []:
-                    robot_simpleaction[0].update(
-                        {"args": simpleaction["args"]})
-                    robot_simpleaction[0].update(
-                        {"location": robots[robot]["location"]})
-
-                    utility = calculate_utility(robot_simpleaction[0])
-                    bid = bid * utility
-                else:
-                    bid = 0
-            bids[task["name"]][robot] = bid
-
-    tasks = allocate_tasks_to_highest_bidder(tasks, bids)
-    # print(f"Tasks after task_allocation = {task}")
-
-    print("Tasks after task allocation")
-    pp.pprint(tasks)
-    return tasks
-
-
-# Calculate the utility a robot has for a simpleaction (quality - cost)
-def calculate_utility(robot_simpleaction):
-    utility = robot_simpleaction["quality"] - robot_simpleaction["cost"]
-    # calculate cross dependencies: go to location only such simpleaction for now
-    if robot_simpleaction["name"] == "go_to_location" and robot_simpleaction["args"] != "[]":
-        robot_loc = robot_simpleaction["location"]
-        targetlist = robot_simpleaction["args"].strip('][').split(', ')
-        target = {"x": int(targetlist[0]), "y": int(targetlist[1])}
-        distance = abs(robot_loc["x"] - target["x"] +
-                       robot_loc["y"] - target["y"])
-        # find distance from target location and normalize before adding to utility
-        distNorm = (1 - distance / 100)
-        if distNorm > 0.1:
-            utility = utility * distNorm
-        else:
-            utility = utility * 0.1
-
-    return utility
-
-
-# Sorting bids and allocates tasks to robots based on highest bid
-def allocate_tasks_to_highest_bidder(tasks, bids):
-    print(f"")
-    for bid in bids:
-        highest_bidder = '--'
-        for robot in bids[bid]:
-            if highest_bidder == '--' and bids[bid][robot] > 0:
-                highest_bidder = robot
-            elif highest_bidder != '--' and bids[bid][robot] > bids[bid][highest_bidder]:
-                highest_bidder = robot
-
-        for task in tasks:
-            if task["name"] == bid:
-                task["robot"] = highest_bidder
-
-    return tasks
 
 
 @app.route('/robot-generator', methods=['POST'])
@@ -368,9 +304,23 @@ def add_new_algorithm():
     new_filepath = pathlib.Path().parent / "backend" / \
         "new_task_allocation_algorithms" / f"{name}.py"
     print(f"newfilepath = {new_filepath}")
+
     with open(new_filepath, 'w') as writer:
+        # First we need to manually write some lines
+
+        # It is useful to import the random library just in case the user wants to
+        # utilize it
+        writer.write("import random\n")
+        # Need to import the parent class
+        writer.write(
+            "from ..task_allocation.centralized_taskallocation import CentralicedTaskAllocation\n")
+
+        # write the class name, including its parent class
+        writer.write(f"class {name}(CentralicedTaskAllocation):\n")
+        writer.write(f"\tdef __init__(self, algorithm_name):\n")
+        writer.write(f"\t\tsuper().__init__(algorithm_name)\n\n")
         for l in code_lines:
-            writer.write(l + "\n")
+            writer.write("\t" + l + "\n")
 
     # TEST call function
     # source: https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
@@ -390,7 +340,14 @@ def add_new_algorithm():
 
     test_module = importlib.import_module(
         f"backend.new_task_allocation_algorithms.{name}")
-    method_to_call = getattr(test_module, name)
+    new_class = getattr(test_module, name)
+    # print(f"New class: {new_class}")
+    new_algorithm_instance = new_class(name)
+    method_to_call = getattr(new_algorithm_instance, name)
+    # method_to_call = getattr(new_algorithm_instance, "display_name")
+    # print(f"method to call: {method_to_call}")
+    # getattr(new_algorithm_instance, "display_name")()
+    # added_algorithms[name] = method_to_call(name)
     added_algorithms[name] = method_to_call
     # method_to_call()
     # print(f"added_algorithms dictionary: {added_algorithms}")

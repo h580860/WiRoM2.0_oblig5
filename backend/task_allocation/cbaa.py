@@ -2,9 +2,12 @@ import json
 import time
 import requests
 
+from .decentralized_taskallocation import DecentralicedTaskAllocation
 
-class CBAA:
-    def __init__(self, robot_name, available_simpleactions_names_cost, Nu):
+
+class CBAA(DecentralicedTaskAllocation):
+    def __init__(self, algorithm_name, robot_name, available_simpleactions_names_cost, Nu):
+        super().__init__(algorithm_name)
         self.robot_name = robot_name
         self.available_simpleactions_names_cost = available_simpleactions_names_cost
 
@@ -48,7 +51,8 @@ class CBAA:
                 # Loop through the y vector, and create a list only including the valid tasks from the valid task
                 # list. Then select the maximum argument
                 # task_J = max([y_vector[i] if valid_tasks[i] == 1 else 0 for i in range(len(y_vector))])
-                task_j, task_j_index = self.get_max_value_and_index_of_valid_task_bid(valid_tasks)
+                task_j, task_j_index = self.get_max_value_and_index_of_valid_task_bid(
+                    valid_tasks)
 
                 self.x_vector[task_j_index] = 1
                 self.y_vector[task_j_index] = task_j
@@ -60,9 +64,11 @@ class CBAA:
                     if valid_tasks[task_id] == 1:
                         self.y_vector[task_id] = self.cost_function(task_id)
                     else:
-                        print(f"{self.robot_name} skipping task id {task_id}, values={self.task_work_list[task_id]}")
+                        print(
+                            f"{self.robot_name} skipping task id {task_id}, values={self.task_work_list[task_id]}")
 
-        print(f"After the first iteration of 'selected_tasks', we have the following values")
+        print(
+            f"After the first iteration of 'selected_tasks', we have the following values")
         print(f"{self.robot_name} x_vector: {self.x_vector}, y_vector={self.y_vector}")
         self.winning_bid_list = self.y_vector
 
@@ -113,7 +119,8 @@ class CBAA:
                 self.x_vector[i] = 0
 
         print(f"{self.robot_name} with the current y_vector list: {self.y_vector}")
-        print(f"{self.robot_name} with the current winning robots: {self.winning_robots}")
+        print(
+            f"{self.robot_name} with the current winning robots: {self.winning_robots}")
         # return consensus_bids
 
     def get_max_value_and_index_of_valid_task_bid(self, valid_tasks):
@@ -147,7 +154,8 @@ class CBAA:
         for j in range(self.Nt):
             # First, check if the current robot is able to perform the given task
             if not all([x in self.available_simpleactions_names_cost.keys() for x in self.task_work_list[j]]):
-                print(f"{self.robot_name} is not able to perform all the simpleactions in {self.task_work_list[j]}")
+                print(
+                    f"{self.robot_name} is not able to perform all the simpleactions in {self.task_work_list[j]}")
                 valid_tasks_h.append(0)
                 continue
             if self.cost_function(j) > self.y_vector[j]:
@@ -190,7 +198,8 @@ class CBAA:
             print(f"{robot_name} received {self.n_other_bids}/{self.Nu - 1}")
             time.sleep(0.5)
             retries += 1
-        print(f"{robot_name} FINISHED RECEIVING. Received {self.n_other_bids}/{self.Nu - 1}")
+        print(
+            f"{robot_name} FINISHED RECEIVING. Received {self.n_other_bids}/{self.Nu - 1}")
 
     def post_results(self):
         """
