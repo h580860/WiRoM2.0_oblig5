@@ -62,7 +62,7 @@
                     "name": "stop_movement",
                     "numArgs": 0,
                     "type": "move",
-                    "information": "Stop all movement"
+                    "information": "    op all movement"
                 }
             ]
         },
@@ -383,59 +383,6 @@
                 }
             ]
         },
-        "Scout location and deliver item": {
-            "tasks": [
-                {
-                    "name": "Scout location",
-                    "id": 0,
-                    "robot": "mavic2pro",
-                    "simpleactions": [
-                        {
-                            "name": "set_altitude",
-                            "args": "1",
-                            "id": 0
-                        },
-                        {
-                            "name": "recognise_objects",
-                            "args": "",
-                            "id": 1
-                        },
-                        {
-                            "name": "go_to_location",
-                            "args": "[388, -365]",
-                            "id": 2
-                        },
-                        {
-                            "name": "set_message_target",
-                            "args": "moose",
-                            "id": 3
-                        },
-                        {
-                            "name": "send_location",
-                            "args": "",
-                            "id": 4
-                        }
-                    ]
-                },
-                {
-                    "name": "Receive and go to location",
-                    "id": 2,
-                    "robot": "moose",
-                    "simpleactions": [
-                        {
-                            "name": "receive_location_from_robot",
-                            "args": "",
-                            "id": 0
-                        },
-                        {
-                            "name": "go_to_location",
-                            "args": "[]",
-                            "id": 1
-                        }
-                    ]
-                }
-            ]
-        },
         "Scout area and deliver item": {
             "tasks": [
                 {
@@ -487,7 +434,7 @@
                             "name": "go_forward",
                             "args": "30",
                             "id": 8
-                        },
+                        }, 
                         {
                             "name": "set_message_target",
                             "args": "moose",
@@ -565,7 +512,7 @@
                 }
             ]
         },
-        "Testmission": {
+        "Test Forward": {
             "tasks": [
                 {
                     "name": "Test: forward mavic",
@@ -678,7 +625,7 @@
                         },
                         {
                             "name": "set_message_target",
-                            "args": "Stig1",
+                            "args": "Moose1",
                             "id": 7
                         },
                         {
@@ -743,7 +690,7 @@
                         },
                         {
                             "name": "set_message_target",
-                            "args": "Stig3",
+                            "args": "Moose3",
                             "id": 20
                         },
                         {
@@ -895,7 +842,7 @@
                         },
                         {
                             "name": "set_message_target",
-                            "args": "Stig2",
+                            "args": "Moose2",
                             "id": 10
                         },
                         {
@@ -960,7 +907,7 @@
                         },
                         {
                             "name": "set_message_target",
-                            "args": "Stig4",
+                            "args": "Moose4",
                             "id": 23
                         },
                         {
@@ -991,7 +938,7 @@
                     ]
                 },
                 {
-                    "name": "Stig1 Wait and Deliver",
+                    "name": "Moose1 Wait and Deliver",
                     "id": 2,
                     "robot": "--",
                     "simpleactions": [
@@ -1008,7 +955,7 @@
                     ]
                 },
                 {
-                    "name": "Stig2 Wait and Deliver",
+                    "name": "Moose2 Wait and Deliver",
                     "id": 3,
                     "robot": "--",
                     "simpleactions": [
@@ -1025,7 +972,7 @@
                     ]
                 },
                 {
-                    "name": "Stig3 Wait and Deliver",
+                    "name": "Moose3 Wait and Deliver",
                     "id": 4,
                     "robot": "--",
                     "simpleactions": [
@@ -1042,7 +989,7 @@
                     ]
                 },
                 {
-                    "name": "Stig4 Wait and Deliver",
+                    "name": "Moose4 Wait and Deliver",
                     "id": 5,
                     "robot": "--",
                     "simpleactions": [
@@ -1105,7 +1052,7 @@
         "Giga Mission (!)": {
             "tasks": [
                 {
-                    "name": "task for moose0",
+                    "name": "task for Moose1",
                     "id": 0,
                     "robot": "--",
                     "simpleactions": [
@@ -1127,7 +1074,7 @@
                     ]
                 },
                 {
-                    "name": "task for moose1",
+                    "name": "task for Moose2",
                     "id": 1,
                     "robot": "--",
                     "simpleactions": [
@@ -1149,7 +1096,7 @@
                     ]
                 },
                 {
-                    "name": "task for moose2",
+                    "name": "task for Moose3",
                     "id": 2,
                     "robot": "--",
                     "simpleactions": [
@@ -1171,7 +1118,7 @@
                     ]
                 },
                 {
-                    "name": "task for moose3",
+                    "name": "task for Moose4",
                     "id": 3,
                     "robot": "--",
                     "simpleactions": [
@@ -1193,7 +1140,7 @@
                     ]
                 },
                 {
-                    "name": "task for moose4",
+                    "name": "task for Moose5",
                     "id": 4,
                     "robot": "--",
                     "simpleactions": [
@@ -1215,7 +1162,7 @@
                     ]
                 },
                 {
-                    "name": "task for bb8-0",
+                    "name": "task for BB8-1",
                     "id": 5,
                     "robot": "--",
                     "simpleactions": [
@@ -1247,7 +1194,7 @@
                     ]
                 },
                 {
-                    "name": "task for bb8-1",
+                    "name": "task for BB8-2",
                     "id": 6,
                     "robot": "--",
                     "simpleactions": [
@@ -1284,7 +1231,7 @@
                     ]
                 },
                 {
-                    "name": "task for bb8-2",
+                    "name": "task for BB8-3",
                     "id": 7,
                     "robot": "--",
                     "simpleactions": [
@@ -1331,7 +1278,7 @@
                     ]
                 },
                 {
-                    "name": "task for bb8-3",
+                    "name": "task for BB8-4",
                     "id": 8,
                     "robot": "--",
                     "simpleactions": [
@@ -1358,7 +1305,7 @@
                     ]
                 },
                 {
-                    "name": "task for bb8-4",
+                    "name": "task for BB8-5",
                     "id": 9,
                     "robot": "--",
                     "simpleactions": [
@@ -1405,7 +1352,7 @@
                     ]
                 },
                 {
-                    "name": "task for pr2-0",
+                    "name": "task for PR2-2",
                     "id": 10,
                     "robot": "--",
                     "simpleactions": [
@@ -1472,7 +1419,7 @@
                     ]
                 },
                 {
-                    "name": "task for pr2-1",
+                    "name": "task for PR2-3",
                     "id": 11,
                     "robot": "--",
                     "simpleactions": [
@@ -1539,7 +1486,7 @@
                     ]
                 },
                 {
-                    "name": "task for pr2-2",
+                    "name": "task for PR2-4",
                     "id": 12,
                     "robot": "--",
                     "simpleactions": [
@@ -1606,7 +1553,7 @@
                     ]
                 },
                 {
-                    "name": "task for pr2-3",
+                    "name": "task for PR2-5",
                     "id": 13,
                     "robot": "--",
                     "simpleactions": [
