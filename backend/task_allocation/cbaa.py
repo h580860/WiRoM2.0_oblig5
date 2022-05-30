@@ -25,7 +25,7 @@ class CBAA(DecentralicedTaskAllocation):
 
     def select_task(self):
         """
-        Basically, the robot creates a list including its highest bid it can make on a task.
+        The robot creates a list including its highest bid it can make on a task.
         This is mostly used to utilize the algorithms "iterations through T steps" which calls this function for
         each step t.
         """

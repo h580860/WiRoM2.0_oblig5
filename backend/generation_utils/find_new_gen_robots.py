@@ -2,6 +2,11 @@ import os
 import pathlib
 import shutil
 
+"""
+This class is deprecated.
+Related to the Eclipse Xtext version of the Robot-Generator DSL, and would check if there 
+were any new generated files
+"""
 
 class FindNewGenRobots:
     def __init__(self, prev_added_robots, controllers_base_filepath):

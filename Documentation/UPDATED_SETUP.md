@@ -21,7 +21,9 @@ Downloaded from: https://nodejs.org/en/
 Choose the correct operating system from: 
 https://www.rabbitmq.com/download.html \
 With MacOS it is recommended to use the *Homebrew* package installer.\
-On Windows it is recommended to either use the *Chocolatey* package manager or use the installer as an administrative user. 
+On Windows it is recommended to either use the *Chocolatey* package manager or use the installer as an administrative user.\
+*Note*: In some cases, e.g., when installing RabbitMQ through the *Chocolatey* package manager, Python 3.10 is installed as well. This creates a conflict for Webots,
+because it can only run on Python versions up to 3.9. If a higher version of Python is used, please install version 3.9 and use this instead. 
 
 ### Command Line Interface: 
 To follow along the next steps, you need to use command line interface. \

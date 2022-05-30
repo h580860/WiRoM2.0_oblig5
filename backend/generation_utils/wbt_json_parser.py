@@ -233,10 +233,6 @@ class WbtJsonParser:
         '''
         pass
 
-    def write_file_to_json(self):
-        with open('test.json', 'w', encoding='utf-8') as write_file:
-            json.dump(self.file_content, write_file, ensure_ascii=False, indent=4)
-
     def get_file(self):
         return self.file_content
 

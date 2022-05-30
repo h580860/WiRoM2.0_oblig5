@@ -41,17 +41,6 @@ script_location_filepath = pathlib.Path().parent / "robot-generator"
 # Utility class for executing the DSL Langium commands in a Python class
 dsl_shell_commands = DSLShellCommands(script_location_filepath)
 
-# configure logging
-# this file uses the custom logging class, because it is currently only working with this class
-# TODO use custom logging class for the other logging parts of the system as well
-# wirom_logger = Wirom_logger("app.log")
-
-
-# When starting the server, check if there has been any updates of robots
-# TODO update checked is currently disabled
-# update_checker = UpdateChecker()
-# update_checker.initiate_full_robot_check()
-
 # Printer to "pretty print" JSON/dictionary objects
 pp = pprint.PrettyPrinter()
 
@@ -288,7 +277,7 @@ def delete_dsl_code():
     return "Success", 200
 
 
-@ app.route('/ping')
+@app.route('/ping')
 def ping():
     return 'Pong!'
 
