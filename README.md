@@ -3,6 +3,8 @@
 This projct is part of my master thesis, and builds upon the work by Joakim Grutle ([original repository](https://github.com/joakimgrutle/WiRoM)). \
 Wirom2.0 is an extensible mission planner with usages for different levels of end-users.
 
+![](/Documentation/usage_screenshots/front_page_image.png) 
+
 
 # Setup Manual
 
