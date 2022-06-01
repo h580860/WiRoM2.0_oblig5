@@ -1,108 +1,156 @@
-# WiRoM: heterogeneous multi-robot mission planning - Further Work
-This is a fork of a previously created master thesis, made by Joakim Grutle
+# Wirom2.0 Introduction
 
-[Original GitHub repository](https://github.com/joakimgrutle/WiRoM)
+This projct is part of my master thesis, and builds upon the work by Joakim Grutle ([original repository](https://github.com/joakimgrutle/WiRoM)). \
+Wirom2.0 is an extensible mission planner with usages for different levels of end-users.
 
-I will be further expanding and improving the previous master thesis.
-For the time being, some of the previous explainations will not be up to date. 
-This README will be continously updated.
 
-Description from the developer of the system:  
-This project is a part of a master thesis. The purpose of this project is to create a system for planning missions for heterogeneous multi-robot setups, letting the user create missions directly from the browser and execute them in a simulated environment. 
+# Setup Manual
 
-[Link to web interface instructions](https://youtu.be/Va9vNV0tj0c)
 
-[Link to quarantine delivery mission](http://www.youtube.com/watch?v=TE_qN2Zqp8E)
+## Required installations
 
-Instructions for testing the system and a questionnaire that can be answered after testing the system is provided at the bottom of this readme file. This data will be used to evaluate the system for the master thesis.
+### Webots
+Install this version of Webots: https://github.com/cyberbotics/webots/releases/tag/R2021b
+ 
+### Python:
+Download Python 3.9 from their website: 
+https://www.python.org/downloads/release/python-3912/ 
+#### Note:
+We are using this version because Webots only supports up to Python 3.9. Even though the controllers are not implemented through the editor in Webots, it’s best to use the same version to make sure that they are compatible. 
 
-## Pre-requirements
-To use the system as-is, one needs to download and install the LATEST VERSION of the robot simulaton tool Webots. Webots is a powerful and open-source robot simulation tool that provides a big robot repository and possibilty for having multi-robot setups and create controllers for different robots, as well as streaming to a web platform.
 
-Go to Cyberbotics website to find instructions on how to download and install Webots: https://cyberbotics.com/
+### Node.js / npm:
+Downloaded from: https://nodejs.org/en/ 
 
-One could use another simulation if desired, but then one would need to program the controllers and add simpleactions for that simulation tool, in order for it to work.
+### RabbitMQ:
+Choose the correct operating system from: 
+https://www.rabbitmq.com/download.html \
+With MacOS it is recommended to use the *Homebrew* package installer.\
+On Windows it is recommended to either use the *Chocolatey* package manager or use the installer as an administrative user.\
+*Note*: In some cases, e.g., when installing RabbitMQ through the *Chocolatey* package manager, Python 3.10 is installed as well. This creates a conflict for Webots,
+because it can only run on Python versions up to 3.9. If a higher version of Python is used, please install version 3.9 and use this instead. 
 
-You also need to have Python and Node.js installed, with their respective package commands pip and npm.
+### Command Line Interface: 
+To follow along the next steps, you need to use command line interface. \
+On Windows, I have mainly been using the Windows Terminal: \
+https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701?hl=en-us&gl=US \
+MacOS users can use the Terminal command line. 
 
-Node.js / npm : https://nodejs.org/en/
-
-Python / pip : https://www.python.org/downloads/
-
-It is also highly recommended to have some bash-like terminal (e.g. https://gitforwindows.org/) installed if you use Windows, because the commands given in this readme will be compatible with those types of terminals.
-
-## How to run the system from the GitHub repository
-Clone the repository to your local machine using the command: 
+### Cloning the repository
+To download the source code, clone the repository to your machine using the command: 
 ```
-git clone https://github.com/joakimgrutle/Multi-robot-mission-planner.git
+git clone https://github.com/gunnarkleiven/WiRoM2.0.git
 ```
+To run the system, you need to run 3 processes:
+-	The web interface
+-	The backend Server
+-	Webots simulator
 
-This system is a web application, and uses a server-client setup for communicating between the browser and the simulation.
-This means we need to run the server and the client in order to run the system.
-
-
-### Running the client
-First you start by running the web-client.
-Open a new terminal and navigate into the repository folder, then the robot-mission-planner folder, then the src folder: 
+## Setting up the DSL (optional)
+This step is for the users who wish to use the Domain Specific Language to generate new robots, either through the provided editor in the web interface or by using VC Code. \
+Navigate into the *robot-generator* folder:
 ```
-cd WiRoM/web_interface
+cd Wirom2.0/robot-generator
 ```
-First run the following command to install all packages:
+and run
 ```
 npm install
 ```
-Then run the following command to start the client: 
+For a longer walkthrough of the Robot-Generator DSL, see the documentation in *Wirom2.0/Documentation/dsl_usage_guide.md*
+
+
+
+## Running the web interface 
+Navigate to the *web_interface* folder:
+```
+cd Wirom2.0/web_interface
+```
+Before running it for the first time, you need to install the required packages by running the command
+```
+npm install
+```
+After this, start the web interface by running
 ```
 npm start
 ```
-The client is now running at localhost:3000 (a new window should open automatically in you browser)
 
-### Running the server
-After the client is started, you can start the server.
-Open another new terminal window and navigate into the repository folder, then the scouting missions folder, then the controllers folder:
+## Running the flask (Python) server
+Navigate to the proper folder by the command
 ```
-cd WiRoM/backend
+cd Wirom2.0/backend
 ```
-First run the following command to install all packages (listed in requirements.txt): 
+To help manage the different dependencies, it is useful to create a Python virtual environment. When you install it for the first time, run the following command \
+on **Windows**:
+```
+python -m venv .venv
+```
+or on **macOS/Linux**:
+```
+python3 -m venv .venv
+```
+The last argument is the name of the directory of the environment, in this case *".venv"* \
+\
+To initiate the virtual environment, run the command \
+On **Windows**
+```
+./.venv/Scripts/activate
+```
+on **Mac**
+```
+source .venv/bin/activate
+```
+You should see the name of your virtual environment displayed somewhere at the bottom of your terminal window, depending on your settings for the CLI. \
+To exit the virtual environment, use the command
+```
+deactivate
+```
+
+After this, you need to install the dependencies. This is done with the command
 ```
 pip install -r requirements.txt
 ```
-Then run the following command to start the server: 
+
+Next step is to set the Flask environment variable, using the command
+On **Windows**
+```
+$env:FLASK_APP = "backend"
+```
+Or on **MacOS**
+```
+export FLASK_APP=backend
+```
+Finally, navigate one folder up
+```
+cd ..
+```
+And then start the server
 ```
 flask run
 ```
-This should start the server of the system and it should say it is running on the local ip at port 5000
 
-### Running Webots
-The third thing we have to do is start Webots, either normally or in streaming mode (streaming has to be run via terminal).
-Opening normally is simply opening the program using the executable file (link to webots docs below). 
-However it is strongly recommended to open in streaming mode, such that the simulation can be viewed directly from the browser, which gives the best experience of the system.
+## Running Webots
+To run Webots in the streaming mode, you need to start it with the **--stream** option. \
+It is recommended to do this, to get the full application displayed in the web interface. However, it is also possible to run Webots as a normal program/application, without having it stream directly to the browser.\
+First, navigate to the Webots folder. This location depends both on the operating system as well as the user settings chosen when installing it. For *Windows* it is commonly located at *'\Program Files\Webots\msys64\mingw64\bin\'*. On *MacOS* *TODO double check the location for mac* *\AppData\Local\Programs\Webots\msys64\mingw64\bin*. \
 
-To open in streaming mode on Mac, open a new terminal and navigate to the installation folder, which typically is Applications/Webots.app and run it using the command :
+To start Webots on Windows, run
+```
+./webots.exe --stream
+```
+or on Mac:
 ```
 ./webots --stream
 ```
 
-To open in streaming mode on Windows, also navigate to the bin folder in the installation folder, typically *C:\Users\\"username"\AppData\Local\Programs\Webots\msys64\mingw64\bin* and run the program from a terminal using the command:
-```
-./webots.exe --stream
-```
-This should open a new Webots instance, and it might ask for permission to access the web.
+Finally, open the world file **delivery-missionUpdated.wbt** located at *Wirom2.0/backend/worlds/delivery-missionUpdated.wbt*
 
-For the official documentation on how to start Webots normally and in streaming mode for Windows, Mac and Linux go to: https://cyberbotics.com/doc/guide/starting-webots
 
-After Webots is running, simply click File -> Open world and navigate to Multi-robot-mission-planner/scouting-mission/worlds and select the the file called 
-```
-scouting-mission.wbt
-```
+## Exiting the processes
+To stop any of the processes running, simply press **"Ctrl + c"** for Windows or **"control + c"** for Mac in their respective terminal windows.
 
-When you have completed all the steps, the system is ready to be used.
 
-### System instructions and questionnaire
-Follow these links to the instructions for testing the system, and then when you are done with this, go to the questionnaire and answer the questions.
 
-[Link to web interface quick instructions](https://youtu.be/Va9vNV0tj0c)
 
-[Written instructions for testing the system](https://github.com/joakimgrutle/Multi-robot-mission-planner/blob/master/Mission%20planning%20instructions.pdf)
-
-[Questionnaire for after testing the system](https://docs.google.com/forms/d/e/1FAIpQLSciykaeCi5p2Nm09FnBMVxAytmdXgIIT2nBaX4pZkyQ40FsxA/viewform?usp=sf_link)
+# Questionnaire and the Results
+[Link to Questionnaire](https://forms.gle/pJenEdvGNWA5XqHKA) \
+[Link to questionnaire results](https://docs.google.com/spreadsheets/d/1D_NcRZRw7PmODAQEjfruaG6gOBp2WE-AdQlvPdiA9JM/edit?usp=sharing)
