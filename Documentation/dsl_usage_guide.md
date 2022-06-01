@@ -2,7 +2,7 @@
 
 ## Installation
 
-To install the Robot-Generator DSL, follow the instructions in *Wirom2.0/Documentation/UPDATED_SETUP.md*
+To install the Robot-Generator DSL, follow the instructions in *Wirom2.0/README.md*
 
 ## Understanding the grammar
 
