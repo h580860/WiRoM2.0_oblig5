@@ -6,14 +6,14 @@ Wirom2.0 is an extensible mission planner with usages for different levels of en
 ![](/Documentation/usage_screenshots/front_page_image.png) 
 
 ### YouTube Links to example mission scenarios: 
-## Mission Scenarios
+#### Mission Scenarios
 YouTube Playlist: https://youtube.com/playlist?list=PLqDx8urZiY8ww7fJ5Z74JBvw3Md-WvTDG
 
-### Multi-Robot Mission Demonstration
+#### Multi-Robot Mission Demonstration
 YouTube Link: https://youtu.be/gWVboH-PivE
 
 
-### Large Package Delivery System
+#### Large Package Delivery System
 YouTube Link: https://youtu.be/wN0N37AJlYo
 
 ## Documentation:
