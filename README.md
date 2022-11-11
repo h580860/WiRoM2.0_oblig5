@@ -9,3 +9,4 @@ Activating the virtual envvironment through Terminal did not seem to work, so th
 
 To start the flask server, the flask_app had to be added to systempath, however that was not enough; so I had to write a different variant in order to have it run: flask --app backend run
 
+See "oblig5_mission_v2.mp4" and "webots.docx" for oblig 5 submission.
